@@ -2198,13 +2198,13 @@ body.menu-open {
 
         /* box alja -> section end */
         /* ----- SERVICE BOX ----- */
-        --lr-box-w: 330px;
+        --lr-box-w: 345px;
         --lr-box-h: 395px;
         --lr-box-radius-mobile: 25px;
 
         /* desktophoz képest -5px */
         /* ----- ROWS ----- */
-        --lr-row-pad-x: 11px;
+        --lr-row-pad-x: 17px;
         --lr-row-h: 72px;
 
         /* divider */
