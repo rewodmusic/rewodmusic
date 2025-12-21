@@ -3408,7 +3408,9 @@ body.menu-open {
 
 
 @media (max-width: 768px){
-  body.notes-page{ position: relative; }
-  body.notes-page .notes-bg{ z-index: 0 !important; }
-  body.notes-page .notes-wrapper{ position: relative; z-index: 1 !important; }
+  body.notes-page .notes-wrapper{
+    animation: none !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
 }
