@@ -2465,10 +2465,10 @@ body.menu-open {
         --m-music-services-bg: #0e0e0e;
 
         /* ===== GLOBAL GAPS ===== */
-        --m-music-gap-top: 24px;
+        --m-music-gap-top: 39px;
 
         /* accordion teteje */
-        --m-music-gap-bottom: 38px;
+        --m-music-gap-bottom: 78px;
 
         /* accordion alja */
         /* ===== CATEGORY ROW (ORIGINALS, FEATURES…) ===== */
@@ -2533,6 +2533,7 @@ body.menu-open {
 
         /* ORIGINALS, FEATURES... */
         --m-music-song-font: 13.5px;
+        --music-song-weight: 400;
 
         /* Hollow Waltz, Tunnel Vision... */
     }
@@ -2545,6 +2546,7 @@ body.menu-open {
     /* SONG TITLE TEXT SIZE */
     .music-song .music-song-title {
         font-size: var(--m-music-song-font) !important;
+        font-weight: var(--music-song-weight) !important;
     }
 }
 
