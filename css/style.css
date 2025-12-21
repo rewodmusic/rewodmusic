@@ -3398,7 +3398,7 @@ body.menu-open {
   }
 
   body {
-    transform: scale(1.12);          /* ← EZ A “ZOOM” */
+    transform: scale(1.22);          /* ← EZ A “ZOOM” */
     transform-origin: top center;
     width: 100%;
   }
