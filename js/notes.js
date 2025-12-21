@@ -1,5 +1,10 @@
 const DATA_URL = "data/notes.json";
-const INITIAL_COUNT = 6;
+
+// desktop / mobile detection
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+// limits
+const INITIAL_COUNT = isMobile ? 15 : 6;
 const LOAD_MORE_COUNT = 5;
 
 let allNotes = [];
@@ -17,6 +22,7 @@ function createNoteEl(note) {
     <div class="note-date">${formatDate(note.notesDate)}</div>
     <div class="note-text">${note.notespost}</div>
   `;
+
   return el;
 }
 
@@ -30,7 +36,7 @@ function renderNotes({ onlyAppendNew = false, slowAnimateNew = false } = {}) {
     return;
   }
 
-  // append only the new ones
+  // append only newly revealed notes
   const alreadyRendered = container.querySelectorAll(".note-entry").length;
   const slice = allNotes.slice(alreadyRendered, visibleCount);
 
@@ -38,8 +44,8 @@ function renderNotes({ onlyAppendNew = false, slowAnimateNew = false } = {}) {
     const el = createNoteEl(note);
 
     if (slowAnimateNew) {
-      el.classList.add("is-new");                 // special slower anim
-      el.style.animationDelay = `${i * 120}ms`;   // pici stagger, elegant
+      el.classList.add("is-new");
+      el.style.animationDelay = `${i * 120}ms`;
     }
 
     container.appendChild(el);
@@ -50,23 +56,34 @@ async function initNotes() {
   const res = await fetch(DATA_URL, { cache: "no-store" });
   allNotes = await res.json();
 
+  // newest first
   allNotes.sort((a, b) => new Date(b.notesDate) - new Date(a.notesDate));
 
-  visibleCount = INITIAL_COUNT;
+  visibleCount = Math.min(INITIAL_COUNT, allNotes.length);
   renderNotes();
 
-  document.getElementById("loadMore").addEventListener("click", () => {
+  const loadMoreBtn = document.getElementById("loadMore");
+
+  // MOBILE: nincs Load More
+  if (isMobile) {
+    if (loadMoreBtn) loadMoreBtn.style.display = "none";
+    return;
+  }
+
+  // DESKTOP: Load More működik
+  loadMoreBtn.addEventListener("click", () => {
     const prev = visibleCount;
-    visibleCount = Math.min(visibleCount + LOAD_MORE_COUNT, allNotes.length);
+    visibleCount = Math.min(
+      visibleCount + LOAD_MORE_COUNT,
+      allNotes.length
+    );
 
     if (visibleCount === prev) return;
 
-    // NO SCROLL. Just append + slow fade for new ones.
     renderNotes({ onlyAppendNew: true, slowAnimateNew: true });
 
-    // optional: ha elfogy, tüntessük el a Load More-t
     if (visibleCount >= allNotes.length) {
-      document.getElementById("loadMore").style.display = "none";
+      loadMoreBtn.style.display = "none";
     }
   });
 }
