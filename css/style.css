@@ -1155,7 +1155,7 @@ body.upcoming-page .site-footer {
     .m-hero {
         display: block;
         width: 100%;
-        height: 408px;
+        height: 508px;
         overflow: hidden;
     }
 
@@ -1570,9 +1570,9 @@ body.menu-open {
 @media (max-width: 768px) {
     :root {
         /* ===== INTRO ===== */
-        --m-intro-box-w: 244px;
-        --m-intro-font: 13px;
-        --m-intro-gap-top: 22px;
+        --m-intro-box-w: 324px;
+        --m-intro-font: 14px;
+        --m-intro-gap-top: 27px;
         --m-intro-gap-bottom: 39px;
 
         /* ===== ACTION RIGHT GAP ===== */
