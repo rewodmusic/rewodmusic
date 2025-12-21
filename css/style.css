@@ -2640,13 +2640,13 @@ body.menu-open {
         /* ha kell extra, tedd ide */
         /* ===== CARD SIZE ===== */
         --m-ws-card-w: 267px;
-        --m-ws-card-h: 346px;
+        --m-ws-card-h: 360px;
         --m-ws-card-radius: 30px;
         --m-ws-card-bg: #1F1F1F;
 
         /* ===== TEXT SIZES ===== */
         --m-ws-title-font: 17px;
-        --m-ws-sub-font: 14px;
+        --m-ws-sub-font: 13px;
         --m-ws-added-font: 11px;
         --m-ws-price-font: 17px;
         --m-ws-btn-font: 13px;
@@ -2668,10 +2668,10 @@ body.menu-open {
         --m-ws-btn-h: 23px;
 
         /* ===== PREVIEW IMAGE (W/H + X/Y + radius) ===== */
-        --m-ws-prev-w: 173px;
-        --m-ws-prev-h: 193px;
+        --m-ws-prev-w: 189px;
+        --m-ws-prev-h: 211px;
         --m-ws-prev-x: 0px;
-        --m-ws-prev-y: 0px;
+        --m-ws-prev-y: -1px;
         --m-ws-prev-radius: 22px;
 
         /* preview top gap + wrapper min-height (ha kell finomhangolni) */
@@ -2865,24 +2865,24 @@ body.menu-open {
 @media (max-width: 768px){
     :root {
         /* ===== SECTION GAPS ===== */
-        --m-up-gap-top: 120px;
+        --m-up-gap-top: 60px;
 
         /* section start -> first element */
-        --m-up-follow-to-end: 40px;
+        --m-up-follow-to-end: 105px;
 
         /* follow -> section end (footer előtt) */
         /* ===== FONT SIZES ===== */
-        --m-up-date-font: 41px;
-        --m-up-artist-font: 17px;
+        --m-up-date-font: 50px;
+        --m-up-artist-font: 19px;
 
         /* genre/artist */
-        --m-up-title-font: 24px;
+        --m-up-title-font: 27px;
         --m-up-feat-font: 17px;
         --m-up-follow-font: 14px;
 
         /* ===== IMAGE ===== */
-        --m-up-img-w: 180px;
-        --m-up-img-h: 179px;
+        --m-up-img-w: 240px;
+        --m-up-img-h: 240px;
         --m-up-img-radius: 15px;
 
         /* ===== FLOW GAPS (stack) ===== */
@@ -2905,9 +2905,9 @@ body.menu-open {
         --m-up-feat-x: 0px;
         --m-up-feat-y: -296px;
         --m-up-img-x: 0px;
-        --m-up-img-y: 25px;
+        --m-up-img-y: 103px;
         --m-up-follow-x: 0px;
-        --m-up-follow-y: -40px;
+        --m-up-follow-y: 15px;
 
         /* follow “text box” max width */
         --m-up-follow-maxw: 270px;
