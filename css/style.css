@@ -3391,15 +3391,3 @@ body.menu-open {
     }
 }
 
-@media (max-width: 480px) {
-  html,
-  body {
-    overflow-x: hidden;
-  }
-
-  body {
-    transform: scale(1.22);          /* ← EZ A “ZOOM” */
-    transform-origin: top center;
-    width: 100%;
-  }
-}
