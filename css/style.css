@@ -2183,11 +2183,11 @@ body.menu-open {
 @media (max-width: 768px){
     :root {
         /* ----- COVER + TEXT ----- */
-        --lr-cover-w: 156px;
-        --lr-cover-h: 155px;
+        --lr-cover-w: 200px;
+        --lr-cover-h: 200px;
         --lr-cover-radius: 18px;
-        --lr-title-size: 13px;
-        --lr-sub-size: 12px;
+        --lr-title-size: 19px;
+        --lr-sub-size: 13px;
         --lr-gap-cover-to-title: 18px;
         --lr-gap-title-to-sub: 6px;
         --lr-gap-sub-to-box: 26px;
