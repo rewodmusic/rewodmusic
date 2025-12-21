@@ -2198,29 +2198,29 @@ body.menu-open {
 
         /* box alja -> section end */
         /* ----- SERVICE BOX ----- */
-        --lr-box-w: 390px;
-        --lr-box-h: 390px;
+        --lr-box-w: 270px;
+        --lr-box-h: 320px;
         --lr-box-radius-mobile: 25px;
 
         /* desktophoz képest -5px */
         /* ----- ROWS ----- */
         --lr-row-pad-x: 18px;
-        --lr-row-h: 76px;
+        --lr-row-h: 56px;
 
         /* divider */
         --lr-divider-w: 237px;
         --lr-divider-alpha: 0.35;
 
         /* ----- SERVICE LOGO SIZES (állítható) ----- */
-        --lr-spotify-w: 115px;
+        --lr-spotify-w: 105px;
         --lr-apple-w: 115px;
-        --lr-youtube-w: 201px;
-        --lr-mms-w: 235px;
-        --lr-kofi-w: 260px;
+        --lr-youtube-w: 111px;
+        --lr-mms-w: 155px;
+        --lr-kofi-w: 160px;
 
         /* ----- BUTTONS ----- */
-        --lr-btn-font: 20px;
-        --lr-btn-h: 41px;
+        --lr-btn-font: 10px;
+        --lr-btn-h: 31px;
         --lr-btn-radius: 14px;
         --lr-btn-minw-play: 44px;
         --lr-btn-minw-watch: 58px;
@@ -3391,9 +3391,3 @@ body.menu-open {
     }
 }
 
-@media (max-width: 480px) {
-    body {
-        transform: scale(1.12);
-        transform-origin: top center;
-    }
-}
