@@ -1069,7 +1069,7 @@ body.upcoming-page .site-footer {
         --m-gap-credit-to-bottom: 100px;
 
         /* credit -> menü alja gap */
-        --m-menu-font: 19px;
+        --m-menu-font: 20px;
 
         /* menüpont méret */
         --m-menu-letter: 3px;
@@ -1591,42 +1591,42 @@ body.menu-open {
 
         /* title -> row gap */
         /* ===== Titles (X/Y) ===== */
-        --m-rel-title-size: 18px;
-        --m-rel-title-x: 30px;
+        --m-rel-title-size: 24px;
+        --m-rel-title-x: 45px;
 
         /* balról */
         --m-rel-title-y: 0px;
 
         /* finom függőleges */
         /* ===== Row layout (kép+meta+action) ===== */
-        --m-rel-img-w: 64px;
-        --m-rel-img-h: 60px;
+        --m-rel-img-w: 90px;
+        --m-rel-img-h: 90px;
         --m-rel-col-gap: 12px;
 
         /* ===== KÉP (X/Y) ===== */
-        --m-rel-cover-x: 5px;
-        --m-rel-cover-y: 0px;
+        --m-rel-cover-x: 15px;
+        --m-rel-cover-y: 5px;
 
         /* ===== META (X/Y) ===== */
-        --m-rel-meta-x: 81px;
-        --m-rel-meta-y: -47px;
+        --m-rel-meta-x: 111px;
+        --m-rel-meta-y: -77px;
 
         /* ===== Meta text sizes ===== */
-        --m-rel-artist-size: 13px;
-        --m-rel-song-size: 16px;
+        --m-rel-artist-size: 15px;
+        --m-rel-song-size: 22px;
 
         /* ===== ACTION OSZLOP (X/Y) ===== */
         --m-rel-action-x: 0px;
         --m-rel-action-y: 0px;
 
         /* ===== LISTEN button ===== */
-        --m-rel-listen-w: 81px;
-        --m-rel-listen-h: 23px;
-        --m-rel-listen-font: 13px;
+        --m-rel-listen-w: 91px;
+        --m-rel-listen-h: 27px;
+        --m-rel-listen-font: 15px;
         --m-rel-listen-x: 00px;
 
         /* az action oszlopon belül */
-        --m-rel-listen-y: -10px;
+        --m-rel-listen-y: -25px;
 
         /* EZ már FLOW: margin-top */
         /* ===== COUNTDOWN pill ===== */
@@ -1634,11 +1634,11 @@ body.menu-open {
         --m-rel-count-h: 42px;
         --m-rel-count-font: 12px;
         --m-rel-count-x: 0px;
-        --m-rel-count-y: -4px;
+        --m-rel-count-y: -18px;
 
         /* FLOW: margin-top */
         /* ===== Divider line ===== */
-        --m-rel-divider-w: 280px;
+        --m-rel-divider-w: 340px;
         --m-rel-divider-gap-top: 18px;
         --m-rel-divider-gap-bottom: 18px;
     }
@@ -1846,7 +1846,7 @@ body.menu-open {
 
         /* 2. sor alja -> section end */
         /* ===== TITLE: OFFICIAL PLAYLISTS ===== */
-        --m-pl-title-size: 27px;
+        --m-pl-title-size: 37px;
 
         /* requested */
         --m-pl-title-x: 20px;
@@ -1865,25 +1865,25 @@ body.menu-open {
 
         /* mindkét sor finom Y */
         /* ===== LABELS: COVERS / ORIGINALS ===== */
-        --m-pl-label-size: 18px;
+        --m-pl-label-size: 20px;
 
         /* requested */
         --m-pl-label-x: 0px;
 
         /* a row-on belül */
-        --m-pl-label-y: 0px;
+        --m-pl-label-y: 7px;
 
         /* ===== BUTTONS: SPOTIFY / YOUTUBE ===== */
-        --m-pl-btn-w: 82px;
+        --m-pl-btn-w: 95px;
 
         /* requested */
-        --m-pl-btn-h: 20px;
+        --m-pl-btn-h: 25px;
 
         /* requested */
-        --m-pl-btn-font: 13px;
+        --m-pl-btn-font: 15px;
 
         /* requested */
-        --m-pl-btn-gap: 16px;
+        --m-pl-btn-gap: 19px;
 
         /* Spotify <-> YouTube gap */
         --m-pl-btn-rail-x: 0px;
@@ -2067,19 +2067,19 @@ body.menu-open {
    ========================= */
 @media (max-width: 768px) {
     :root {
-        --m-footer-h: 373px;
-        --m-footer-logo-w: 46px;
-        --m-footer-logo-h: 52px;
+        --m-footer-h: 393px;
+        --m-footer-logo-w: 55px;
+        --m-footer-logo-h: 62px;
         --m-footer-icon: 20px;
-        --m-footer-icon-gap: 10px;
-        --m-footer-credit-size: 10px;
+        --m-footer-icon-gap: 12px;
+        --m-footer-credit-size: 11px;
         --m-footer-credit-maxw: 320px;
 
         /* 3 GAP POTI */
         --m-footer-gap-top: 74px;
 
         /* section start -> logo */
-        --m-footer-gap-logo-social: 18px;
+        --m-footer-gap-logo-social: 21px;
 
         /* logo -> socialbar */
         --m-footer-gap-social-credit: 18px;
