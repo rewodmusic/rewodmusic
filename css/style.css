@@ -3405,3 +3405,11 @@ body.menu-open {
     display: none !important;
   }
 }
+
+
+@media (max-width: 768px){
+  body.notes-page .notes-wrapper{
+    animation: none !important;
+    transform: none !important;
+  }
+}
