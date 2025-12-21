@@ -3391,24 +3391,3 @@ body.menu-open {
     }
 }
 
-/* =========================
-   MOBILE GLOBAL SCALE (SAFE)
-   ========================= */
-@media (max-width: 480px) {
-    html,
-    body {
-        overflow-x: hidden;
-        touch-action: pan-y;
-    }
-
-    #mobile-scale-root {
-        transform: scale(1.12);
-
-        /* 🔥 EZ A ZOOM MÉRTÉKE */
-        transform-origin: top center;
-        width: calc(100% / 1.12);
-
-        /* kompenzáció */
-        margin: 0 auto;
-    }
-}
