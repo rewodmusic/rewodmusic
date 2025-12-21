@@ -2472,7 +2472,7 @@ body.menu-open {
 
         /* accordion alja */
         /* ===== CATEGORY ROW (ORIGINALS, FEATURES…) ===== */
-        --m-music-cat-font: 94px;
+        --m-music-cat-font: 4px;
         --m-music-cat-pad-y: 14px;
 
         /* ===== SONG TITLE (Hollow Waltz, Tunnel Vision…) ===== */
