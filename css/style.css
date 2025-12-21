@@ -1592,7 +1592,7 @@ body.menu-open {
         /* title -> row gap */
         /* ===== Titles (X/Y) ===== */
         --m-rel-title-size: 24px;
-        --m-rel-title-x: 45px;
+        --m-rel-title-x: 40px;
 
         /* balról */
         --m-rel-title-y: 0px;
@@ -2082,7 +2082,7 @@ body.menu-open {
         --m-footer-gap-logo-social: 21px;
 
         /* logo -> socialbar */
-        --m-footer-gap-social-credit: 38px;
+        --m-footer-gap-social-credit: 17px;
 
         /* socialbar -> credit */
     }
@@ -2477,6 +2477,7 @@ body.menu-open {
 
         /* ===== SONG TITLE (Hollow Waltz, Tunnel Vision…) ===== */
         --m-music-song-font: 39px;
+        --music-song-weight: 400;
         --m-music-song-line: 1.15;
         --m-music-song-pad-y: 10px;
     }
@@ -2515,6 +2516,7 @@ body.menu-open {
     /* ---------- SONG TITLE ---------- */
     .music-song-title {
         font-size: var(--m-music-song-font) !important;
+        font-weight: var(--music-song-weight) !important;
         line-height: var(--m-music-song-line) !important;
     }
 
