@@ -1332,7 +1332,7 @@ body.menu-open {
 .music-cat-label {
     font-family: Avenir, "Avenir Next", system-ui, -apple-system, sans-serif;
     font-weight: 300;
-    font-size: 35px;
+    font-size: 18px;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 0.02em;
@@ -1409,7 +1409,7 @@ body.menu-open {
 .music-song-title {
     font-family: "Arial Black", Arial, Helvetica, sans-serif;
     font-weight: 900;
-    font-size: 23px;
+    font-size: 14px;
     color: #000;
     text-transform: uppercase;
     line-height: 1;
@@ -2472,11 +2472,11 @@ body.menu-open {
 
         /* accordion alja */
         /* ===== CATEGORY ROW (ORIGINALS, FEATURES…) ===== */
-        --m-music-cat-font: 16px;
+        --m-music-cat-font: 94px;
         --m-music-cat-pad-y: 14px;
 
         /* ===== SONG TITLE (Hollow Waltz, Tunnel Vision…) ===== */
-        --m-music-song-font: 14px;
+        --m-music-song-font: 39px;
         --m-music-song-line: 1.15;
         --m-music-song-pad-y: 10px;
     }
