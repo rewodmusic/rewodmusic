@@ -2529,10 +2529,10 @@ body.menu-open {
    ========================= */
 @media (max-width: 768px){
     :root {
-        --m-music-cat-font: 15px;
+        --m-music-cat-font: 20px;
 
         /* ORIGINALS, FEATURES... */
-        --m-music-song-font: 11.5px;
+        --m-music-song-font: 13.5px;
 
         /* Hollow Waltz, Tunnel Vision... */
     }
@@ -2550,7 +2550,7 @@ body.menu-open {
 
 @media (max-width: 768px){
     :root {
-        --m-music-cat-height: 36px;
+        --m-music-cat-height: 37px;
     }
 
     .music-cat {
