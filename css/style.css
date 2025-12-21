@@ -3391,20 +3391,24 @@ body.menu-open {
     }
 }
 
-@media (max-width: 480px){
+/* =========================
+   MOBILE GLOBAL SCALE (SAFE)
+   ========================= */
+@media (max-width: 480px) {
     html,
     body {
         overflow-x: hidden;
+        touch-action: pan-y;
     }
 
-    body {
-        transform: scale(1.18);
-        transform-origin: top center;
+    #mobile-scale-root {
+        transform: scale(1.12);
 
-        /* kompenzáció, hogy ne lógjon túl */
-        width: calc(100% / 1.08);
-        margin-left: auto;
-        margin-right: auto;
+        /* 🔥 EZ A ZOOM MÉRTÉKE */
+        transform-origin: top center;
+        width: calc(100% / 1.12);
+
+        /* kompenzáció */
+        margin: 0 auto;
     }
 }
-
