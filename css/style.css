@@ -2082,7 +2082,7 @@ body.menu-open {
         --m-footer-gap-logo-social: 21px;
 
         /* logo -> socialbar */
-        --m-footer-gap-social-credit: 18px;
+        --m-footer-gap-social-credit: 38px;
 
         /* socialbar -> credit */
     }
