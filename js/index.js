@@ -1,4 +1,4 @@
-const DATA_URL = "/data/admin.json";
+const DATA_URL = "data/admin.json";
 
 function safeText(v) {
   return (v ?? "").toString().trim();

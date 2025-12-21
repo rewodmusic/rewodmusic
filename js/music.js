@@ -1,7 +1,7 @@
 /* MUSIC PAGE – JSON loader + accordion (HEIGHT animation, CSS chevron arrow) */
 
 const CONFIG = {
-  dataUrl: "/data/admin.json",
+  dataUrl: "data/admin.json",
   playIcon: "img/playbutton.png",
   serviceIcons: {
     spotify: "linktree/linktree_spotify.svg",

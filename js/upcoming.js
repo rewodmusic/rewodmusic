@@ -1,7 +1,7 @@
 /* UPCOMING PAGE – loads nearest future row from JSON (YYYY_MM_DD) */
 
 const CONFIG = {
-  dataUrl: "/data/admin.json",
+  dataUrl: "data/admin.json",
   fallbackCover: "img/upcoming.jpg",
   pickNearestFuture: true
 };

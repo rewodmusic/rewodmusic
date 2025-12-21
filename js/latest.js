@@ -1,7 +1,7 @@
 /* LATEST PAGE – reads FIRST ROW from /data/latest.json (no date sorting) */
 
 const CONFIG = {
-  dataUrl: "/data/admin.json",
+  dataUrl: "data/admin.json",
   kofiUrl: "https://ko-fi.com/rewodmusic"
 };
 

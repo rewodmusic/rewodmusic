@@ -3,7 +3,7 @@
    Mobile: 5 cards
 */
 
-const DATA_URL = "/data/admin.json";
+const DATA_URL = "data/admin.json";
 
 const MAX_ITEMS_DESKTOP = 8;
 const MAX_ITEMS_MOBILE = 5;

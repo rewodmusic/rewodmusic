@@ -1,4 +1,4 @@
-const DATA_URL = "/data/notes.json";
+const DATA_URL = "data/notes.json";
 const INITIAL_COUNT = 6;
 const LOAD_MORE_COUNT = 5;
 
