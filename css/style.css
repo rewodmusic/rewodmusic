@@ -3110,7 +3110,7 @@ body.menu-open {
         --m-notes-gap-top: 44px;
 
         /* section start -> first item */
-        --m-notes-gap-between: 56px;
+        --m-notes-gap-between: 106px;
 
         /* items közti gap */
         --m-notes-gap-last-to-loadmore: 40px;
