@@ -2645,8 +2645,8 @@ body.menu-open {
         --m-ws-card-bg: #1F1F1F;
 
         /* ===== TEXT SIZES ===== */
-        --m-ws-title-font: 17px;
-        --m-ws-sub-font: 13px;
+        --m-ws-title-font: 20px;
+        --m-ws-sub-font: 14px;
         --m-ws-added-font: 11px;
         --m-ws-price-font: 17px;
         --m-ws-btn-font: 13px;
@@ -2868,7 +2868,7 @@ body.menu-open {
         --m-up-gap-top: 60px;
 
         /* section start -> first element */
-        --m-up-follow-to-end: 105px;
+        --m-up-follow-to-end: 130px;
 
         /* follow -> section end (footer előtt) */
         /* ===== FONT SIZES ===== */
@@ -2881,8 +2881,8 @@ body.menu-open {
         --m-up-follow-font: 14px;
 
         /* ===== IMAGE ===== */
-        --m-up-img-w: 240px;
-        --m-up-img-h: 240px;
+        --m-up-img-w: 320px;
+        --m-up-img-h: 320px;
         --m-up-img-radius: 15px;
 
         /* ===== FLOW GAPS (stack) ===== */
@@ -2897,17 +2897,17 @@ body.menu-open {
         /* follow flex-center miatt általában 0 */
         /* ===== X/Y POTIK (per element) ===== */
         --m-up-date-x: 0px;
-        --m-up-date-y: -300px;
+        --m-up-date-y: -385px;
         --m-up-artist-x: 0px;
-        --m-up-artist-y: -300px;
+        --m-up-artist-y: -385px;
         --m-up-title-x: 0px;
-        --m-up-title-y: -300px;
+        --m-up-title-y: -385px;
         --m-up-feat-x: 0px;
-        --m-up-feat-y: -296px;
+        --m-up-feat-y: -380px;
         --m-up-img-x: 0px;
-        --m-up-img-y: 103px;
+        --m-up-img-y: 104px;
         --m-up-follow-x: 0px;
-        --m-up-follow-y: 15px;
+        --m-up-follow-y: 20px;
 
         /* follow “text box” max width */
         --m-up-follow-maxw: 270px;
