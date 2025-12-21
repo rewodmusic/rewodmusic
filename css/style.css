@@ -1605,7 +1605,7 @@ body.menu-open {
 
         /* ===== KÉP (X/Y) ===== */
         --m-rel-cover-x: 15px;
-        --m-rel-cover-y: 5px;
+        --m-rel-cover-y: -2px;
 
         /* ===== META (X/Y) ===== */
         --m-rel-meta-x: 111px;
@@ -1639,8 +1639,8 @@ body.menu-open {
         /* FLOW: margin-top */
         /* ===== Divider line ===== */
         --m-rel-divider-w: 340px;
-        --m-rel-divider-gap-top: 18px;
-        --m-rel-divider-gap-bottom: 18px;
+        --m-rel-divider-gap-top: 28px;
+        --m-rel-divider-gap-bottom: 28px;
     }
 
     /* ---------------------------------
@@ -2067,7 +2067,7 @@ body.menu-open {
    ========================= */
 @media (max-width: 768px) {
     :root {
-        --m-footer-h: 393px;
+        --m-footer-h: 433px;
         --m-footer-logo-w: 55px;
         --m-footer-logo-h: 62px;
         --m-footer-icon: 20px;
@@ -2076,7 +2076,7 @@ body.menu-open {
         --m-footer-credit-maxw: 320px;
 
         /* 3 GAP POTI */
-        --m-footer-gap-top: 74px;
+        --m-footer-gap-top: 90px;
 
         /* section start -> logo */
         --m-footer-gap-logo-social: 21px;
