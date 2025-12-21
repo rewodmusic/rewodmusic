@@ -3391,12 +3391,9 @@ body.menu-open {
     }
 }
 
-
-
-
-
 @media (max-width: 480px) {
-  html {
-    font-size: 112%;
-  }
+    body {
+        transform: scale(1.12);
+        transform-origin: top center;
+    }
 }
