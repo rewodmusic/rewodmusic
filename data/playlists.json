@@ -1,0 +1,10 @@
+{
+  "covers": {
+    "spotify": "https://open.spotify.com/playlist/COVERS_SPOTIFY_LINK",
+    "youtube": "https://youtube.com/playlist/COVERS_YOUTUBE_LINK"
+  },
+  "originals": {
+    "spotify": "https://open.spotify.com/playlist/ORIGINALS_SPOTIFY_LINK",
+    "youtube": "https://youtube.com/playlist/ORIGINALS_YOUTUBE_LINK"
+  }
+}

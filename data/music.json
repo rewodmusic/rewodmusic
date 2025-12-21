@@ -1,0 +1,113 @@
+[
+  {
+    "Date": "November 27, 2025",
+    "newmusictitle": "Hollow Waltz",
+    "newmusicartist": "original composition",
+    "newmusicartist2": "",
+    "feat": "Valaki",
+    "mymusicurl": "https://mymusic1.example/hollowwaltz",
+    "youtubeurl": "https://youtube.com/watch?v=aaa",
+    "spotifyurl": "https://open.spotify.com/track/aaa",
+    "appleurl": "https://music.apple.com/aaa",
+    "mmsurl": "https://mymusicsheet.com/aaa"
+  },
+  {
+    "Date": "October 25, 2025",
+    "newmusictitle": "Hotel Alphaville",
+    "newmusicartist": "original composition",
+    "newmusicartist2": "",
+    "feat": "",
+    "mymusicurl": "https://mymusic1.example/hotelalphaville",
+    "youtubeurl": "https://youtube.com/watch?v=bbb",
+    "spotifyurl": "https://open.spotify.com/track/bbb",
+    "appleurl": "https://music.apple.com/bbb",
+    "mmsurl": "https://mymusicsheet.com/bbb"
+  },
+  {
+    "Date": "October 02, 2025",
+    "newmusictitle": "Another Song Name Its Longer So Needed To Expand Itself Automatically again and again and again and again and once again agaian. expand itself automatically",
+    "newmusicartist": "original composition",
+    "newmusicartist2": "",
+    "feat": "",
+    "mymusicurl": "https://mymusic1.example/ccc",
+    "youtubeurl": "https://youtube.com/watch?v=ccc",
+    "spotifyurl": "https://open.spotify.com/track/ccc",
+    "appleurl": "https://music.apple.com/ccc",
+    "mmsurl": "https://mymusicsheet.com/ccc"
+  },
+
+  {
+    "Date": "October 05, 2025",
+    "newmusictitle": "Die With A Smile",
+    "newmusicartist": "Bruno Mars",
+    "newmusicartist2": "Lady Gaga",
+    "feat": "",
+    "mymusicurl": "https://mymusic1.example/die",
+    "youtubeurl": "https://youtube.com/watch?v=ddd",
+    "spotifyurl": "https://open.spotify.com/track/ddd",
+    "appleurl": "https://music.apple.com/ddd",
+    "mmsurl": "https://mymusicsheet.com/ddd"
+  },
+  {
+    "Date": "August 19, 2025",
+    "newmusictitle": "Tunnel Vision",
+    "newmusicartist": "Chace",
+    "newmusicartist2": "",
+    "feat": "",
+    "mymusicurl": "https://mymusic1.example/tunnel",
+    "youtubeurl": "https://youtube.com/watch?v=eee",
+    "spotifyurl": "https://open.spotify.com/track/eee",
+    "appleurl": "https://music.apple.com/eee",
+    "mmsurl": "https://mymusicsheet.com/eee"
+  },
+  {
+    "Date": "August 08, 2025",
+    "newmusictitle": "Reply",
+    "newmusicartist": "JUJU",
+    "newmusicartist2": "",
+    "feat": "",
+    "mymusicurl": "https://mymusic1.example/reply",
+    "youtubeurl": "https://youtube.com/watch?v=fff",
+    "spotifyurl": "https://open.spotify.com/track/fff",
+    "appleurl": "https://music.apple.com/fff",
+    "mmsurl": "https://mymusicsheet.com/fff"
+  },
+  {
+    "Date": "July 23, 2025",
+    "newmusictitle": "Machigai Sagashi",
+    "newmusicartist": "Masaki Suda",
+    "newmusicartist2": "",
+    "feat": "",
+    "mymusicurl": "https://mymusic1.example/msg",
+    "youtubeurl": "https://youtube.com/watch?v=ggg",
+    "spotifyurl": "https://open.spotify.com/track/ggg",
+    "appleurl": "https://music.apple.com/ggg",
+    "mmsurl": "https://mymusicsheet.com/ggg"
+  },
+
+  {
+    "Date": "May 17, 2025",
+    "newmusictitle": "Deja Vu",
+    "newmusicartist": "DaHye",
+    "newmusicartist2": "",
+    "feat": "",
+    "mymusicurl": "https://mymusic1.example/dv",
+    "youtubeurl": "https://youtube.com/watch?v=hhh",
+    "spotifyurl": "https://open.spotify.com/track/hhh",
+    "appleurl": "https://music.apple.com/hhh",
+    "mmsurl": "https://mymusicsheet.com/hhh"
+  },
+
+  {
+    "Date": "May 13, 2025",
+    "newmusictitle": "Motley Crew",
+    "newmusicartist": "LUN8",
+    "newmusicartist2": "",
+    "feat": "",
+    "mymusicurl": "https://mymusic1.example/mc",
+    "youtubeurl": "https://youtube.com/watch?v=iii",
+    "spotifyurl": "https://open.spotify.com/track/iii",
+    "appleurl": "https://music.apple.com/iii",
+    "mmsurl": "https://mymusicsheet.com/iii"
+  }
+]

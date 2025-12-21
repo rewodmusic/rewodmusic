@@ -1,0 +1,21 @@
+{
+  "newmusictitle": "Hollow Waltz",
+  "newmusicartist": "original composition",
+  "newmusicartist2": "",
+  "feat": "Valaki",
+  "newmusiccover": "img/latest.jpg",
+  "newmusiclistenurl": "",
+
+  "comingmusictitle": "Hotel Alphaville",
+  "comingmusicartist": "original composition",
+  "comingfeat": "",
+  "comingmusicdate": "2026-02-06",
+  "comingmusiccover": "img/upcoming.jpg",
+
+  "playlists": {
+    "covers_spotify": "",
+    "originals_spotify": "",
+    "covers_youtube": "",
+    "originals_youtube": ""
+  }
+}

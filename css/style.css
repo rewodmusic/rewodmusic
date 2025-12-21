@@ -1,0 +1,3392 @@
+@font-face {
+    font-family: "IM Fell English";
+    src: url("fonts/IMFellEnglish-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "IM Fell English";
+    src: url("fonts/IMFellEnglish-Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* Reset + alap */
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #000;
+    color: #fff;
+}
+
+html {
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+
+    /* modern böngészők: fixen tart helyet */
+}
+
+/* =========================
+   HOME REVEAL (desktop) – NO FOUC
+   ========================= */
+@media (min-width: 769px){
+    /* ha JS van, alapból REJTSD el (így nem villan fel) */
+    html.js body.page-home .intro,
+    html.js body.page-home .releases,
+    html.js body.page-home .playlists {
+        opacity: 0;
+        transition: opacity 3800ms ease;
+        will-change: opacity;
+    }
+
+    /* amikor az observer belövi */
+    html.js body.page-home .intro.is-in,
+    html.js body.page-home .releases.is-in,
+    html.js body.page-home .playlists.is-in {
+        opacity: 1;
+    }
+}
+
+/* accessibility */
+@media (prefers-reduced-motion: reduce){
+    html.js body.page-home .intro,
+    html.js body.page-home .releases,
+    html.js body.page-home .playlists {
+        transition: none !important;
+        opacity: 1 !important;
+    }
+}
+
+/* =========================
+   HERO (unified system)
+   - default: no image, auto height (logo-ig)
+   - has-hero: image + controlled height
+   ========================= */
+:root {
+    --logo-h: 94px;
+}
+
+/* alap HERO: nincs kép, csak a header magassága (logo-ig) */
+.hero {
+    width: 100%;
+    position: relative;
+    background: #000;
+    background-image: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: auto;
+    min-height: unset;
+    max-height: unset;
+}
+
+/* ha kell hero kép (HOME, MUSIC) */
+body.has-hero .hero {
+    background-image: var(--hero-img);
+    height: var(--hero-h, 80vh);
+    min-height: var(--hero-min, 520px);
+    max-height: var(--hero-max, 857px);
+}
+
+/* oldal-profilok */
+body.page-home {
+    --hero-img: url("../img/hero.jpg");
+    --hero-h: 80vh;
+    --hero-min: 520px;
+    --hero-max: 857px;
+}
+
+body.page-music {
+    --hero-img: url("../img/hero_music.jpg");
+    --hero-h: 65vh;
+    --hero-min: 350px;
+    --hero-max: 570px;
+}
+
+/* HERO-INNER: “content box” (logo + menü) */
+.hero-inner {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 9px 60px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.logo {
+    height: var(--logo-h);
+    width: auto;
+    display: block;
+}
+
+/* ✅ stop header "jump" on index: reserve logo space */
+.logo {
+    height: var(--logo-h);
+    width: var(--logo-h);
+
+    /* vagy állítsd be konkrét px-re ha nem négyzet */
+    object-fit: contain;
+    display: block;
+}
+
+.nav-left {
+    padding-left: 15px;
+}
+
+.nav-right {
+    display: flex;
+    gap: 19px;
+    margin-left: 45px;
+    margin-top: calc(var(--logo-h) * 0.14);
+}
+
+.nav-right a {
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #ffffff;
+    opacity: 0.9;
+    text-decoration: none;
+    line-height: 1;
+    transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+.nav-right a:hover {
+    color: #DEDCDC;
+}
+
+/* INTRO SECTION */
+.intro {
+    width: 100%;
+    background: #000;
+    padding: 29px 0 29px;
+    display: flex;
+    justify-content: center;
+}
+
+/* INTRO INNER */
+.intro-inner {
+    width: 440px;
+    max-width: calc(100vw - 80px);
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 220;
+    font-variation-settings: "wght" 220;
+    font-size: 17px;
+    line-height: 1.65;
+    color: #ffffff;
+}
+
+/* =========================
+   RELEASES (LATEST / UPCOMING)
+   ========================= */
+.releases {
+    --releases-max: 870px;
+    --title-shift: 70px;
+    --row-shift: 110px;
+    --cover: 80px;
+    --cover-radius: 5px;
+    --spacer: 90px;
+    --rail: 280px;
+    --meta-max: 520px;
+    --sep-h: 1px;
+    --sep-color: rgb(255, 255, 255);
+    --btn-w: 150px;
+    --btn-h: 32px;
+    --pill-h: 40px;
+    --pill-w: 230px;
+    --btn-bg: #444444;
+    --btn-bg-hover: #323232;
+    background: #000;
+    padding: 70px 0 40px;
+}
+
+.releases-inner {
+    max-width: var(--releases-max);
+    margin: 0 auto;
+}
+
+.release-title {
+    margin: 0 0 18px;
+    transform: translateX(var(--title-shift));
+    font-family: "IM Fell English", serif;
+    font-size: 23px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+    color: #fff;
+}
+
+.release-row {
+    display: grid;
+    grid-template-columns: var(--cover)
+        minmax(0, var(--meta-max))
+        var(--spacer)
+        var(--rail);
+    align-items: center;
+    column-gap: 22px;
+    transform: translateX(var(--row-shift));
+}
+
+.release-cover {
+    width: var(--cover);
+    height: var(--cover);
+    object-fit: cover;
+    border-radius: var(--cover-radius);
+    display: block;
+}
+
+.release-meta {
+    min-width: 0;
+    font-family: "Fraunces", serif;
+    color: #fff;
+}
+
+.release-sub {
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1.05;
+    margin-bottom: 6px;
+}
+
+.release-song {
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 1.05;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.btn-listen,
+.countdown-pill {
+    justify-self: start;
+}
+
+.btn-listen {
+    width: var(--btn-w);
+    height: var(--btn-h);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    /* FIX: fallback színek, ha a --btn-bg nincs definiálva */
+    background: var(--btn-bg, #444444);
+    color: #fff;
+    text-decoration: none;
+    font-family: "Barlow", system-ui, -apple-system, sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    transition: background 180ms ease;
+}
+
+.btn-listen:hover {
+    /* FIX: fallback hover */
+    background: var(--btn-bg-hover, #323232);
+}
+
+.countdown-pill {
+    width: var(--pill-w);
+    min-height: var(--pill-h);
+    padding: 8px 14px;
+    background: var(--btn-bg);
+    color: #fff;
+    font-family: "Fraunces", serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.15;
+    text-align: left;
+    white-space: normal;
+}
+
+.release-sep {
+    height: var(--sep-h);
+    background: var(--sep-color);
+    margin: 26px 0 26px;
+}
+
+/* =========================
+   PLAYLISTS
+   ========================= */
+.playlists {
+    --pl-max: 980px;
+    --pl-gap: 90px;
+    --pl-row-gap: 18px;
+    --pl-shift-labels: 230px;
+    --pl-shift-spotify: -150px;
+    --pl-shift-youtube: -170px;
+    background: #000;
+    padding: 70px 0 90px;
+}
+
+.playlists-inner {
+    max-width: var(--pl-max);
+    margin: 0 auto;
+}
+
+.playlists-title {
+    font-family: "Arial Black", Arial, Helvetica, sans-serif;
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    margin: 0 0 38px;
+    color: #fff;
+}
+
+.playlists-grid {
+    display: grid;
+    grid-template-columns: 1fr 150px 150px;
+    column-gap: var(--pl-gap);
+    align-items: start;
+}
+
+.pl-labels {
+    transform: translateX(var(--pl-shift-labels));
+}
+
+.pl-spotify {
+    transform: translateX(var(--pl-shift-spotify));
+}
+
+.pl-youtube {
+    transform: translateX(var(--pl-shift-youtube));
+}
+
+.pl-labels {
+    display: grid;
+    row-gap: var(--pl-row-gap);
+}
+
+.pl-label {
+    font-family: "IM Fell English", serif;
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1;
+    color: #fff;
+    height: var(--btn-h, 32px);
+    display: flex;
+    align-items: center;
+}
+
+.pl-col {
+    display: grid;
+    row-gap: var(--pl-row-gap);
+    justify-items: start;
+}
+
+.pl-labels .pl-label:nth-child(1) {
+    transform: translateY(1px);
+}
+
+.pl-labels .pl-label:nth-child(2) {
+    transform: translateY(3px);
+}
+
+.playlists .btn-listen {
+    width: var(--btn-w, 150px);
+    height: var(--btn-h, 32px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #444444;
+    color: #ffffff;
+    font-family: "Barlow", system-ui, -apple-system, sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 180ms ease;
+}
+
+.playlists .btn-listen:hover {
+    background: #323232;
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+.site-footer {
+    --footer-bg: #1F1F1F;
+    --icon: 23px;
+    --icon-gap: 14px;
+    --logo-down: 50px;
+    --logo-social-gap: 27px;
+    --footer-pad-top: 52px;
+    --footer-pad-bot: 143px;
+    --credit-gap: 21px;
+    background: var(--footer-bg);
+    padding: var(--footer-pad-top) 0 var(--footer-pad-bot);
+}
+
+.footer-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.footer-logo {
+    height: 78px;
+    width: auto;
+    display: block;
+    margin: var(--logo-down) auto 0;
+}
+
+.socialbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--icon-gap);
+    margin-top: var(--logo-social-gap);
+}
+
+.social-link {
+    width: var(--icon);
+    height: var(--icon);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.social-link img {
+    width: var(--icon);
+    height: var(--icon);
+    display: block;
+}
+
+.social-link img[src$=".svg"] {
+    filter: brightness(0) invert(1);
+    opacity: 0.95;
+}
+
+.social-link img[src$=".png"] {
+    filter: none;
+    opacity: 0.95;
+}
+
+.social-link:hover img {
+    opacity: 0.8;
+}
+
+.footer-credit {
+    margin-top: var(--credit-gap);
+    font-family: "Fraunces", serif;
+    font-size: 12px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.916);
+}
+
+/* =========================
+   LATEST RELEASE – LINKTREE
+   ========================= */
+.latest-release {
+    --gap-header-cover: 20px;
+    --gap-cover-title: 28px;
+    --gap-title-sub: 6px;
+    --gap-sub-box: 26px;
+    --gap-box-footer: 140px;
+    --btn-rail-x: 20px;
+    background: #000;
+    padding-bottom: var(--gap-box-footer);
+    text-align: center;
+}
+
+/* COVER */
+.latest-cover {
+    margin-top: var(--gap-header-cover);
+}
+
+.latest-cover img {
+    width: 220px;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* TITLE */
+.latest-title {
+    margin-top: var(--gap-cover-title);
+    font-family: "Fraunces", serif;
+    font-size: 20px;
+    color: #fff;
+}
+
+/* SUB */
+.latest-sub {
+    margin-top: var(--gap-title-sub);
+    font-family: "Fraunces", serif;
+    font-size: 14px;
+    color: #818181;
+}
+
+/* BOX */
+.service-box {
+    margin: var(--gap-sub-box) auto 0;
+    width: 360px;
+    background: #242323;
+    border-radius: 30px;
+    padding: 26px 26px;
+}
+
+/* ROW */
+.service-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    column-gap: 16px;
+    padding: 14px 0;
+}
+
+.service-row:not(:last-child) {
+    border-bottom: 1px solid rgba(255,255,255,0.35);
+}
+
+/* ICON */
+.service-icon {
+    display: block;
+    transform: translate(var(--icon-x), var(--icon-y));
+}
+
+/* BUTTON */
+.service-btn {
+    width: auto;
+    min-width: unset;
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(var(--btn-rail-x));
+    background: #444444;
+    border-radius: 10px;
+    padding: 7px 16px;
+    font-family: "IM Fell English", serif;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.18s ease;
+}
+
+.service-btn:hover {
+    background: #323232;
+}
+
+/* =========================
+   ICON CONTROLS (PER SERVICE)
+   ========================= */
+.service-row.spotify {
+    --icon-size: 110px;
+    --icon-x: 0px;
+    --icon-y: 0px;
+}
+
+.service-row.spotify .service-icon {
+    width: var(--icon-size);
+}
+
+.service-row.apple {
+    --icon-size: 120px;
+    --icon-x: 4px;
+    --icon-y: 1px;
+}
+
+.service-row.apple .service-icon {
+    width: var(--icon-size);
+}
+
+.service-row.youtube {
+    --icon-size: 111px;
+    --icon-x: 4px;
+    --icon-y: 0px;
+}
+
+.service-row.youtube .service-icon {
+    width: var(--icon-size);
+}
+
+.service-row.mms {
+    --icon-size: 175px;
+    --icon-x: 3px;
+    --icon-y: 2px;
+}
+
+.service-row.mms .service-icon {
+    width: var(--icon-size);
+}
+
+.service-row.kofi {
+    --icon-size: 190px;
+    --icon-x: 3px;
+    --icon-y: 1px;
+}
+
+.service-row.kofi .service-icon {
+    width: var(--icon-size);
+}
+
+/* =========================
+   PLAIN HEADER (no hero image)
+   ========================= */
+.hero--plain {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    background-image: none;
+    background: transparent;
+    padding-bottom: var(--plain-header-pad-bot, 0px);
+
+    /* ha kell kis "levegő" a header alá */
+}
+
+/* =========================
+   WEBSHOP PAGE
+   ========================= */
+.webshop-page {
+    --ws-max: 1050px;
+    --ws-pad-x: 60px;
+    --ws-gap-from-header: 85px;
+    --ws-grid-gap-x: 54px;
+    --ws-grid-gap-y: 54px;
+    --ws-gap-to-loadmore: 80px;
+    --ws-gap-loadmore-to-footer: 145px;
+
+    /* LOAD MORE “kék vonalak” */
+    --ws-loadmore-minw: 320px;
+
+    /* <- EZT ÁLLÍTSD (a szürke doboz mennyire legyen “hosszú”) */
+    --ws-loadmore-pad-x: 28px;
+
+    /* <- mennyi “szufla” legyen a szöveg két oldalán */
+    --ws-loadmore-letter: 0.25em;
+
+    /* <- betűköz */
+    background: #000;
+    padding: var(--ws-gap-from-header) 0 var(--ws-gap-loadmore-to-footer);
+}
+
+.webshop-inner {
+    max-width: var(--ws-max);
+    margin: 0 auto;
+    padding: 0 var(--ws-pad-x);
+}
+
+.webshop-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--ws-grid-gap-y) var(--ws-grid-gap-x);
+}
+
+/* CARD */
+.ws-card {
+    --card-bg: #1F1F1F;
+    --card-radius: 30px;
+    --preview-radius: 20px;
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    padding: 22px;
+    position: relative;
+}
+
+.ws-added {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    font-family: "Fraunces", serif;
+    font-size: 13px;
+}
+
+.ws-title {
+    margin-top: 34px;
+    font-family: "Fraunces", serif;
+    font-size: 18px;
+}
+
+.ws-sub {
+    margin-top: 6px;
+    font-family: "Fraunces", serif;
+    font-size: 15px;
+}
+
+.ws-preview img {
+    width: 100%;
+    border-radius: var(--preview-radius);
+    margin-top: 18px;
+    display: block;
+}
+
+.ws-bottom {
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ws-price {
+    font-family: "Fraunces", serif;
+    font-size: 19px;
+}
+
+.ws-btn {
+    background: #DEDCDC;
+    color: #000;
+    padding: 0 10px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    font-family: "Barlow", sans-serif;
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 180ms ease;
+
+    /* <- ugyanaz mint a load more */
+}
+
+.ws-btn:hover {
+    background: #828181;
+}
+
+/* =========================
+   NOTES PAGE – FIXED
+========================= */
+.notes-page {
+    background: #000;
+    color: #eee;
+}
+
+/* Bandito Script – helyi betűtípus (tedd be a fájlt!)
+   fonts/BanditoScript.woff2
+   fonts/BanditoScript.woff */
+@font-face {
+    font-family: "Bandito Script";
+    src: url("../fonts/BanditoScript.woff2") format("woff2"),
+       url("../fonts/BanditoScript.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* fixed background */
+.notes-bg {
+    position: fixed;
+    inset: 0;
+    background: url("../img/background_notes.jpg") center / cover no-repeat;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* content wrapper (állítható gap a header aljától) */
+.notes-wrapper {
+    --notes-top-gap: 86px;
+
+    /* EZT ÁLLÍTOD KISEBBRE/NAGYOBBRA */
+    position: relative;
+    padding: var(--notes-top-gap) 0 120px;
+}
+
+.notes-content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+/* single note */
+.note-entry {
+    margin-bottom: 48px;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: noteFade 0.6s ease forwards;
+}
+
+@keyframes noteFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* date */
+.note-date {
+    font-family: "Nothing You Could Do", cursive;
+    font-size: 29px;
+    margin-bottom: -16px;
+    opacity: 0.92;
+
+    /* balrább tolás (hangold: -8px..-22px) */
+    transform: translateX(-136px);
+
+    /* minimális letter spacing */
+    letter-spacing: 0.01em;
+    opacity: 0.92;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.65);
+}
+
+/* text */
+.note-text {
+    font-family: "IM Fell English", serif;
+    font-size: 16px;
+    line-height: 1.65;
+    max-width: 640px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.65);
+}
+
+/* load more */
+.notes-load-more {
+    text-align: center;
+    font-family: "Nothing You Could Do", cursive;
+    font-size: 29px;
+    margin-top: 80px;
+    cursor: pointer;
+    opacity: 0.75;
+    transition: opacity 0.2s ease;
+    user-select: none;
+}
+
+.notes-load-more:hover {
+    opacity: 1;
+}
+
+/* újonnan betöltött note-ok (Load More után) */
+.note-entry.is-new {
+    animation-duration: 1.6s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* =========================
+   UPCOMING PAGE
+   ========================= */
+.upcoming-page {
+    background: #000;
+    color: #fff;
+}
+
+/* állítható távolságok */
+.upcoming-wrap {
+    --upcoming-gap-from-header: 90px;
+
+    /* 🔥 header alja ↔ tartalom */
+    --upcoming-gap-to-footer: 140px;
+    --upcoming-cover-text-gap: 90px;
+
+    /* 🔥 kép ↔ szövegbox */
+    padding: var(--upcoming-gap-from-header) 0 var(--upcoming-gap-to-footer);
+}
+
+.upcoming-inner {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 0 60px;
+}
+
+.upcoming-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--upcoming-cover-text-gap);
+}
+
+/* cover */
+.upcoming-cover img {
+    width: 260px;
+
+    /* nagyobb borító */
+    height: 260px;
+    border-radius: 15px;
+
+    /* ✅ 15px rounding */
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset;
+}
+
+.upcoming-cover img {
+    transform: translate(120px, -4px);
+}
+
+/* text container box */
+.upcoming-textbox {
+    width: 550px;
+
+    /* ✅ kért box */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.upcoming-date {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 46px;
+    line-height: 1.05;
+    margin-bottom: 12px;
+}
+
+.upcoming-artist {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.3;
+    opacity: 0.85;
+    margin-bottom: 10px;
+}
+
+.upcoming-title {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 29px;
+    line-height: 1.25;
+    margin-bottom: 8px;
+}
+
+.upcoming-feat {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.3;
+    opacity: 0.95;
+}
+
+/* follow text */
+.upcoming-follow {
+    margin-top: 90px;
+    text-align: center;
+    font-family: "IM Fell English", serif;
+    font-size: 17px;
+    line-height: 1.55;
+    opacity: 0.9;
+}
+
+body.notes-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body.notes-page .site-footer {
+    margin-top: auto;
+}
+
+body.upcoming-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body.upcoming-page .site-footer {
+    margin-top: auto;
+}
+
+/* WEBSHOP – small safety tweaks */
+.webshop-grid img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* ha egy preview hiányzik, ne ugorjon össze a kártya */
+.ws-preview {
+    display: block;
+    min-height: 260px;
+
+    /* állítsd a mostani preview magasságodhoz */
+}
+
+/* =========================
+   WEBSHOP – Load More layout
+   ========================= */
+/* 2 db kényelmi "poti" a távolságokra */
+.page-webshop {
+    --ws-gap-grid-to-button: 70px;
+
+    /* utolsó kártyasor -> gomb */
+    --ws-gap-button-to-footer: -10px;
+
+    /* gomb -> footer */
+}
+
+/* gomb wrap: mindig középre */
+.page-webshop .ws-loadmore-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: var(--ws-gap-grid-to-button);
+    margin-bottom: var(--ws-gap-button-to-footer);
+}
+
+/* a gomb legyen stabil, nagyobb "szürke tégla" */
+.page-webshop a.btn-listen.load-more {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 240px;
+
+    /* szélesebb */
+    height: 34px;
+
+    /* magasabb */
+    padding: 0 24px;
+    letter-spacing: 0.05em;
+
+    /* ha kell kicsit “wix-esebb” */
+    text-decoration: none;
+}
+
+/* =========================
+   MOBILE HEADER + MENU
+   ========================= */
+.m-header,
+.m-hero,
+.m-menu {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    :root {
+        /* --- állítható értékek --- */
+        --m-header-h: 57px;
+        --m-gap-header-to-nav: 56px;
+
+        /* header alatt menüpontok kezdése */
+        --m-gap-social-to-credit: 20px;
+
+        /* socialbar -> credit gap */
+        --m-gap-credit-to-bottom: 100px;
+
+        /* credit -> menü alja gap */
+        --m-menu-font: 19px;
+
+        /* menüpont méret */
+        --m-menu-letter: 3px;
+
+        /* menüpont letter spacing */
+        --m-burger-line-gap: 6px;
+
+        /* 🔥 itt állítod, mennyire legyenek “szét” a vonalak */
+    }
+
+    /* desktop header/hero elrejtése mobilon */
+    .hero {
+        display: none;
+    }
+
+    .m-header {
+        display: flex;
+        position: sticky;
+        top: 0;
+        z-index: 11000;
+        height: var(--m-header-h);
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        background: #2b2b2b;
+    }
+
+    .m-logo img {
+        width: 35px;
+        height: 39px;
+        display: block;
+    }
+
+    /* BURGER -> X */
+    .m-burger {
+        width: 44px;
+        height: 44px;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        position: relative;
+    }
+
+    .m-burger span {
+        position: absolute;
+        width: 22px;
+        height: 2px;
+        background: #fff;
+        border-radius: 2px;
+        transition: transform 220ms ease, opacity 220ms ease;
+    }
+
+    /* line-gap állítható */
+    .m-burger span:nth-child(1) {
+        transform: translateY(calc(var(--m-burger-line-gap) * -1));
+    }
+
+    .m-burger span:nth-child(2) {
+        transform: translateY(0px);
+    }
+
+    .m-burger span:nth-child(3) {
+        transform: translateY(var(--m-burger-line-gap));
+    }
+
+    /* OPEN állapot: középső eltűnik, felső+alsó X lesz */
+    .m-burger.is-open span:nth-child(1) {
+        transform: rotate(45deg);
+    }
+
+    .m-burger.is-open span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .m-burger.is-open span:nth-child(3) {
+        transform: rotate(-45deg);
+    }
+
+    /* optional hero (indexen kell) */
+    .m-hero {
+        display: block;
+        width: 100%;
+        height: 408px;
+        overflow: hidden;
+    }
+
+    .m-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* MENU: header alatt */
+    .m-menu {
+        display: block;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: var(--m-header-h);
+        z-index: 10000;
+        pointer-events: none;
+        background: transparent;
+    }
+
+    .m-menu-inner {
+        width: 100%;
+        height: calc(100vh - var(--m-header-h));
+        background: #2b2b2b;
+        transform: translateX(100%);
+        transition: transform 260ms ease;
+        display: flex;
+        flex-direction: column;
+
+        /* 🔑 fontos: ne legyen overflow, a layout flex-szel oldja meg */
+        overflow: hidden;
+        padding: 0 18px;
+    }
+
+    .m-menu.is-open {
+        pointer-events: auto;
+    }
+
+    .m-menu.is-open .m-menu-inner {
+        transform: translateX(0%);
+    }
+
+    .m-nav {
+        margin-top: var(--m-gap-header-to-nav);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        align-items: center;
+    }
+
+    .m-nav a {
+        color: #fff;
+        text-decoration: none;
+        font-family: "Barlow", sans-serif;
+        font-weight: 500;
+        font-size: var(--m-menu-font);
+        letter-spacing: var(--m-menu-letter);
+        opacity: 0.95;
+    }
+
+    /* 🔥 EZ TÖLTI KI RUGALMASAN A TERET
+     (ehhez kell HTML-ben: <div class="m-flex-spacer"></div>) */
+    .m-flex-spacer {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+
+    .m-menu-bottom {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        /* socialbar + credit között fix gap */
+        gap: var(--m-gap-social-to-credit);
+
+        /* credit alatt fix “légpárna” */
+        padding-bottom: var(--m-gap-credit-to-bottom);
+    }
+
+    .m-menu-bottom .socialbar {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* mms.png bugfix + minden ikon egységes */
+    .m-menu-bottom .social-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .m-menu-bottom .social-link img {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .m-credit {
+        color: rgba(255,255,255,0.75);
+        font-size: 11px;
+        text-align: center;
+        line-height: 1.35;
+        max-width: 320px;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+}
+
+body.menu-open {
+    overflow: hidden;
+}
+
+/* =========================
+   MUSIC PAGE (Accordion Library) – HEIGHT-ANIM (NO MAX-HEIGHT BUGS)
+   ========================= */
+.music-page {
+    --music-gap-from-header: 85px;
+    --music-gap-to-footer: 145px;
+    background: #000;
+    padding: var(--music-gap-from-header) 0 var(--music-gap-to-footer);
+}
+
+.music-inner {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 0 60px;
+    display: flex;
+    justify-content: center;
+}
+
+/* FIX: 560-as fő doboz */
+.music-box {
+    width: 560px;
+    background: #242323;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset;
+
+    /* rail */
+    --rail-pad-right: 18px;
+    --rail-icon: 18px;
+    --rail-play: 18px;
+
+    /* anim timing */
+    --acc-dur: 520ms;
+    --acc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* CATEGORY ROW */
+.music-cat {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--rail-pad-right) 0 18px;
+    cursor: pointer;
+    user-select: none;
+    text-align: left;
+}
+
+.music-cat:hover {
+    background: rgba(255,255,255,0.03);
+}
+
+.music-cat-label {
+    font-family: Avenir, "Avenir Next", system-ui, -apple-system, sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* a jobb oldali "slot" mindig fix, így a chevron sosem mászik el */
+.music-cat-arrow {
+    width: 18px;
+
+    /* <-- ez a fix oszlopszélesség */
+    height: 18px;
+    display: inline-block;
+    position: relative;
+    flex: 0 0 18px;
+    opacity: 0.9;
+}
+
+/* maga a chevron rajz (L alak) középen ül és a középpontja körül forog */
+.music-cat-arrow::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+
+    /* <-- chevron méret (itt kicsit kisebb) */
+    height: 8px;
+    border-right: 2px solid rgba(255,255,255,0.85);
+    border-bottom: 2px solid rgba(255,255,255,0.85);
+    transform-origin: 50% 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+
+    /* CLOSED: jobbra néz */
+    transition: transform 220ms ease;
+}
+
+/* OPEN: lefelé néz */
+.music-cat.is-open .music-cat-arrow::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* CATEGORY PANEL – JS sets height px -> auto */
+.music-panel {
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: height var(--acc-dur) var(--acc-ease),
+        opacity 220ms ease;
+    will-change: height, opacity;
+}
+
+.music-panel.is-open {
+    opacity: 1;
+}
+
+/* SONG ROWS (zebra) */
+.music-song {
+    position: relative;
+    min-height: 33px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px 0 18px;
+    cursor: pointer;
+}
+
+.music-song--odd {
+    background: #FFFFFF;
+}
+
+.music-song--even {
+    background: #DEDCDC;
+}
+
+.music-song-title {
+    font-family: "Arial Black", Arial, Helvetica, sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    color: #000;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    padding-right: calc(var(--rail-pad-right) + var(--rail-play) + 16px);
+}
+
+/* right rail: play */
+.music-song-right {
+    position: absolute;
+    right: var(--rail-pad-right);
+    top: 0;
+    height: 33px;
+    display: flex;
+    align-items: center;
+}
+
+.music-play {
+    width: var(--rail-play);
+    height: var(--rail-play);
+    display: block;
+    opacity: 0.95;
+    transition: opacity 180ms ease;
+}
+
+.music-play.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* SERVICES WRAP – JS animates height */
+.music-services-wrap {
+    height: 0;
+    overflow: hidden;
+    background: #242323;
+    transition: height var(--acc-dur) var(--acc-ease);
+    will-change: height;
+}
+
+/* inner padding */
+.music-services-inner {
+    padding: 12px 0 13px;
+}
+
+/* rows */
+.music-service-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    column-gap: 12px;
+    padding: 10px 16px;
+}
+
+/* CENTERED ROW DIVIDER (between rows) */
+.music-services-inner {
+    --service-separator-width: 540px;
+    --service-separator-height: 1px;
+    --service-separator-alpha: 0.35;
+}
+
+.music-service-row::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: var(--service-separator-width);
+    height: var(--service-separator-height);
+    background: rgba(255,255,255,var(--service-separator-alpha));
+}
+
+.music-service-row:last-child::after {
+    display: none;
+}
+
+/* icons */
+.music-service-icon {
+    display: block;
+    width: var(--ms-icon-w, 108px);
+    transform: translate(var(--ms-x, 0px), var(--ms-y, 0px));
+}
+
+/* button */
+.music-service-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    min-width: unset;
+    padding: 6px 14px;
+    border-radius: 10px;
+    background: #444444;
+    transition: background 180ms ease;
+    font-family: "IM Fell English", serif;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: #fff;
+    text-decoration: none;
+}
+
+.music-service-btn:hover {
+    background: #323232;
+}
+
+/* per-service tuning */
+.music-service-row.spotify {
+    --ms-icon-w: 98px;
+    --ms-x: 0px;
+    --ms-y: 0px;
+}
+
+.music-service-row.apple {
+    --ms-icon-w: 105px;
+    --ms-x: 2px;
+    --ms-y: 0px;
+}
+
+.music-service-row.youtube {
+    --ms-icon-w: 100px;
+    --ms-x: 2px;
+    --ms-y: 0px;
+}
+
+.music-service-row.mms {
+    --ms-icon-w: 150px;
+    --ms-x: 2px;
+    --ms-y: 1px;
+}
+
+/* ===== MULTILINE SONG ROW FIX ===== */
+.music-song {
+    min-height: 33px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    align-items: center;
+}
+
+.music-song-title {
+    line-height: 1.15;
+}
+
+.music-song-right {
+    top: 50%;
+    transform: translateY(-50%);
+    height: auto;
+    align-items: center;
+}
+
+.music-song-title {
+    padding-right: calc(var(--rail-pad-right) + var(--rail-play) + 18px);
+}
+
+/* =========================
+   HOME – MOBILE (INTRO + RELEASES) ✅ FLOW-BASED POTIK (NO OVERLAP)
+   ========================= */
+@media (max-width: 768px) {
+    :root {
+        /* ===== INTRO ===== */
+        --m-intro-box-w: 244px;
+        --m-intro-font: 13px;
+        --m-intro-gap-top: 22px;
+        --m-intro-gap-bottom: 39px;
+
+        /* ===== ACTION RIGHT GAP ===== */
+        --m-rel-action-right-gap: 9px;
+
+        /* mennyire jöjjön el a jobb széltől */
+        /* ===== RELEASES SECTION overall ===== */
+        --m-releases-pad-top: 34px;
+        --m-releases-pad-bottom: 34px;
+
+        /* ===== RELEASES “breakout” ===== */
+        --m-rel-row-pad-x: 10px;
+
+        /* viewport széltől belső padding */
+        --m-rel-row-gap-y: 12px;
+
+        /* title -> row gap */
+        /* ===== Titles (X/Y) ===== */
+        --m-rel-title-size: 18px;
+        --m-rel-title-x: 30px;
+
+        /* balról */
+        --m-rel-title-y: 0px;
+
+        /* finom függőleges */
+        /* ===== Row layout (kép+meta+action) ===== */
+        --m-rel-img-w: 64px;
+        --m-rel-img-h: 60px;
+        --m-rel-col-gap: 12px;
+
+        /* ===== KÉP (X/Y) ===== */
+        --m-rel-cover-x: 5px;
+        --m-rel-cover-y: 0px;
+
+        /* ===== META (X/Y) ===== */
+        --m-rel-meta-x: 81px;
+        --m-rel-meta-y: -47px;
+
+        /* ===== Meta text sizes ===== */
+        --m-rel-artist-size: 13px;
+        --m-rel-song-size: 16px;
+
+        /* ===== ACTION OSZLOP (X/Y) ===== */
+        --m-rel-action-x: 0px;
+        --m-rel-action-y: 0px;
+
+        /* ===== LISTEN button ===== */
+        --m-rel-listen-w: 81px;
+        --m-rel-listen-h: 23px;
+        --m-rel-listen-font: 13px;
+        --m-rel-listen-x: 00px;
+
+        /* az action oszlopon belül */
+        --m-rel-listen-y: -10px;
+
+        /* EZ már FLOW: margin-top */
+        /* ===== COUNTDOWN pill ===== */
+        --m-rel-count-w: 153px;
+        --m-rel-count-h: 42px;
+        --m-rel-count-font: 12px;
+        --m-rel-count-x: 0px;
+        --m-rel-count-y: -4px;
+
+        /* FLOW: margin-top */
+        /* ===== Divider line ===== */
+        --m-rel-divider-w: 280px;
+        --m-rel-divider-gap-top: 18px;
+        --m-rel-divider-gap-bottom: 18px;
+    }
+
+    /* ---------------------------------
+     HARD RESET (DESKTOP HOME LAYOUT OFF)
+     kulcs: desktop translateX-ek és max-width falak OFF
+     --------------------------------- */
+    .intro,
+    .intro-inner,
+    .releases,
+    .releases-inner,
+    .release-title,
+    .release-row,
+    .release-cover,
+    .release-meta,
+    .btn-listen,
+    .countdown-pill,
+    .release-sep {
+        transform: none !important;
+        max-width: none !important;
+    }
+
+    /* ---------- INTRO ---------- */
+    .intro {
+        padding: var(--m-intro-gap-top) 0 var(--m-intro-gap-bottom);
+    }
+
+    .intro-inner {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex;
+        justify-content: center;
+    }
+
+    .intro-text {
+        width: var(--m-intro-box-w);
+        max-width: calc(100vw - 32px);
+        margin: 0 auto;
+        font-size: var(--m-intro-font);
+        text-align: center;
+        line-height: 1.55;
+    }
+
+    /* ---------- RELEASES: breakout full viewport width ---------- */
+    .releases {
+        padding: var(--m-releases-pad-top) 0 var(--m-releases-pad-bottom);
+        width: 100vw !important;
+        margin-left: calc(50% - 50vw) !important;
+        margin-right: calc(50% - 50vw) !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .releases-inner {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* TITLE (X/Y) */
+    .release-title {
+        font-size: var(--m-rel-title-size);
+        line-height: 1.05;
+        margin: 0 0 var(--m-rel-row-gap-y) 0;
+        padding: 0;
+        text-align: left;
+        margin-left: var(--m-rel-title-x);
+        margin-top: var(--m-rel-title-y);
+    }
+
+    /* ROW: kép + meta + action (flow-safe) */
+    .release-row {
+        display: grid;
+        grid-template-columns: var(--m-rel-img-w) minmax(0, 1fr) var(--m-rel-action-col-w);
+        column-gap: var(--m-rel-col-gap);
+        align-items: start;
+        padding-left: var(--m-rel-row-pad-x);
+        padding-right: var(--m-rel-row-pad-x);
+    }
+
+    /* KÉP (X/Y) */
+    .release-cover {
+        width: var(--m-rel-img-w);
+        height: var(--m-rel-img-h);
+        object-fit: cover;
+        border-radius: 8px;
+        display: block;
+        margin-left: var(--m-rel-cover-x);
+        margin-top: var(--m-rel-cover-y);
+    }
+
+    /* META (X/Y) */
+    .release-meta {
+        min-width: 0;
+        margin-left: var(--m-rel-meta-x);
+        margin-top: var(--m-rel-meta-y);
+    }
+
+    .release-sub {
+        font-size: var(--m-rel-artist-size);
+        line-height: 1.05;
+        margin: 0 0 2px 0;
+    }
+
+    .release-song {
+        font-size: var(--m-rel-song-size);
+        line-height: 1.05;
+        margin: 0;
+
+        /* fontos: hosszú cím szépen törjön */
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    /* ACTION oszlop (X/Y) — stabil jobb oldal + jobb oldali levegő */
+    .release-row > .btn-listen,
+    .release-row > .countdown-pill {
+        justify-self: end;
+        margin-right: var(--m-rel-action-right-gap);
+    }
+
+    .release-row > .btn-listen,
+    .release-row > .countdown-pill {
+        margin-left: var(--m-rel-action-x);
+        margin-top: var(--m-rel-action-y);
+    }
+
+    /* LISTEN (X/Y) — FLOW: margin-top => a sor magassága nő */
+    #latestListenBtn {
+        width: var(--m-rel-listen-w);
+        height: var(--m-rel-listen-h);
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--m-rel-listen-font);
+        letter-spacing: 2px;
+        border-radius: 0;
+        margin-left: var(--m-rel-listen-x);
+        margin-top: var(--m-rel-listen-y);
+    }
+
+    /* COUNTDOWN (X/Y) — FLOW: margin-top => a sor magassága nő */
+    #comingCountdown {
+        width: var(--m-rel-count-w);
+        min-height: var(--m-rel-count-h);
+        font-size: var(--m-rel-count-font);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: left;
+        padding: 0 10px;
+        margin-left: var(--m-rel-count-x);
+        margin-top: var(--m-rel-count-y);
+
+        @media (max-width: 768px){
+            #comingCountdown {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                column-gap: 14px !important;
+                row-gap: 2px !important;
+                align-items: start !important;
+                justify-content: stretch !important;
+                text-align: left !important;
+            }
+
+            #comingCountdown > span {
+                display: block !important;
+                white-space: nowrap !important;
+                line-height: 1.15 !important;
+            }
+
+            /* 1,3 bal; 2,4 jobb */
+            #comingCountdown > span:nth-child(odd) {
+                grid-column: 1 !important;
+            }
+
+            #comingCountdown > span:nth-child(even) {
+                grid-column: 2 !important;
+            }
+        }
+    }
+
+    /* Divider line mindig a blokk alá kerül, mert a row magassága már NŐ */
+    .release-sep {
+        width: var(--m-rel-divider-w);
+        height: 1px;
+        background: rgba(255,255,255,0.65);
+        margin: var(--m-rel-divider-gap-top) auto var(--m-rel-divider-gap-bottom);
+    }
+}
+
+/* =========================
+   HOME – MOBILE (PLAYLISTS) ✅ X/Y POTIK + GAPS + HARD RESET
+   ========================= */
+@media (max-width: 768px) {
+    :root {
+        /* ===== SECTION GAPS ===== */
+        --m-pl-pad-top: 54px;
+
+        /* section start -> title */
+        --m-pl-pad-bottom: 94px;
+
+        /* 2. sor alja -> section end */
+        /* ===== TITLE: OFFICIAL PLAYLISTS ===== */
+        --m-pl-title-size: 27px;
+
+        /* requested */
+        --m-pl-title-x: 20px;
+        --m-pl-title-y: 0px;
+        --m-pl-title-gap-after: 32px;
+
+        /* title -> first row gap */
+        /* ===== ROWS (overall) ===== */
+        --m-pl-row-gap: 18px;
+
+        /* COVERS sor -> ORIGINALS sor */
+        --m-pl-row-pad-x: 20px;
+
+        /* viewport széltől belső padding */
+        --m-pl-row-y-nudge: 0px;
+
+        /* mindkét sor finom Y */
+        /* ===== LABELS: COVERS / ORIGINALS ===== */
+        --m-pl-label-size: 18px;
+
+        /* requested */
+        --m-pl-label-x: 0px;
+
+        /* a row-on belül */
+        --m-pl-label-y: 0px;
+
+        /* ===== BUTTONS: SPOTIFY / YOUTUBE ===== */
+        --m-pl-btn-w: 82px;
+
+        /* requested */
+        --m-pl-btn-h: 20px;
+
+        /* requested */
+        --m-pl-btn-font: 13px;
+
+        /* requested */
+        --m-pl-btn-gap: 16px;
+
+        /* Spotify <-> YouTube gap */
+        --m-pl-btn-rail-x: 0px;
+
+        /* gombblokk X a soron belül */
+        --m-pl-btn-rail-y: 0px;
+
+        /* gombblokk Y a soron belül */
+        /* egyedi gomb X/Y potik is (ha kell) */
+        --m-pl-spotify-x: 0px;
+        --m-pl-spotify-y: 0px;
+        --m-pl-youtube-x: 0px;
+        --m-pl-youtube-y: 0px;
+    }
+
+    /* ---------------------------------
+     HARD RESET (DESKTOP PLAYLISTS LAYOUT OFF)
+     --------------------------------- */
+    .playlists,
+    .playlists-inner,
+    .playlists-title,
+    .playlists-grid,
+    .pl-col,
+    .pl-labels,
+    .pl-spotify,
+    .pl-youtube,
+    .pl-label,
+    .playlists .btn-listen {
+        transform: none !important;
+        max-width: none !important;
+    }
+
+    /* ---------- SECTION breakout + padding ---------- */
+    .playlists {
+        width: 100vw !important;
+        margin-left: calc(50% - 50vw) !important;
+        margin-right: calc(50% - 50vw) !important;
+        padding: var(--m-pl-pad-top) 0 var(--m-pl-pad-bottom) !important;
+    }
+
+    .playlists-inner {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* ---------- TITLE ---------- */
+    .playlists-title {
+        font-size: var(--m-pl-title-size) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        text-align: left !important;
+        margin-left: var(--m-pl-title-x) !important;
+        margin-top: var(--m-pl-title-y) !important;
+        margin-bottom: var(--m-pl-title-gap-after) !important;
+    }
+
+    /* ---------- TITLE: FORCE 2 LINES (OFFICIAL / PLAYLISTS) ---------- */
+    .playlists-title {
+        /* az eredeti "OFFICIAL PLAYLISTS" szöveget elrejtjük */
+        font-size: 0 !important;
+        line-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        text-align: left !important;
+
+        /* a te X/Y pozíciód megmarad */
+        margin-left: var(--m-pl-title-x) !important;
+        margin-top: var(--m-pl-title-y) !important;
+        margin-bottom: var(--m-pl-title-gap-after) !important;
+    }
+
+    /* 1. sor */
+    .playlists-title::before {
+        content: "OFFICIAL";
+        display: block;
+        font-size: var(--m-pl-title-size) !important;
+        line-height: 1.05 !important;
+        color: #fff !important;
+    }
+
+    /* 2. sor */
+    .playlists-title::after {
+        content: "PLAYLISTS";
+        display: block;
+        font-size: var(--m-pl-title-size) !important;
+        line-height: 1.05 !important;
+        color: #fff !important;
+
+        /* ha kell kis gap a két sor közé, állítható */
+        margin-top: var(--m-pl-title-line-gap, 2px) !important;
+    }
+
+    /* ---------- GRID -> 2 sor, label + két gomb ---------- */
+    .playlists-grid {
+        display: grid !important;
+        grid-template-columns: 1fr auto !important;
+
+        /* bal: label, jobb: gomb-rail */
+        row-gap: var(--m-pl-row-gap) !important;
+        column-gap: 0 !important;
+        padding-left: var(--m-pl-row-pad-x) !important;
+        padding-right: var(--m-pl-row-pad-x) !important;
+    }
+
+    /* labels oszlop */
+    .pl-labels {
+        display: grid !important;
+        row-gap: var(--m-pl-row-gap) !important;
+        justify-items: start !important;
+    }
+
+    .pl-label {
+        font-size: var(--m-pl-label-size) !important;
+        margin: 0 !important;
+        height: auto !important;
+        transform: translate(var(--m-pl-label-x), var(--m-pl-label-y)) !important;
+    }
+
+    /* gomb oszlop: két sorban ugyanoda igazítva */
+    .pl-spotify,
+    .pl-youtube {
+        display: grid !important;
+        grid-auto-rows: auto !important;
+        row-gap: var(--m-pl-row-gap) !important;
+        justify-items: end !important;
+        transform: translate(var(--m-pl-btn-rail-x), var(--m-pl-btn-rail-y)) !important;
+        margin-top: var(--m-pl-row-y-nudge) !important;
+    }
+
+    /* a Spotify/Youtube oszlopok valójában két külön col a desktopban,
+     mobilon egységesen kezeljük: mindkettő ugyanazt a gomb stílust kapja */
+    .playlists .btn-listen {
+        width: var(--m-pl-btn-w) !important;
+        height: var(--m-pl-btn-h) !important;
+        font-size: var(--m-pl-btn-font) !important;
+        letter-spacing: 0.12em !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* --------- GOMBOK EGYSORBA (SPOTIFY + YOUTUBE) ---------
+     Desktopban külön oszlopok vannak; mobilon csinálunk "rail"-t:
+     A .pl-spotify és .pl-youtube helyett a 2 gombot egymás mellé rakjuk soronként. */
+    /* 1) a gridet felülírjuk: 3 oszlop (label | spotify | youtube) */
+    .playlists-grid {
+        grid-template-columns: 1fr auto auto !important;
+        column-gap: var(--m-pl-btn-gap) !important;
+    }
+
+    /* 2) a label col marad balra (2 sor) */
+    .pl-labels {
+        grid-column: 1 !important;
+    }
+
+    /* 3) spotify col */
+    .pl-spotify {
+        grid-column: 2 !important;
+    }
+
+    /* 4) youtube col */
+    .pl-youtube {
+        grid-column: 3 !important;
+    }
+
+    /* 5) extra finom X/Y potik a gombokra (külön-külön) */
+    .pl-spotify .btn-listen {
+        transform: translate(var(--m-pl-spotify-x), var(--m-pl-spotify-y)) !important;
+    }
+
+    .pl-youtube .btn-listen {
+        transform: translate(var(--m-pl-youtube-x), var(--m-pl-youtube-y)) !important;
+    }
+}
+
+/* =========================
+   HOME – MOBILE (FOOTER) ✅ FIX HEIGHT + 3 GAP POTI + HARD RESET (FIXED)
+   ========================= */
+@media (max-width: 768px) {
+    :root {
+        --m-footer-h: 373px;
+        --m-footer-logo-w: 46px;
+        --m-footer-logo-h: 52px;
+        --m-footer-icon: 20px;
+        --m-footer-icon-gap: 10px;
+        --m-footer-credit-size: 10px;
+        --m-footer-credit-maxw: 320px;
+
+        /* 3 GAP POTI */
+        --m-footer-gap-top: 74px;
+
+        /* section start -> logo */
+        --m-footer-gap-logo-social: 18px;
+
+        /* logo -> socialbar */
+        --m-footer-gap-social-credit: 18px;
+
+        /* socialbar -> credit */
+    }
+
+    /* HARD RESET */
+    .site-footer,
+    .footer-inner,
+    .footer-logo,
+    .socialbar,
+    .social-link,
+    .footer-credit {
+        transform: none !important;
+        max-width: none !important;
+    }
+
+    .site-footer {
+        width: 100vw !important;
+        margin-left: calc(50% - 50vw) !important;
+        margin-right: calc(50% - 50vw) !important;
+        height: var(--m-footer-h) !important;
+        padding: 0 !important;
+        background: #1F1F1F !important;
+    }
+
+    .footer-inner {
+        height: 100% !important;
+        margin: 0 !important;
+
+        /* ✅ EZ A POTI MOST TÉNYLEG A SECTION START GAP */
+        padding-top: var(--m-footer-gap-top) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    /* LOGO */
+    .footer-logo-link {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .footer-logo-link .footer-logo {
+        width: var(--m-footer-logo-w) !important;
+        height: var(--m-footer-logo-h) !important;
+        display: block !important;
+
+        /* ✅ NE nullázzuk a margin-topot! */
+        margin: 0 !important;
+    }
+
+    /* SOCIAL */
+    .socialbar {
+        margin-top: var(--m-footer-gap-logo-social) !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: var(--m-footer-icon-gap) !important;
+        flex-wrap: wrap !important;
+    }
+
+    .social-link {
+        width: var(--m-footer-icon) !important;
+        height: var(--m-footer-icon) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .social-link img {
+        width: var(--m-footer-icon) !important;
+        height: var(--m-footer-icon) !important;
+        object-fit: contain !important;
+        display: block !important;
+    }
+
+    /* CREDIT */
+    .footer-credit {
+        margin-top: var(--m-footer-gap-social-credit) !important;
+        font-size: var(--m-footer-credit-size) !important;
+        line-height: 1.35 !important;
+        max-width: var(--m-footer-credit-maxw) !important;
+        opacity: 0.82 !important;
+    }
+
+    /* maradék hely alul elnyelődik */
+    .footer-inner::after {
+        content: "";
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+}
+
+/* =========================
+   LATEST RELEASE – MOBILE (SERVICE BOX) ✅ 1:1 FIX FOR YOUR HTML
+   ========================= */
+@media (max-width: 768px){
+    :root {
+        /* ----- COVER + TEXT ----- */
+        --lr-cover-w: 156px;
+        --lr-cover-h: 155px;
+        --lr-cover-radius: 18px;
+        --lr-title-size: 13px;
+        --lr-sub-size: 12px;
+        --lr-gap-cover-to-title: 18px;
+        --lr-gap-title-to-sub: 6px;
+        --lr-gap-sub-to-box: 26px;
+        --lr-gap-top: 26px;
+
+        /* section start -> cover */
+        --lr-gap-box-to-end: 87px;
+
+        /* box alja -> section end */
+        /* ----- SERVICE BOX ----- */
+        --lr-box-w: 270px;
+        --lr-box-h: 320px;
+        --lr-box-radius-mobile: 25px;
+
+        /* desktophoz képest -5px */
+        /* ----- ROWS ----- */
+        --lr-row-pad-x: 18px;
+        --lr-row-h: 56px;
+
+        /* divider */
+        --lr-divider-w: 237px;
+        --lr-divider-alpha: 0.35;
+
+        /* ----- SERVICE LOGO SIZES (állítható) ----- */
+        --lr-spotify-w: 105px;
+        --lr-apple-w: 115px;
+        --lr-youtube-w: 111px;
+        --lr-mms-w: 155px;
+        --lr-kofi-w: 160px;
+
+        /* ----- BUTTONS ----- */
+        --lr-btn-font: 10px;
+        --lr-btn-h: 31px;
+        --lr-btn-radius: 14px;
+        --lr-btn-minw-play: 44px;
+        --lr-btn-minw-watch: 58px;
+        --lr-btn-minw-buy: 44px;
+        --lr-btn-minw-donate: 58px;
+    }
+
+    /* ---------------------------------
+     HARD RESET (csak a latest oldali blokkra)
+     --------------------------------- */
+    .latest-release,
+    .latest-cover,
+    .latest-cover img,
+    .latest-title,
+    .latest-sub,
+    .service-box,
+    .service-row,
+    .service-icon,
+    .service-btn {
+        transform: none !important;
+        max-width: none !important;
+    }
+
+    /* 🔥 KILL ALL OLD DIVIDERS (ez szünteti meg a duplikációt) */
+    .service-row {
+        border-bottom: 0 !important;
+    }
+
+    .service-row::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    /* ---------- COVER (kezeli ha div.latest-cover > img van, és ha img.latest-cover) ---------- */
+    .latest-cover img,
+    img.latest-cover {
+        width: var(--lr-cover-w) !important;
+        height: var(--lr-cover-h) !important;
+        border-radius: var(--lr-cover-radius) !important;
+        object-fit: cover !important;
+        display: block !important;
+        margin: 0 auto !important;
+    }
+
+    .latest-release {
+        padding-top: var(--lr-gap-top) !important;
+        padding-bottom: var(--lr-gap-box-to-end) !important;
+    }
+
+    .latest-cover {
+        margin-top: 0 !important;
+        margin-bottom: var(--lr-gap-cover-to-title) !important;
+        display: block !important;
+    }
+
+    .latest-title {
+        font-size: var(--lr-title-size) !important;
+        text-align: center !important;
+        margin: 0 0 var(--lr-gap-title-to-sub) 0 !important;
+    }
+
+    .latest-sub {
+        font-size: var(--lr-sub-size) !important;
+        text-align: center !important;
+        margin: 0 0 var(--lr-gap-sub-to-box) 0 !important;
+        opacity: 0.75 !important;
+    }
+
+    /* ---------- SERVICE BOX ---------- */
+    .service-box {
+        width: var(--lr-box-w) !important;
+        height: var(--lr-box-h) !important;
+        margin: 0 auto !important;
+        background: #242323 !important;
+        border-radius: var(--lr-box-radius-mobile) !important;
+
+        /* fix: a boxon belül a content középre */
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        padding: 0 !important;
+    }
+
+    /* ---------- ROW LAYOUT: logo balra, gomb jobbra ---------- */
+    .service-row {
+        position: relative !important;
+        height: var(--lr-row-h) !important;
+        display: grid !important;
+        grid-template-columns: 1fr auto !important;
+        align-items: center !important;
+        padding: 0 var(--lr-row-pad-x) !important;
+    }
+
+    /* ✅ SINGLE divider (254px) */
+    .service-row:not(:last-child)::before {
+        content: "" !important;
+        position: absolute !important;
+        left: 50% !important;
+        bottom: 0 !important;
+        transform: translateX(-50%) !important;
+        width: var(--lr-divider-w) !important;
+        height: 1px !important;
+        background: rgba(255,255,255,var(--lr-divider-alpha)) !important;
+        display: block !important;
+    }
+
+    /* ---------- LOGO IMAGE (széles wordmarkek) ---------- */
+    .service-icon {
+        height: auto !important;
+        display: block !important;
+        object-fit: contain !important;
+        justify-self: start !important;
+    }
+
+    /* per-service default widths (mint a desktopod, csak mobilon hangolható) */
+    .service-row.spotify .service-icon {
+        width: var(--lr-spotify-w) !important;
+    }
+
+    .service-row.apple  .service-icon {
+        width: var(--lr-apple-w)  !important;
+    }
+
+    .service-row.youtube .service-icon {
+        width: var(--lr-youtube-w) !important;
+    }
+
+    .service-row.mms    .service-icon {
+        width: var(--lr-mms-w)    !important;
+    }
+
+    .service-row.kofi   .service-icon {
+        width: var(--lr-kofi-w)   !important;
+    }
+
+    /* ---------- BUTTONS (jobbra zárva, egymás alatt tökéletesen) ---------- */
+    .service-btn {
+        height: var(--lr-btn-h) !important;
+        border-radius: var(--lr-btn-radius) !important;
+        font-family: "Barlow", system-ui, -apple-system, sans-serif !important;
+        font-size: var(--lr-btn-font) !important;
+        font-weight: 600 !important;
+        background: #3a3a3a !important;
+        color: #fff !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        justify-self: end !important;
+        padding: 0 12px !important;
+        white-space: nowrap !important;
+    }
+
+    /* min-width-ek a gombszöveg szerint */
+    .service-row.spotify .service-btn,
+    .service-row.apple  .service-btn {
+        min-width: var(--lr-btn-minw-play) !important;
+    }
+
+    .service-row.youtube .service-btn {
+        min-width: var(--lr-btn-minw-watch) !important;
+    }
+
+    .service-row.mms .service-btn {
+        min-width: var(--lr-btn-minw-buy) !important;
+    }
+
+    .service-row.kofi .service-btn {
+        min-width: var(--lr-btn-minw-donate) !important;
+    }
+}
+
+/* =========================
+   MUSIC – MOBILE EDGE-TO-EDGE + #060606 BG
+   ========================= */
+@media (max-width: 768px){
+    :root {
+        --m-music-bg: #060606;
+    }
+
+    /* oldal háttér mobilon */
+    body.page-music,
+    .music-page {
+        background: var(--m-music-bg) !important;
+    }
+
+    /* breakout full viewport width */
+    .music-page {
+        width: 100vw !important;
+        margin-left: calc(50% - 50vw) !important;
+        margin-right: calc(50% - 50vw) !important;
+    }
+
+    /* wrapper padding / max-width OFF */
+    .music-inner {
+        max-width: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        justify-content: stretch !important;
+    }
+
+    /* main box -> full width, no rounded, same bg */
+    .music-box {
+        width: 100vw !important;
+        border-radius: 0 !important;
+        background: var(--m-music-bg) !important;
+        box-shadow: none !important;
+    }
+
+    /* category rows: full width hover */
+    .music-cat {
+        width: 100% !important;
+        background: transparent !important;
+    }
+
+    .music-cat:hover {
+        background: rgba(255,255,255,0.05) !important;
+    }
+
+    /* opened panel + services area also #060606 */
+    .music-panel,
+    .music-services-wrap,
+    .music-services-inner {
+        background: var(--m-music-bg) !important;
+    }
+
+    /* zebra rows maradhatnak (fehér/szürke), csak a környezet legyen #060606 */
+}
+
+/* =========================
+   MUSIC – MOBILE EXTRA POTIK
+   ========================= */
+@media (max-width: 768px){
+    :root {
+        /* ===== ZEBRA ROW COLORS ===== */
+        --m-music-zebra-odd-bg: #898989;
+        --m-music-zebra-even-bg: #545454;
+        --m-music-zebra-text: #000000;
+
+        /* ===== SERVICES PANEL BG ===== */
+        --m-music-services-bg: #0e0e0e;
+
+        /* ===== GLOBAL GAPS ===== */
+        --m-music-gap-top: 24px;
+
+        /* accordion teteje */
+        --m-music-gap-bottom: 38px;
+
+        /* accordion alja */
+        /* ===== CATEGORY ROW (ORIGINALS, FEATURES…) ===== */
+        --m-music-cat-font: 16px;
+        --m-music-cat-pad-y: 14px;
+
+        /* ===== SONG TITLE (Hollow Waltz, Tunnel Vision…) ===== */
+        --m-music-song-font: 14px;
+        --m-music-song-line: 1.15;
+        --m-music-song-pad-y: 10px;
+    }
+
+    /* ---------- GLOBAL SPACING ---------- */
+    .music-page {
+        padding-top: var(--m-music-gap-top) !important;
+        padding-bottom: var(--m-music-gap-bottom) !important;
+    }
+
+    /* ---------- CATEGORY ROWS ---------- */
+    .music-cat {
+        font-size: var(--m-music-cat-font) !important;
+        padding-top: var(--m-music-cat-pad-y) !important;
+        padding-bottom: var(--m-music-cat-pad-y) !important;
+    }
+
+    /* ---------- SERVICES PANEL BACKGROUND ---------- */
+    .music-panel,
+    .music-services-wrap,
+    .music-services-inner {
+        background: var(--m-music-services-bg) !important;
+    }
+
+    /* ---------- ZEBRA SONG ROWS ---------- */
+    .music-song--odd {
+        background: var(--m-music-zebra-odd-bg) !important;
+        color: var(--m-music-zebra-text) !important;
+    }
+
+    .music-song--even {
+        background: var(--m-music-zebra-even-bg) !important;
+        color: var(--m-music-zebra-text) !important;
+    }
+
+    /* ---------- SONG TITLE ---------- */
+    .music-song-title {
+        font-size: var(--m-music-song-font) !important;
+        line-height: var(--m-music-song-line) !important;
+    }
+
+    .music-song {
+        padding-top: var(--m-music-song-pad-y) !important;
+        padding-bottom: var(--m-music-song-pad-y) !important;
+    }
+}
+
+/* =========================
+   MUSIC – MOBILE FONT SIZE FIX (PUT THIS AT THE VERY END)
+   ========================= */
+@media (max-width: 768px){
+    :root {
+        --m-music-cat-font: 15px;
+
+        /* ORIGINALS, FEATURES... */
+        --m-music-song-font: 11.5px;
+
+        /* Hollow Waltz, Tunnel Vision... */
+    }
+
+    /* CATEGORY TEXT SIZE (THIS is the real text element) */
+    .music-cat .music-cat-label {
+        font-size: var(--m-music-cat-font) !important;
+    }
+
+    /* SONG TITLE TEXT SIZE */
+    .music-song .music-song-title {
+        font-size: var(--m-music-song-font) !important;
+    }
+}
+
+@media (max-width: 768px){
+    :root {
+        --m-music-cat-height: 36px;
+    }
+
+    .music-cat {
+        height: var(--m-music-cat-height) !important;
+        padding: 0 14px !important;
+    }
+}
+
+@media (max-width: 768px){
+    :root {
+        --m-music-play-size: 14px;
+
+        /* 🔽 kisebb ikon */
+    }
+
+    .music-play {
+        width: var(--m-music-play-size) !important;
+        height: var(--m-music-play-size) !important;
+    }
+}
+
+@media (max-width: 768px){
+    :root {
+        --m-music-play-x: 2px;
+
+        /* ➜ jobbra */
+    }
+
+    .music-song-right {
+        right: calc(var(--rail-pad-right) - var(--m-music-play-x)) !important;
+    }
+}
+
+/* =========================
+   MUSIC PAGE – MOBILE HERO
+   ========================= */
+@media (max-width: 768px) {
+    :root {
+        /* ===== HERO IMAGE ===== */
+        --m-music-hero-h: 290px;
+
+        /* <-- EZ A POTI */
+    }
+
+    /* HARD RESET: desktop hero OFF */
+    .hero,
+    .hero-inner,
+    .page-hero {
+        display: none !important;
+    }
+
+    /* MOBILE HERO */
+    .m-hero-music {
+        width: 100vw;
+        height: var(--m-music-hero-h);
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+        background-image: url("../img/hero_music_mobile.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: block;
+    }
+}
+
+/* =========================
+   WEBSHOP – MOBILE (CARDS + LOAD MORE) ✅ HARD RESET + POTIK (+ PREVIEW W/H + X/Y)
+   ========================= */
+@media (max-width: 768px){
+    :root {
+        /* ===== SECTION GAPS ===== */
+        --m-ws-gap-top: 54px;
+
+        /* section start -> first card */
+        --m-ws-gap-between: 32px;
+
+        /* gaps between cards */
+        --m-ws-gap-bottom: 102px;
+
+        /* last element -> section end */
+        /* gap grid -> loadmore, loadmore -> footer/section end */
+        --m-ws-gap-grid-to-loadmore: 63px;
+        --m-ws-gap-loadmore-to-end: 0px;
+
+        /* ha kell extra, tedd ide */
+        /* ===== CARD SIZE ===== */
+        --m-ws-card-w: 267px;
+        --m-ws-card-h: 346px;
+        --m-ws-card-radius: 30px;
+        --m-ws-card-bg: #1F1F1F;
+
+        /* ===== TEXT SIZES ===== */
+        --m-ws-title-font: 17px;
+        --m-ws-sub-font: 14px;
+        --m-ws-added-font: 11px;
+        --m-ws-price-font: 17px;
+        --m-ws-btn-font: 13px;
+
+        /* ===== X/Y POTIK (kártyán belül) ===== */
+        --m-ws-title-x: -6px;
+        --m-ws-title-y: 23px;
+        --m-ws-sub-x: -6px;
+        --m-ws-sub-y: 20px;
+        --m-ws-added-x: 0px;
+        --m-ws-added-y: -5px;
+        --m-ws-price-x: 1px;
+        --m-ws-price-y: 5px;
+        --m-ws-btn-x: 3px;
+        --m-ws-btn-y: 5px;
+
+        /* ===== ADD TO CART BUTTON BOX SIZE ===== */
+        --m-ws-btn-w: 84px;
+        --m-ws-btn-h: 23px;
+
+        /* ===== PREVIEW IMAGE (W/H + X/Y + radius) ===== */
+        --m-ws-prev-w: 173px;
+        --m-ws-prev-h: 193px;
+        --m-ws-prev-x: 0px;
+        --m-ws-prev-y: 0px;
+        --m-ws-prev-radius: 22px;
+
+        /* preview top gap + wrapper min-height (ha kell finomhangolni) */
+        --m-ws-preview-gap-top: 18px;
+        --m-ws-preview-minh: 170px;
+
+        /* ===== LOAD MORE BUTTON ===== */
+        --m-ws-lm-w: 240px;
+        --m-ws-lm-h: 52px;
+        --m-ws-lm-font: 13px;
+        --m-ws-lm-x: 0px;
+        --m-ws-lm-y: 0px;
+    }
+
+    /* HARD RESET: desktop grid/padding/width falak OFF */
+    .webshop-page,
+    .webshop-inner,
+    .webshop-grid,
+    .ws-card,
+    .ws-added,
+    .ws-title,
+    .ws-sub,
+    .ws-preview,
+    .ws-preview img,
+    .ws-bottom,
+    .ws-price,
+    .ws-btn,
+    .ws-loadmore-wrap,
+    #wsLoadMoreBtn {
+        transform: none !important;
+        max-width: none !important;
+    }
+
+    /* SECTION gaps */
+    .webshop-page {
+        padding: var(--m-ws-gap-top) 0 calc(var(--m-ws-gap-bottom) + var(--m-ws-gap-loadmore-to-end)) !important;
+        background: #000 !important;
+    }
+
+    .webshop-inner {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    /* GRID: 1 oszlop, középre, állítható gap */
+    .webshop-grid {
+        grid-template-columns: 1fr !important;
+        gap: var(--m-ws-gap-between) !important;
+        justify-items: center !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* CARD */
+    .ws-card {
+        width: var(--m-ws-card-w) !important;
+        height: var(--m-ws-card-h) !important;
+        background: var(--m-ws-card-bg) !important;
+        border-radius: var(--m-ws-card-radius) !important;
+        padding: 18px !important;
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    /* "Added ? days ago" */
+    .ws-added {
+        position: absolute !important;
+        top: 14px !important;
+        right: 16px !important;
+        font-family: "Fraunces", serif !important;
+        font-size: var(--m-ws-added-font) !important;
+        opacity: 0.85 !important;
+        transform: translate(var(--m-ws-added-x), var(--m-ws-added-y)) !important;
+    }
+
+    /* Title */
+    .ws-title {
+        margin-top: 0 !important;
+        font-family: "IM Fell English", serif !important;
+        font-size: var(--m-ws-title-font) !important;
+        line-height: 1.15 !important;
+        transform: translate(var(--m-ws-title-x), var(--m-ws-title-y)) !important;
+    }
+
+    /* genre/artist */
+    .ws-sub {
+        margin-top: 6px !important;
+        font-family: "IM Fell English", serif !important;
+        font-size: var(--m-ws-sub-font) !important;
+        opacity: 0.9 !important;
+        transform: translate(var(--m-ws-sub-x), var(--m-ws-sub-y)) !important;
+    }
+
+    /* Preview */
+    .ws-preview {
+        margin-top: var(--m-ws-preview-gap-top) !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        min-height: var(--m-ws-preview-minh) !important;
+    }
+
+    .ws-preview img {
+        width: var(--m-ws-prev-w) !important;
+        height: var(--m-ws-prev-h) !important;
+        border-radius: var(--m-ws-prev-radius) !important;
+        object-fit: cover !important;
+        display: block !important;
+        transform: translate(var(--m-ws-prev-x), var(--m-ws-prev-y)) !important;
+    }
+
+    /* Bottom sor: ár balra, gomb jobbra */
+    .ws-bottom {
+        position: absolute !important;
+        left: 18px !important;
+        right: 18px !important;
+        bottom: 18px !important;
+        margin: 0 !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .ws-price {
+        font-family: "IM Fell English", serif !important;
+        font-size: var(--m-ws-price-font) !important;
+        transform: translate(var(--m-ws-price-x), var(--m-ws-price-y)) !important;
+    }
+
+    .ws-btn {
+        width: var(--m-ws-btn-w) !important;
+        height: var(--m-ws-btn-h) !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        background: #DEDCDC !important;
+        color: #000 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-family: "IM Fell English", serif !important;
+        font-size: var(--m-ws-btn-font) !important;
+        font-weight: 400 !important;
+        text-decoration: none !important;
+        transform: translate(var(--m-ws-btn-x), var(--m-ws-btn-y)) !important;
+    }
+
+    .ws-btn:hover {
+        background: #bdbcbc !important;
+    }
+
+    /* =========================
+     LOAD MORE (MOBILE)
+     HTML: <div class="ws-loadmore-wrap"><a id="wsLoadMoreBtn" ...>LOAD MORE</a></div>
+     ========================= */
+    .ws-loadmore-wrap {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin-top: var(--m-ws-gap-grid-to-loadmore) !important;
+    }
+
+    #wsLoadMoreBtn {
+        width: var(--m-ws-lm-w) !important;
+        height: var(--m-ws-lm-h) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: #444444 !important;
+        color: #fff !important;
+        text-decoration: none !important;
+        font-family: "Barlow", system-ui, -apple-system, sans-serif !important;
+        font-size: var(--m-ws-lm-font) !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.18em !important;
+        transform: translate(var(--m-ws-lm-x), var(--m-ws-lm-y)) !important;
+    }
+
+    #wsLoadMoreBtn:hover {
+        background: #323232 !important;
+    }
+}
+
+/* =========================
+   UPCOMING – MOBILE ✅ HARD RESET + POTIK + FORCE VIEWPORT FOLLOW CENTER
+   (PUT THIS AT THE VERY END OF style.css)
+   ========================= */
+@media (max-width: 768px){
+    :root {
+        /* ===== SECTION GAPS ===== */
+        --m-up-gap-top: 120px;
+
+        /* section start -> first element */
+        --m-up-follow-to-end: 40px;
+
+        /* follow -> section end (footer előtt) */
+        /* ===== FONT SIZES ===== */
+        --m-up-date-font: 41px;
+        --m-up-artist-font: 17px;
+
+        /* genre/artist */
+        --m-up-title-font: 24px;
+        --m-up-feat-font: 17px;
+        --m-up-follow-font: 14px;
+
+        /* ===== IMAGE ===== */
+        --m-up-img-w: 180px;
+        --m-up-img-h: 179px;
+        --m-up-img-radius: 15px;
+
+        /* ===== FLOW GAPS (stack) ===== */
+        --m-up-gap-date-to-artist: 6px;
+        --m-up-gap-artist-to-title: 8px;
+        --m-up-gap-title-to-feat: 0px;
+
+        /* csak ha van feat */
+        --m-up-gap-feat-to-img: 18px;
+        --m-up-gap-img-to-follow: 0px;
+
+        /* follow flex-center miatt általában 0 */
+        /* ===== X/Y POTIK (per element) ===== */
+        --m-up-date-x: 0px;
+        --m-up-date-y: -300px;
+        --m-up-artist-x: 0px;
+        --m-up-artist-y: -300px;
+        --m-up-title-x: 0px;
+        --m-up-title-y: -300px;
+        --m-up-feat-x: 0px;
+        --m-up-feat-y: -296px;
+        --m-up-img-x: 0px;
+        --m-up-img-y: 25px;
+        --m-up-follow-x: 0px;
+        --m-up-follow-y: -40px;
+
+        /* follow “text box” max width */
+        --m-up-follow-maxw: 270px;
+    }
+
+    /* =========================
+     HARD RESET (desktop upcoming layout OFF)
+     ========================= */
+    body.upcoming-page,
+    .upcoming-wrap,
+    .upcoming-inner,
+    #upcomingApp,
+    .upcoming-grid,
+    .upcoming-cover,
+    .upcoming-cover img,
+    .upcoming-textbox,
+    .upcoming-date,
+    .upcoming-artist,
+    .upcoming-title,
+    .upcoming-feat,
+    .upcoming-follow {
+        transform: none !important;
+        max-width: none !important;
+        width: auto !important;
+        height: auto !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* ✅ kill desktop “footer push” system on mobile if you have it */
+    body.upcoming-page {
+        min-height: auto !important;
+        display: block !important;
+    }
+
+    body.upcoming-page .site-footer {
+        margin-top: 0 !important;
+    }
+
+    /* page bg */
+    body.upcoming-page {
+        background: #000 !important;
+        color: #fff !important;
+    }
+
+    /* =========================
+     FORCE VIEWPORT LAYOUT
+     so follow can truly center
+     ========================= */
+    .upcoming-wrap {
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: calc(100vh - var(--m-header-h, 57px)) !important;
+        padding: var(--m-up-gap-top) 0 var(--m-up-follow-to-end) !important;
+
+        /* ✅ 2 gap poti */
+    }
+
+    /* content wrapper full width */
+    .upcoming-inner {
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        flex: 0 0 auto !important;
+
+        /* felső blokk nem nyúlhat */
+    }
+
+    /* stack all centered */
+    .upcoming-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 0 !important;
+    }
+
+    /* textbox centered */
+    .upcoming-textbox {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    /* DATE */
+    .upcoming-date {
+        font-family: "Fraunces", serif !important;
+        font-weight: 400 !important;
+        font-size: var(--m-up-date-font) !important;
+        line-height: 1.02 !important;
+        margin: 0 !important;
+        transform: translate(var(--m-up-date-x), var(--m-up-date-y)) !important;
+    }
+
+    /* genre/artist */
+    .upcoming-artist {
+        font-family: "Fraunces", serif !important;
+        font-weight: 400 !important;
+        font-size: var(--m-up-artist-font) !important;
+        line-height: 1.2 !important;
+        opacity: 0.9 !important;
+        margin: var(--m-up-gap-date-to-artist) 0 0 0 !important;
+        transform: translate(var(--m-up-artist-x), var(--m-up-artist-y)) !important;
+    }
+
+    /* SONG TITLE */
+    .upcoming-title {
+        font-family: "Fraunces", serif !important;
+        font-weight: 400 !important;
+        font-size: var(--m-up-title-font) !important;
+        line-height: 1.18 !important;
+        margin: var(--m-up-gap-artist-to-title) 0 0 0 !important;
+        transform: translate(var(--m-up-title-x), var(--m-up-title-y)) !important;
+    }
+
+    /* FEAT (only if exists — JS sets display none/block) */
+    .upcoming-feat {
+        font-family: "Fraunces", serif !important;
+        font-weight: 400 !important;
+        font-size: var(--m-up-feat-font) !important;
+        line-height: 1.2 !important;
+        opacity: 0.95 !important;
+        margin: var(--m-up-gap-title-to-feat) 0 0 0 !important;
+        transform: translate(var(--m-up-feat-x), var(--m-up-feat-y)) !important;
+        text-align: center !important;
+    }
+
+    /* IMAGE */
+    .upcoming-cover {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin: var(--m-up-gap-feat-to-img) 0 0 0 !important;
+    }
+
+    .upcoming-cover img {
+        width: var(--m-up-img-w) !important;
+        height: var(--m-up-img-h) !important;
+        border-radius: var(--m-up-img-radius) !important;
+        object-fit: cover !important;
+        display: block !important;
+        transform: translate(var(--m-up-img-x), var(--m-up-img-y)) !important;
+    }
+
+    /* FOLLOW = fills the remaining space and centers vertically */
+    .upcoming-follow {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        align-items: center !important;
+
+        /* vertical center */
+        justify-content: center !important;
+
+        /* horizontal center */
+        margin: var(--m-up-gap-img-to-follow) 0 0 0 !important;
+        font-family: "IM Fell English", serif !important;
+        font-size: var(--m-up-follow-font) !important;
+        line-height: 1.55 !important;
+        opacity: 0.9 !important;
+        text-align: center !important;
+        padding: 0 24px !important;
+        transform: translate(var(--m-up-follow-x), var(--m-up-follow-y)) !important;
+    }
+
+    /* follow “text box” max width */
+    .upcoming-follow > * {
+        max-width: var(--m-up-follow-maxw) !important;
+    }
+
+    /* ha nincs külön child, a <br>-os sima text miatt legyen biztos: */
+    .upcoming-follow {
+        max-width: none !important;
+    }
+}
+
+@media (max-width: 768px){
+    :root {
+        --m-up-vh-shrink: 280px;
+
+        /* ✅ EZ zsugorítja a fekete gapet */
+    }
+
+    .upcoming-wrap {
+        min-height: calc(100vh - var(--m-header-h, 57px) - var(--m-up-vh-shrink)) !important;
+    }
+}
+
+/* =========================
+   NOTES – MOBILE ✅ HARD RESET + POTIK
+   (CENTERED BLOCK, LEFT-ALIGNED WRAP)
+   ========================= */
+@media (max-width: 768px){
+    :root {
+        /* ===== SECTION GAPS ===== */
+        --m-notes-gap-top: 44px;
+
+        /* section start -> first item */
+        --m-notes-gap-between: 26px;
+
+        /* items közti gap */
+        --m-notes-gap-last-to-loadmore: 40px;
+
+        /* last item -> Load More */
+        --m-notes-gap-end: 110px;
+
+        /* last item VAGY Load More -> section end */
+        /* ===== ITEM INTERNAL ===== */
+        --m-notes-gap-date-to-text: -3px;
+
+        /* dátum -> szöveg gap */
+        /* ===== TYPO ===== */
+        --m-notes-date-font: 25px;
+        --m-notes-text-font: 14px;
+        --m-notes-loadmore-font: 22px;
+
+        /* ===== X POTI ===== */
+        --m-notes-date-x: -22px;
+
+        /* összes dátum X */
+        /* ===== TEXT BLOCK WIDTH ===== */
+        --m-notes-maxw: 300px;
+
+        /* note szöveg doboz szélesség (középre) */
+        --m-notes-pad-x: 26px;
+
+        /* viewport széltől padding */
+    }
+
+    /* HARD RESET: desktop falak OFF */
+    body.notes-page,
+    .notes-wrapper,
+    .notes-content,
+    .note-entry,
+    .note-date,
+    .note-text,
+    .notes-load-more {
+        transform: none !important;
+        max-width: none !important;
+    }
+
+    /* WRAPPER = section gap + end gap */
+    .notes-wrapper {
+        padding-top: var(--m-notes-gap-top) !important;
+        padding-bottom: var(--m-notes-gap-end) !important;
+
+        /* ✅ akkor is működik, ha eltűnik a Load More */
+    }
+
+    /* CONTENT: center column */
+    .notes-content {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 auto !important;
+        padding: 0 var(--m-notes-pad-x) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    /* ITEM: gap between notes */
+    .note-entry {
+        width: 100% !important;
+        margin: 0 0 var(--m-notes-gap-between) 0 !important;
+    }
+
+    /* last item bottom gap = 0, így a last->LoadMore gapet csak a LoadMore adja */
+    .note-entry:last-of-type {
+        margin-bottom: 0 !important;
+    }
+
+    /* DATE */
+    .note-date {
+        font-size: var(--m-notes-date-font) !important;
+        margin: 0 0 var(--m-notes-gap-date-to-text) 0 !important;
+        transform: translateX(var(--m-notes-date-x)) !important;
+        text-align: left !important;
+
+        /* hogy középen legyen a blokk, de a date “kilóghasson” X-szel */
+        width: var(--m-notes-maxw) !important;
+        max-width: 100% !important;
+    }
+
+    /* TEXT: középre pozicionált blokk, balra tördelve */
+    .note-text {
+        font-size: var(--m-notes-text-font) !important;
+        line-height: 1.65 !important;
+        width: var(--m-notes-maxw) !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        text-align: left !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    /* LOAD MORE: kontrollált gap + centered */
+    .notes-load-more {
+        font-size: var(--m-notes-loadmore-font) !important;
+        margin-top: var(--m-notes-gap-last-to-loadmore) !important;
+        margin-bottom: 0 !important;
+
+        /* end gapet a wrapper padding-bottom adja */
+        text-align: center !important;
+        width: 100% !important;
+    }
+}
+
+/* =========================================
+   HERO IMAGE FADE-IN (DESKTOP) — NO DARK OVERLAY
+   + GLOBAL PAGE ENTER (DESKTOP) — NO NOTES TOUCH
+   PUT THIS AT THE VERY END OF style.css
+   ========================================= */
+/* -------------------------
+   1) HERO IMAGE FADE-IN
+   csak ott, ahol has-hero van
+   (HOME + MUSIC nálad)
+   ------------------------- */
+@media (min-width: 769px){
+    /* a hero ne a background-image-et animálja, hanem pseudo-réteget */
+    body.has-hero .hero {
+        position: relative;
+        overflow: hidden;
+        background: transparent !important;
+        background-image: none !important;
+    }
+
+    /* maga a hero kép réteg */
+    body.has-hero .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image: var(--hero-img);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        animation: heroEnter 800ms ease-out forwards;
+        will-change: opacity;
+    }
+
+    /* a header/menu/logo mindig a kép fölött */
+    body.has-hero .hero-inner {
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes heroEnter{
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+}
+
+/* -------------------------
+   2) GLOBAL PAGE ENTER (DESKTOP)
+   SEMMI notes.
+   Home + Latest + Webshop + Music + Upcoming
+   ------------------------- */
+@media (min-width: 769px){
+    @keyframes pageEnter{
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* extra HOME fallback, ha valamiért a fenti 3 nem “látszik” első paintnél */
+    body.page-home main,
+    body.page-home #main,
+    body.page-home .page-content,
+    body.page-latest .latest-release,
+    body:not(.page-home):not(.page-webshop):not(.page-music):not(.upcoming-page) .latest-release,
+    body.page-webshop .webshop-page,
+    body.page-music .music-page,
+    body.upcoming-page .upcoming-wrap {
+        animation: pageEnter 460ms ease-out both;
+        will-change: opacity, transform;
+    }
+}
+
+/* -------------------------
+   3) Accessibility
+   ------------------------- */
+@media (prefers-reduced-motion: reduce){
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* =========================
+   NOTES – ONLY background fade-in (desktop)
+   (does not touch layout/content)
+   ========================= */
+@media (min-width: 769px){
+    body.notes-page .notes-bg {
+        opacity: 0;
+        animation: notesBgFade 800ms cubic-bezier(.22,.61,.36,1) both;
+    }
+
+    @keyframes notesBgFade{
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+}
+
+@media (max-width: 768px){
+    .m-hero,
+    .m-hero-music {
+        opacity: 0;
+        animation: heroMobileIn 900ms ease-out forwards;
+    }
+
+    @keyframes heroMobileIn{
+        to {
+            opacity: 1;
+        }
+    }
+}
+
+/* =========================================
+   MOBILE – GLOBAL PAGE ENTER (overall content)
+   put this at the VERY END of style.css
+   ========================================= */
+@media (max-width: 768px){
+    /* állító potik */
+    :root {
+        --m-page-enter-dur: 820ms;
+
+        /* <- ezt állítod */
+        --m-page-enter-ease: cubic-bezier(.22,.61,.36,1);
+    }
+
+    @keyframes mPageEnter{
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* HOME content (mobil hero külön van, azt nem bántjuk) */
+    body.page-home .intro,
+    body.page-home .releases,
+    body.page-home .playlists,
+    body.page-latest .latest-release,
+    body:not(.page-home):not(.page-webshop):not(.page-music):not(.upcoming-page):not(.notes-page) .latest-release,
+    body.page-webshop .webshop-page,
+    body.page-music .music-page,
+    body.upcoming-page .upcoming-wrap,
+    body.notes-page .notes-wrapper {
+        animation: mPageEnter var(--m-page-enter-dur) var(--m-page-enter-ease) both;
+        will-change: opacity, transform;
+    }
+}
+
+/* accessibility */
+@media (prefers-reduced-motion: reduce){
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
