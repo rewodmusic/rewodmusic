@@ -3107,7 +3107,7 @@ body.menu-open {
 @media (max-width: 768px){
     :root {
         /* ===== SECTION GAPS ===== */
-        --m-notes-gap-top: 44px;
+        --m-notes-gap-top: 104px;
 
         /* section start -> first item */
         --m-notes-gap-between: 26px;
