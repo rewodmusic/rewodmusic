@@ -2198,34 +2198,34 @@ body.menu-open {
 
         /* box alja -> section end */
         /* ----- SERVICE BOX ----- */
-        --lr-box-w: 370px;
-        --lr-box-h: 320px;
+        --lr-box-w: 330px;
+        --lr-box-h: 395px;
         --lr-box-radius-mobile: 25px;
 
         /* desktophoz képest -5px */
         /* ----- ROWS ----- */
-        --lr-row-pad-x: 18px;
-        --lr-row-h: 56px;
+        --lr-row-pad-x: 11px;
+        --lr-row-h: 72px;
 
         /* divider */
-        --lr-divider-w: 237px;
+        --lr-divider-w: 297px;
         --lr-divider-alpha: 0.35;
 
         /* ----- SERVICE LOGO SIZES (állítható) ----- */
-        --lr-spotify-w: 105px;
-        --lr-apple-w: 115px;
-        --lr-youtube-w: 111px;
-        --lr-mms-w: 155px;
-        --lr-kofi-w: 160px;
+        --lr-spotify-w: 140px;
+        --lr-apple-w: 155px;
+        --lr-youtube-w: 151px;
+        --lr-mms-w: 225px;
+        --lr-kofi-w: 240px;
 
         /* ----- BUTTONS ----- */
-        --lr-btn-font: 10px;
-        --lr-btn-h: 31px;
+        --lr-btn-font: 13px;
+        --lr-btn-h: 37px;
         --lr-btn-radius: 14px;
         --lr-btn-minw-play: 44px;
         --lr-btn-minw-watch: 58px;
         --lr-btn-minw-buy: 44px;
-        --lr-btn-minw-donate: 58px;
+        --lr-btn-minw-donate: 8px;
     }
 
     /* ---------------------------------
