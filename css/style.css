@@ -3409,3 +3409,10 @@ body.menu-open {
     will-change: auto !important;
   }
 }
+
+
+@media (max-width: 768px){
+  body.notes-page .notes-wrapper{
+    padding-top: 400px !important;
+  }
+}
