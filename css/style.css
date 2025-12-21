@@ -3390,3 +3390,13 @@ body.menu-open {
         transition: none !important;
     }
 }
+
+
+
+
+
+@media (max-width: 480px) {
+  html {
+    font-size: 112%;
+  }
+}
