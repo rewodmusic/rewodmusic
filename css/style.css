@@ -3395,3 +3395,13 @@ body.menu-open {
     }
 }
 
+/* NOTES – MOBILE: only show first 7 items + hide Load More */
+@media (max-width: 768px){
+  body.notes-page .notes-content .note-entry:nth-of-type(n+8){
+    display: none !important;
+  }
+
+  body.notes-page .notes-load-more{
+    display: none !important;
+  }
+}
