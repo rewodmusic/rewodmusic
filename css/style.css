@@ -3778,3 +3778,23 @@ body.menu-open {
         padding-bottom: 15px !important;
     }
 }
+
+@media (min-width: 769px){
+    .latest-release .latest-descr {
+        width: 360px !important;
+        max-width: none !important;
+    }
+}
+
+/* DESKTOP – fine center nudge for descr block */
+@media (min-width: 769px){
+    :root {
+        --lr-descr-x-d: -25px;
+
+        /* 🔥 ezt állítod: -10px..+10px */
+    }
+
+    .latest-release .latest-descr {
+        transform: translateX(var(--lr-descr-x-d)) !important;
+    }
+}
