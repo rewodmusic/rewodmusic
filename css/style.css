@@ -2199,7 +2199,6 @@ body.menu-open {
         /* box alja -> section end */
         /* ----- SERVICE BOX ----- */
         --lr-box-w: 345px;
-        --lr-box-h: 395px;
         --lr-box-radius-mobile: 25px;
 
         /* desktophoz képest -5px */
@@ -2297,6 +2296,22 @@ body.menu-open {
         background: #242323 !important;
         border-radius: var(--lr-box-radius-mobile) !important;
 
+        .service-box {
+            width: var(--lr-box-w) !important;
+
+            /* ❌ height: var(--lr-box-h) !important; */
+            min-height: var(--lr-box-h) !important;
+            margin: 0 auto !important;
+            background: #242323 !important;
+            border-radius: var(--lr-box-radius-mobile) !important;
+
+            /* content felülről induljon, ne középre */
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            padding: 18px 0 !important;
+        }
+
         /* fix: a boxon belül a content középre */
         display: flex !important;
         flex-direction: column !important;
@@ -2309,7 +2324,7 @@ body.menu-open {
         position: relative !important;
         height: var(--lr-row-h) !important;
         display: grid !important;
-        grid-template-columns: 1fr auto !important;
+        grid-template-columns: auto 1fr auto !important;
         align-items: center !important;
         padding: 0 var(--lr-row-pad-x) !important;
     }
@@ -2390,6 +2405,12 @@ body.menu-open {
 
     .service-row.kofi .service-btn {
         min-width: var(--lr-btn-minw-donate) !important;
+    }
+}
+
+@media (max-width: 768px){
+    .service-btn {
+        transform: translateX(18px)!important;
     }
 }
 
@@ -3396,16 +3417,364 @@ body.menu-open {
 }
 
 @media (max-width: 768px){
-  body.notes-page .notes-load-more{
-    display: none !important;
-  }
+    body.notes-page .notes-load-more {
+        display: none !important;
+    }
 }
 
+@media (max-width: 768px){
+    body.notes-page .notes-wrapper {
+        animation: none !important;
+        transform: none !important;
+        will-change: auto !important;
+    }
+}
+
+/* MUSIC – TAPE category subtle styling (optional) */
+.music-cat.music-cat--tape .music-cat-label {
+    letter-spacing: 0.08em;
+}
+
+/* =========================
+   MUSIC – DESCR VIEW (text + signature) + EXPLICIT DIVIDER (SAFE)
+   Put this at the VERY END of style.css
+   ========================= */
+/* Google Font: Fahkwang (Regular) */
+:root {
+    /* DESCR TEXTBOX – DESKTOP */
+    --descr-font-desktop: 14px;
+    --descr-x-desktop: 0px;
+    --descr-y-desktop: 0px;
+
+    /* SIGNATURE – DESKTOP */
+    --descr-sig-w-desktop: 233px;
+    --descr-sig-h-desktop: 147px;
+    --descr-sig-x-desktop: 180px;
+    --descr-sig-y-desktop: -38px;
+
+    /* how much we subtract from the OPEN height (DESKTOP) */
+    --descr-open-offset: -400px;
+
+    /* ===== EXPLICIT DIVIDER (OUR OWN LINE) ===== */
+    --descr-divider-width: var(--service-separator-width, 540px);
+    --descr-divider-height: var(--service-separator-height, 1px);
+    --descr-divider-alpha: 0.35;
+
+    /* gap ABOVE the new divider (desktop) */
+    --descr-divider-gap-top: 40px;
+
+    /* gap BELOW the divider (usually 0) */
+    --descr-divider-gap-bottom: 0px;
+}
+
+/* DESCR wrapper */
+.music-descr {
+    text-align: center;
+    padding: 18px 20px 0;
+    transform: translate(var(--descr-x-desktop), var(--descr-y-desktop));
+}
+
+/* text */
+.music-descr-text {
+    font-family: "Fahkwang", system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: var(--descr-font-desktop);
+    color: #fff;
+    line-height: 1.6;
+    opacity: 0.95;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+/* "- REWOD" */
+.music-descr-by {
+    margin-top: 10px;
+    font-family: "Fahkwang", system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: var(--descr-font-desktop);
+    color: #fff;
+    opacity: 0.95;
+}
+
+/* signature */
+.music-descr-signature {
+    display: block;
+    width: var(--descr-sig-w-desktop);
+    height: var(--descr-sig-h-desktop);
+    object-fit: contain;
+    margin: 16px auto 0;
+    transform: translate(var(--descr-sig-x-desktop), var(--descr-sig-y-desktop));
+}
+
+/* ✅ spacer is dead (if it exists in DOM) */
+.music-descr-bottom-gap {
+    height: 0 !important;
+    display: none !important;
+}
+
+/* ✅ THIS IS THE ONLY LINE WE DRAW (independent from service rows) */
+.music-descr-divider {
+    width: var(--descr-divider-width);
+    height: var(--descr-divider-height);
+    background: rgba(255,255,255,var(--descr-divider-alpha));
+    margin: var(--descr-divider-gap-top) auto var(--descr-divider-gap-bottom);
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+@media (max-width: 768px){
+    :root {
+        --descr-font-mobile: 11px;
+        --descr-x-mobile: 0px;
+        --descr-y-mobile: 0px;
+        --descr-sig-w-mobile: 75px;
+        --descr-sig-h-mobile: 119px;
+        --descr-sig-x-mobile: 105px;
+        --descr-sig-y-mobile: -37px;
+
+        /* subtract on mobile too if you want */
+        --descr-open-offset: -50px;
+
+        /* divider gap on mobile */
+        --descr-divider-gap-top: 80px;
+    }
+
+    .music-descr {
+        padding: 16px 18px 0;
+        transform: translate(var(--descr-x-mobile), var(--descr-y-mobile));
+    }
+
+    .music-descr-text,
+    .music-descr-by {
+        font-size: var(--descr-font-mobile);
+    }
+
+    .music-descr-signature {
+        width: var(--descr-sig-w-mobile);
+        height: var(--descr-sig-h-mobile);
+        transform: translate(var(--descr-sig-x-mobile), var(--descr-sig-y-mobile));
+    }
+}
+
+/* =========================
+   MUSIC – DESCR divider offset (single line, SAME style)
+   ONLY for TAPE descr
+   PUT THIS AT THE VERY END of style.css
+   ========================= */
+:root {
+    --descr-divider-drop: 10px;
+
+    /* desktop */
+}
 
 @media (max-width: 768px){
-  body.notes-page .notes-wrapper{
-    animation: none !important;
-    transform: none !important;
-    will-change: auto !important;
-  }
+    :root {
+        --descr-divider-drop: 10px;
+    }
+}
+
+/* ✅ ONLY TAPE: our custom divider-gap line */
+.music-services-wrap.has-descr-tape .music-descr-divider-gap {
+    position: relative;
+    height: var(--descr-divider-drop);
+}
+
+.music-services-wrap.has-descr-tape .music-descr-divider-gap::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: var(--service-separator-width);
+    height: var(--service-separator-height);
+    background: rgba(255,255,255,var(--service-separator-alpha));
+}
+
+/* =========================
+   MUSIC – custom DESCR divider (CLEAN & ISOLATED)
+   ========================= */
+/* konfigurálható távolság */
+:root {
+    --descr-divider-margin-top: 16px;
+    --descr-divider-margin-bottom: -200px;
+}
+
+@media (max-width: 768px){
+    :root {
+        --descr-divider-margin-top: 13px;
+        --descr-divider-margin-bottom: -200px;
+    }
+}
+
+/* maga az elem */
+.music-services-wrap.has-descr .music-descr-divider {
+    width: var(--service-separator-width, 540px);
+    height: 1px;
+    margin: var(--descr-divider-margin-top) auto var(--descr-divider-margin-bottom);
+    background: rgba(255,255,255,0.35);
+}
+
+/* 💀 biztos ami biztos: nincs háttér, nincs box */
+.music-services-wrap.has-descr .music-descr-divider {
+    border: none;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================
+   MUSIC – TAPE descr: KILL ALL row dividers (so only our custom line remains)
+   PUT THIS AT THE VERY END
+   ========================= */
+/* 1) TAPE: ne rajzoljon SEMMI service-row vonalat */
+.music-services-wrap.has-descr-tape .music-service-row::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* 2) TAPE: a custom “leengedett” vonal marad */
+.music-services-wrap.has-descr-tape .music-descr-divider-gap {
+    position: relative;
+    height: var(--descr-divider-drop);
+}
+
+.music-services-wrap.has-descr-tape .music-descr-divider-gap::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: var(--service-separator-width);
+    height: var(--service-separator-height);
+    background: rgba(255,255,255,var(--service-separator-alpha));
+}
+
+/* =========================
+   MUSIC – DESCR OPEN OFFSET (FINAL, 4 CASES)
+   ========================= */
+/* DEFAULT = desktop, non-tape */
+:root {
+    --descr-open-offset: -40px;
+}
+
+/* DESKTOP – TAPE */
+.music-services-wrap.is-tape {
+    --descr-open-offset: -40px;
+}
+
+/* MOBILE */
+@media (max-width: 768px){
+    /* mobile – non-tape */
+    :root {
+        --descr-open-offset: -40px;
+    }
+
+    /* mobile – tape */
+    .music-services-wrap.is-tape {
+        --descr-open-offset: -40px;
+    }
+}
+
+/* LATEST – tape mode visibility (desktop + mobile) */
+.latest-release.is-tape #rowSpotify,
+.latest-release.is-tape #rowApple,
+.latest-release.is-tape #rowMMS {
+    display: none !important;
+}
+
+/* =========================
+   LATEST – DESCR (inside service-box) – FIXED
+   PUT THIS AT VERY END
+   ========================= */
+:root {
+    /* desktop */
+    --lr-descr-font-d: 13px;
+    --lr-descr-gap-top-d: 10px;
+    --lr-descr-pad-x-d: 26px;
+    --lr-sig-w-d: 233px;
+    --lr-sig-h-d: 157px;
+    --lr-sig-x-d: 95px;
+    --lr-sig-y-d: 0px;
+
+    /* mobile */
+    --lr-descr-font-m: 14px;
+    --lr-descr-gap-top-m: 8px;
+    --lr-descr-pad-x-m: 18px;
+    --lr-sig-w-m: 95px;
+    --lr-sig-h-m: 150px;
+    --lr-sig-x-m: 98px;
+    --lr-sig-y-m: -7px;
+}
+
+/* wrapper (ez adja a “boxon belüli” oldalsó margót) */
+.latest-release .latest-descr {
+    margin-top: var(--lr-descr-gap-top-d);
+    padding: 12px var(--lr-descr-pad-x-d) 6px;
+    text-align: center;
+}
+
+/* ✅ A SZÖVEGDOBOZ SZÉLESSÉGE: érjen el a box széleiig (paddingen belül) */
+.latest-release .latest-descr-text {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    font-family: "Fahkwang", system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: var(--lr-descr-font-d);
+    line-height: 1.6;
+    color: rgba(255,255,255,0.92);
+}
+
+/* signature */
+.latest-release .latest-descr-signature {
+    display: block;
+    width: var(--lr-sig-w-d);
+    height: var(--lr-sig-h-d);
+    object-fit: contain;
+    margin: 10px auto 0;
+    transform: translate(var(--lr-sig-x-d), var(--lr-sig-y-d));
+}
+
+@media (max-width: 768px){
+    .latest-release .latest-descr {
+        margin-top: var(--lr-descr-gap-top-m);
+        padding: 10px var(--lr-descr-pad-x-m) 6px;
+    }
+
+    .latest-release .latest-descr-text {
+        font-size: var(--lr-descr-font-m);
+    }
+
+    .latest-release .latest-descr-signature {
+        width: var(--lr-sig-w-m);
+        height: var(--lr-sig-h-m);
+        transform: translate(var(--lr-sig-x-m), var(--lr-sig-y-m));
+    }
+}
+
+/* LATEST – DESCR: "- REWOD" same font as text */
+.latest-release .latest-descr-by {
+    font-family: "Fahkwang", system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: inherit;
+
+    /* ugyanakkora, mint a fenti szöveg */
+    line-height: inherit;
+    color: rgba(255,255,255,0.92);
+    opacity: 0.95;
+    margin-top: 10px;
+}
+
+.latest-release .latest-descr-text {
+    white-space: pre-line;
+
+    /* kell a \n miatt */
+}
+
+/* LATEST – SERVICE BOX: top/bottom breathing room on mobile */
+@media (max-width: 768px){
+    .latest-release .service-box {
+        padding-top: 15px !important;
+        padding-bottom: 15px !important;
+    }
 }

@@ -1,8 +1,15 @@
-/* MUSIC PAGE – JSON loader + accordion (HEIGHT animation, CSS chevron arrow) */
+/* MUSIC PAGE – JSON loader + accordion (HEIGHT animation, CSS chevron arrow)
+   + TAPE RECORDINGS support (tape: "x")
+   + TAPE RECORDINGS: ONLY YOUTUBE in service panel (no extra rows)
+   + DESCR support:
+     if item.descr has text -> service panel gets extra "descr view" block (text + signature)
+     + inserts a dedicated divider-gap element so the divider can be moved down via CSS
+*/
 
 const CONFIG = {
   dataUrl: "data/admin.json",
   playIcon: "img/playbutton.png",
+  signatureImg: "img/signature.png",
   serviceIcons: {
     spotify: "linktree/linktree_spotify.svg",
     apple: "linktree/linktree_applemusic.svg",
@@ -23,6 +30,14 @@ function safeText(s) {
   return (s || "").toString();
 }
 
+function isTapeItem(item) {
+  return safeText(item.tape).trim().toLowerCase() === "x";
+}
+
+function hasDescr(item) {
+  return safeText(item.descr).trim().length > 0;
+}
+
 function buildDisplayTitle(item) {
   const base = safeText(item.newmusictitle).trim();
   const feat = safeText(item.feat).trim();
@@ -30,13 +45,24 @@ function buildDisplayTitle(item) {
   return base;
 }
 
+function buildTapeTitle(item) {
+  const artist = safeText(item.newmusicartist).trim();
+  const title = safeText(item.newmusictitle).trim();
+  if (!artist && !title) return "";
+  if (!artist) return title;
+  if (!title) return artist;
+  return `${artist} - ${title}`;
+}
+
 function normalizeItem(raw) {
   return {
-    date: raw.newmusicdate || raw.date, // biztos ami biztos
+    date: raw.newmusicdate || raw.date,
     newmusictitle: raw.newmusictitle,
     newmusicartist: raw.newmusicartist,
     newmusicartist2: raw.newmusicartist2,
     feat: raw.feat,
+    tape: raw.tape,
+    descr: raw.descr,
     mymusicurl: raw.mymusicurl,
     youtubeurl: raw.youtubeurl,
     spotifyurl: raw.spotifyurl,
@@ -48,13 +74,30 @@ function sortByDateDesc(a, b) {
   return toISODate(b.date) - toISODate(a.date);
 }
 
+function sortTapeABC(a, b) {
+  const aa = safeText(a.newmusicartist).trim();
+  const ba = safeText(b.newmusicartist).trim();
+  const at = safeText(a.newmusictitle).trim();
+  const bt = safeText(b.newmusictitle).trim();
+
+  const c1 = aa.localeCompare(ba, "en", { sensitivity: "base" });
+  if (c1 !== 0) return c1;
+  return at.localeCompare(bt, "en", { sensitivity: "base" });
+}
+
 function groupData(items) {
   const originals = [];
   const features = [];
+  const tape = [];
   const artists = new Map();
 
   for (const it of items) {
     const artist = (it.newmusicartist || "").trim();
+
+    if (isTapeItem(it)) {
+      tape.push(it);
+      continue;
+    }
 
     if (it.feat && it.feat.trim().length > 0) {
       features.push(it);
@@ -72,10 +115,12 @@ function groupData(items) {
 
   originals.sort(sortByDateDesc);
   features.sort(sortByDateDesc);
+  tape.sort(sortTapeABC);
 
   const artistKeys = Array.from(artists.keys()).sort((a, b) =>
     a.localeCompare(b, "en", { sensitivity: "base" })
   );
+
   const artistGroups = artistKeys.map(k => ({
     label: k,
     items: artists.get(k).sort(sortByDateDesc)
@@ -83,8 +128,9 @@ function groupData(items) {
 
   return {
     top: [
-      { id: "originals", label: "ORIGINALS", items: originals },
-      { id: "features", label: "FEATURES", items: features }
+      { id: "originals", label: "ORIGINALS", items: originals, mode: "normal" },
+      { id: "features", label: "FEATURES", items: features, mode: "normal" },
+      { id: "tape", label: "TAPE RECORDINGS", items: tape, mode: "tape" }
     ],
     artists: artistGroups
   };
@@ -102,13 +148,27 @@ function openHeight(el, innerForMeasure = el) {
   el.style.height = "0px";
   forceReflow(el);
 
-  const h = innerForMeasure.scrollHeight;
-  el.style.height = `${h}px`;
+  let offset = 0;
+  const descrMode = el.classList && el.classList.contains("has-descr");
+  if (descrMode) {
+    const cssVal = getComputedStyle(document.documentElement)
+      .getPropertyValue("--descr-open-offset")
+      .trim();
+    offset = parseFloat(cssVal) || 0;
+  }
+
+  const target = Math.max(0, innerForMeasure.scrollHeight + offset);
+  el.style.height = `${target}px`;
 
   const onEnd = (e) => {
     if (e.propertyName !== "height") return;
     el.removeEventListener("transitionend", onEnd);
-    el.style.height = "auto";
+
+    if (!descrMode) {
+      el.style.height = "auto";
+    } else {
+      el.style.height = `${target}px`;
+    }
   };
   el.addEventListener("transitionend", onEnd);
 }
@@ -128,7 +188,6 @@ function setCatOpenState(catRow, panel, open) {
   if (open) {
     catRow.classList.add("is-open");
     panel.classList.add("is-open");
-
     panel.style.height = "0px";
     requestAnimationFrame(() => openHeight(panel, panel));
   } else {
@@ -172,7 +231,7 @@ function closeAllServicePanels(appEl) {
   appEl.querySelectorAll(".music-play").forEach(img => img.classList.remove("is-hidden"));
 }
 
-function renderServicePanel(item) {
+function renderServicePanel(item, mode = "normal") {
   const wrap = document.createElement("div");
   wrap.className = "music-services-wrap";
   wrap.style.height = "0px";
@@ -180,12 +239,24 @@ function renderServicePanel(item) {
   const inner = document.createElement("div");
   inner.className = "music-services-inner";
 
-  const rows = [
+  const descrOn = hasDescr(item);
+
+  // classes for CSS + openHeight offset logic
+  if (descrOn) wrap.classList.add("has-descr");
+  if (mode === "tape") wrap.classList.add("is-tape");
+  if (descrOn && mode === "tape") wrap.classList.add("has-descr-tape");
+
+  let rows = [
     { key: "spotify", url: item.spotifyurl, label: "Play" },
     { key: "apple", url: item.appleurl, label: "Play" },
     { key: "youtube", url: item.youtubeurl, label: "Watch" },
     { key: "mms", url: item.mymusicurl, label: "Buy" }
   ];
+
+  // TAPE: ONLY YOUTUBE
+  if (mode === "tape") {
+    rows = rows.filter(r => r.key === "youtube");
+  }
 
   for (const r of rows) {
     const row = document.createElement("div");
@@ -218,17 +289,49 @@ function renderServicePanel(item) {
     inner.appendChild(row);
   }
 
+  if (descrOn) {
+    // ONLY TAPE: insert divider-gap element (line can be moved via CSS)
+    if (mode === "tape") {
+      const dividerGap = document.createElement("div");
+      dividerGap.className = "music-descr-divider-gap";
+      inner.appendChild(dividerGap);
+    }
+
+    const descrWrap = document.createElement("div");
+    descrWrap.className = "music-descr";
+
+    const text = document.createElement("div");
+    text.className = "music-descr-text";
+    text.textContent = `"${safeText(item.descr).trim()}"`;
+
+    const by = document.createElement("div");
+    by.className = "music-descr-by";
+    by.textContent = "- REWOD";
+
+    const sig = document.createElement("img");
+    sig.className = "music-descr-signature";
+    sig.src = CONFIG.signatureImg;
+    sig.alt = "REWOD signature";
+
+    descrWrap.appendChild(text);
+    descrWrap.appendChild(by);
+    descrWrap.appendChild(sig);
+
+    inner.appendChild(descrWrap);
+  }
+
   wrap.appendChild(inner);
   return { wrap, inner };
 }
 
-function toggleServicesForSong(songEl, item) {
+function toggleServicesForSong(songEl, item, mode = "normal") {
   const appEl = songEl.closest("#musicApp");
   if (!appEl) return;
 
   const play = songEl.querySelector(".music-play");
   const existing = songEl.nextElementSibling;
 
+  // close if already open
   if (existing && existing.classList.contains("music-services-wrap")) {
     if (play) play.classList.remove("is-hidden");
 
@@ -242,9 +345,11 @@ function toggleServicesForSong(songEl, item) {
     return;
   }
 
+  // close any other open service panels
   closeAllServicePanels(appEl);
 
-  const { wrap, inner } = renderServicePanel(item);
+  // open new one
+  const { wrap, inner } = renderServicePanel(item, mode);
   songEl.insertAdjacentElement("afterend", wrap);
 
   if (play) play.classList.add("is-hidden");
@@ -259,7 +364,7 @@ function toggleServicesForSong(songEl, item) {
    RENDER
    ========================= */
 
-function renderSongs(panelEl, items) {
+function renderSongs(panelEl, items, { mode = "normal" } = {}) {
   panelEl.innerHTML = "";
 
   items.forEach((it, idx) => {
@@ -270,7 +375,12 @@ function renderSongs(panelEl, items) {
 
     const title = document.createElement("div");
     title.className = "music-song-title";
-    title.textContent = upper(buildDisplayTitle(it));
+
+    if (mode === "tape") {
+      title.textContent = buildTapeTitle(it);
+    } else {
+      title.textContent = upper(buildDisplayTitle(it));
+    }
 
     const right = document.createElement("div");
     right.className = "music-song-right";
@@ -280,16 +390,20 @@ function renderSongs(panelEl, items) {
     play.src = CONFIG.playIcon;
     play.alt = "Play";
 
+    // click on icon
     play.addEventListener("click", (e) => {
       e.stopPropagation();
-      toggleServicesForSong(song, it);
+      toggleServicesForSong(song, it, mode);
     });
 
-    song.addEventListener("click", () => toggleServicesForSong(song, it));
+    // click on row
+    song.addEventListener("click", () => toggleServicesForSong(song, it, mode));
+
+    // keyboard
     song.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        toggleServicesForSong(song, it);
+        toggleServicesForSong(song, it, mode);
       }
     });
 
@@ -307,11 +421,12 @@ function renderCategory(appEl, cat) {
   catRow.setAttribute("role", "button");
   catRow.setAttribute("tabindex", "0");
 
+  if (cat.id === "tape") catRow.classList.add("music-cat--tape");
+
   const label = document.createElement("div");
   label.className = "music-cat-label";
   label.textContent = upper(cat.label);
 
-  // CSS chevron:
   const arrow = document.createElement("span");
   arrow.className = "music-cat-arrow";
   arrow.setAttribute("aria-hidden", "true");
@@ -320,14 +435,12 @@ function renderCategory(appEl, cat) {
   panel.className = "music-panel";
   panel.style.height = "0px";
 
-  renderSongs(panel, cat.items);
+  renderSongs(panel, cat.items, { mode: cat.mode || "normal" });
 
   function toggleCategory() {
     const isOpen = panel.classList.contains("is-open");
-
     closeAllCategories(appEl);
     closeAllServicePanels(appEl);
-
     if (!isOpen) setCatOpenState(catRow, panel, true);
   }
 
@@ -351,15 +464,22 @@ async function init() {
   if (!appEl) return;
 
   const res = await fetch(CONFIG.dataUrl, { cache: "no-store" });
-  const raw = await res.json();
+  if (!res.ok) throw new Error(`JSON fetch failed: ${res.status}`);
 
+  const raw = await res.json();
   const items = raw.map(normalizeItem).filter(x => x.date);
+
   const grouped = groupData(items);
 
   grouped.top.forEach(cat => renderCategory(appEl, cat));
-  grouped.artists.forEach(g =>
-    renderCategory(appEl, { id: `artist:${g.label}`, label: g.label, items: g.items })
-  );
+  grouped.artists.forEach(g => {
+    renderCategory(appEl, {
+      id: `artist:${g.label}`,
+      label: g.label,
+      items: g.items,
+      mode: "normal"
+    });
+  });
 }
 
 init().catch(console.error);
