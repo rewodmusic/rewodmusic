@@ -21,7 +21,7 @@ const EXT = {
 };
 
 // icons
-const ICON_MUTED = "img/audio-muted.png";
+const ICON_MUTED  = "img/audio-muted.png";
 const ICON_ACTIVE = "img/audio-active.png";
 
 let mediaData = [];
@@ -34,7 +34,6 @@ let currentSound = { videoEl: null };
 let isTransitioning = false;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // jelöljük: van JS (page enter / no-fouc jelleghez)
   document.documentElement.classList.add("js");
   initMedia().catch(console.error);
 });
@@ -70,13 +69,15 @@ async function fetchJson(url) {
   return res.json();
 }
 
+// GitHub Pages + Safari néha furán kezeli a HEAD-et, ezért GET fallback
 async function urlExists(url) {
   try {
-    const res = await fetch(url, {
-      method: "GET",
-      cache: "no-store",
-    });
-    return res.ok;
+    const head = await fetch(url, { method: "HEAD", cache: "no-store" });
+    if (head.ok) return true;
+  } catch {}
+  try {
+    const get = await fetch(url, { method: "GET", cache: "no-store" });
+    return get.ok;
   } catch {
     return false;
   }
@@ -92,6 +93,18 @@ async function findExistingFile(basePath, dateKey, extList) {
 
 function isDesktop() {
   return window.matchMedia("(min-width: 769px)").matches;
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function wait(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function nextFrame() {
+  return new Promise(r => requestAnimationFrame(() => r()));
 }
 
 function smoothScrollTo(targetY, duration = 900) {
@@ -112,8 +125,8 @@ function smoothScrollTo(targetY, duration = 900) {
 }
 
 function scrollToTopDesktopOnly() {
-  if (!isDesktop()) return;      // ✅ MOBILE: nincs scroll-to-top
-  smoothScrollTo(0, 1100);       // 👈 sebesség (ms)
+  if (!isDesktop()) return;
+  smoothScrollTo(0, 1100);
 }
 
 function getItemsForType(type) {
@@ -125,30 +138,13 @@ function getItemsForType(type) {
   return filtered;
 }
 
-function prefersReducedMotion() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-function wait(ms) {
-  return new Promise(r => setTimeout(r, ms));
-}
-
-function nextFrame() {
-  return new Promise(r => requestAnimationFrame(() => r()));
-}
-
 /* ---------- HEIGHT LOCK (prevents footer jump) ---------- */
 
-/**
- * Lockolja a MEDIA tartalom szekció magasságát az átmenet idejére,
- * hogy a hidden=true ne csukja össze a layoutot (footer felugrás bug).
- */
 function lockMediaHeight() {
   const wrap = document.querySelector(".media-wrap");
   if (!wrap) return () => {};
 
   const h = Math.ceil(wrap.getBoundingClientRect().height);
-  // min-height lock: nem esik össze a szekció
   wrap.style.minHeight = `${h}px`;
   wrap.classList.add("is-height-locked");
 
@@ -156,6 +152,18 @@ function lockMediaHeight() {
     wrap.style.minHeight = "";
     wrap.classList.remove("is-height-locked");
   };
+}
+
+/* ---------- fade state cleanup (anti-stuck) ---------- */
+
+function clearFadeState() {
+  const grid = document.getElementById("mediaGrid");
+  const wrap = document.querySelector(".media-wrap");
+  [grid, wrap].forEach(el => {
+    if (!el) return;
+    el.classList.remove("is-media-fading-out", "is-media-fading-in");
+    el.style.opacity = "";
+  });
 }
 
 /* ---------- MEDIA fade transition (before scroll) ---------- */
@@ -167,51 +175,47 @@ function getMediaGridEl() {
 /**
  * Fade-out -> DOM update -> Fade-in
  * + Height lock a reflow idejére, hogy a footer ne ugorjon fel.
- * A scroll-t CSAK ezután hívjuk.
+ * Desktopon: scroll indulhat a fade-in elején.
+ * Mobilon: NINCS scroll, csak finom fade.
  */
 async function withMediaReflowTransition(runDomUpdate) {
   const grid = getMediaGridEl();
-
-  const isDesk = isDesktop();
+  const desk = isDesktop();
   const reduce = prefersReducedMotion();
 
   // timingok
   const DESK_OUT = 520;
   const DESK_IN  = 1920;
 
-  const MOB_OUT  = 0;   // finom, gyors
-  const MOB_IN   = 260;
+  const MOB_OUT  = 280;
+  const MOB_IN   = 1060;
 
-  // ha nincs grid vagy reduced motion -> sima DOM update
   if (!grid || reduce) {
-    const y = window.scrollY;          // ✅ mobil “ne csússzon”
+    const y = window.scrollY;
     await runDomUpdate();
-    if (!isDesk) window.scrollTo(0, y);
+    if (!desk) window.scrollTo(0, y);
     return;
   }
 
-  // ha már fut, ne engedjük a spam-et
   if (isTransitioning) return;
   isTransitioning = true;
 
-  // ✅ lock BEFORE we hide/show anything (footer ne ugorjon)
   const unlock = lockMediaHeight();
   const yBefore = window.scrollY;
 
   try {
-    // ===== MOBILE: kisebb fade, nincs desktop-scroll logika =====
-    if (!isDesk) {
+    // ---- MOBILE ----
+    if (!desk) {
       grid.classList.add("is-media-fading-out");
       await nextFrame();
       await wait(MOB_OUT);
 
       await runDomUpdate();
 
-      grid.offsetHeight; // reflow kick
+      grid.offsetHeight;
       grid.classList.remove("is-media-fading-out");
       grid.classList.add("is-media-fading-in");
 
-      // ✅ ne gördüljön le a DOM reflow miatt
       window.scrollTo(0, yBefore);
 
       await wait(MOB_IN);
@@ -220,7 +224,7 @@ async function withMediaReflowTransition(runDomUpdate) {
       return;
     }
 
-    // ===== DESKTOP: a te jelenlegi stabil verziód =====
+    // ---- DESKTOP ----
     grid.classList.add("is-media-fading-out");
     await nextFrame();
     await wait(DESK_OUT);
@@ -232,12 +236,16 @@ async function withMediaReflowTransition(runDomUpdate) {
     grid.classList.remove("is-media-fading-out");
     grid.classList.add("is-media-fading-in");
 
+    // ✅ scroll mehet már a fade-in elején
+    scrollToTopDesktopOnly();
+
     await wait(DESK_IN);
     grid.classList.remove("is-media-fading-in");
 
     await nextFrame();
   } finally {
     unlock();
+    clearFadeState();       // ✅ sose maradhat beragadva
     isTransitioning = false;
   }
 }
@@ -297,7 +305,7 @@ function showMainHideMore(type) {
 function showMoreHideMain(type) {
   const mainEl = document.getElementById(`${type}Main`);
   const moreEl = document.getElementById(`${type}More`);
-  if (mainEl) mainEl.hidden = true;     // ✅ no duplication
+  if (mainEl) mainEl.hidden = true;
   if (moreEl) moreEl.hidden = false;
 }
 
@@ -307,7 +315,7 @@ function setButtonsClosed(type) {
   if (loadBtn) loadBtn.style.display = "";
   if (ctaBtn) {
     ctaBtn.style.display = "none";
-    ctaBtn.classList.remove("is-visible"); // ✅ CTA anim reset
+    ctaBtn.classList.remove("is-visible");
   }
 }
 
@@ -317,7 +325,6 @@ function setButtonsOpen(type) {
   if (loadBtn) loadBtn.style.display = "none";
   if (ctaBtn) {
     ctaBtn.style.display = "inline-flex";
-    // ✅ CTA appear anim (CSS)
     requestAnimationFrame(() => ctaBtn.classList.add("is-visible"));
   }
 }
@@ -387,33 +394,12 @@ function makeAudioButton(videoEl) {
   btn.addEventListener("click", async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    btn.blur(); // iOS scroll bug ellen
+    e.stopImmediatePropagation();
+    btn.blur();
 
-  // ✅ iOS/Safari: ne fókuszoljon az <a>, mert attól lejjebb scrollolhat
-  btn.blur();
+    // ✅ soha ne fadeljen ki audio tap/click miatt
+    clearFadeState();
 
-  if (isTransitioning) return;
-  // ✅ fade mindkét platformon, de scroll csak desktopon
-  await withMediaReflowTransition(async () => {
-    await openTypeDomOnly(type);
-  });
-  
-
-  // MOBILE: csak DOM update, és SEMMI scroll
-  if (!isDesktop()) {
-    await openTypeDomOnly(type);
-    return;
-  }
-
-  // DESKTOP: fade + scroll (ahogy már jó)
-  await withMediaReflowTransition(async () => {
-    await openTypeDomOnly(type);
-    // scroll indulhat a fade-in elején
-    scrollToTopDesktopOnly();
-  });
-
-
-    
     await setOnlyThisVideoAudible(videoEl);
   });
 
@@ -444,6 +430,7 @@ function refreshAllShortIcons() {
 async function setOnlyThisVideoAudible(videoEl) {
   const all = getAllShortVideosWithButtons();
 
+  // mute all others
   all.forEach(({ v }) => {
     if (v !== videoEl) v.muted = true;
   });
@@ -467,32 +454,26 @@ function setActive(type) {
   // ✅ MOBILE: ne csukjunk be semmit automatikusan
   if (!isDesktop()) return;
 
-  // ✅ DESKTOP: single-active logika marad
+  // ✅ DESKTOP: single-active logika
   ["photo", "art", "short"].forEach(t => {
     if (t !== activeType) clearExpanded(t);
   });
 }
 
-/**
- * DOM-only open (NEM scrolloz)
- */
 async function openTypeDomOnly(type) {
   setActive(type);
 
   const items = getItemsForType(type);
 
-  // keep updated text correct
   if (items[0]) {
     const updatedEl = document.getElementById(`${type}Updated`);
     if (updatedEl) updatedEl.textContent = formatLastUpdated(items[0].date);
   }
 
-  // OPEN = hide main, show more, render top3 in more
   showMoreHideMain(type);
   await renderTop3IntoMore(type, items);
   setButtonsOpen(type);
 
-  // SHORT: ha előtte volt hang ON, tartsuk az open view első videóján
   if (type === "short") {
     const hadSound = !!currentSound.videoEl && !currentSound.videoEl.muted;
 
@@ -517,25 +498,22 @@ async function closeAll() {
 async function initMedia() {
   mediaData = await fetchJson(MEDIA_JSON);
 
-  // initial main previews only
   await setMainPreview("photo", getItemsForType("photo")[0] || null);
   await setMainPreview("art", getItemsForType("art")[0] || null);
   await setMainPreview("short", getItemsForType("short")[0] || null);
 
-  // closed by default
   await closeAll();
 
   wireButtons();
   refreshAllShortIcons();
 
-  // MEDIA page enter (NO FOUC): engedjük látszani
   document.body.classList.add("media-ready");
 }
 
 function wireButtons() {
   const map = [
     { type: "photo", btnId: "photoLoadMore" },
-    { type: "art", btnId: "artLoadMore" },
+    { type: "art",   btnId: "artLoadMore" },
     { type: "short", btnId: "shortLoadMore" },
   ];
 
@@ -543,19 +521,15 @@ function wireButtons() {
     const btn = document.getElementById(btnId);
     if (!btn) return;
 
-btn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  if (isTransitioning) return;
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      btn.blur();
 
-  await withMediaReflowTransition(async () => {
-    await openTypeDomOnly(type);
+      if (isTransitioning) return;
 
-    // ⬅️ SCROLL MÁR A FADE-IN ELEJÉN
-    scrollToTopDesktopOnly();
+      await withMediaReflowTransition(async () => {
+        await openTypeDomOnly(type);
       });
-
-      // ✅ csak ezután scroll (desktop only)
-      scrollToTopDesktopOnly();
     });
   });
 
