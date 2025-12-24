@@ -3897,7 +3897,7 @@ body.menu-open {
     --media-btn-radius: 999px;
     --media-btn-bg: rgba(0,0,0,0.08);
     --media-btn-txt: #000;
-    --media-btn-mt: 0px;
+    --media-btn-mt: 6px;
 }
 
 .media-load-btn,
@@ -4141,7 +4141,6 @@ body.menu-open {
     }
 }
 
-
 /* =========================================
    MEDIA PAGE – WHITE ENTER + REFLOW FADE
    DOES NOT TOUCH transform on .media-wrap
@@ -4198,6 +4197,21 @@ body.media-page .media-cta-btn.is-visible {
     }
 }
 
+/* FORCE OVERRIDE – MEDIA updated text size (put this at the VERY END) */
+body.media-page .media-updated {
+    font-size: 11px !important;
+
+    /* мобил alap */
+}
+
+@media (min-width: 769px){
+    body.media-page .media-updated {
+        font-size: 11px !important;
+
+        /* desktop */
+    }
+}
+
 /* =========================================
    MEDIA – HEIGHT LOCK (prevents footer jump)
    ========================================= */
@@ -4228,34 +4242,39 @@ body.media-page #mediaGrid.is-media-fading-in {
 }
 
 @media (max-width: 768px){
-  body.media-page .media-wrap,
-  body.media-page #mediaGrid,
-  body.media-page .media-cta-btn{
-    transition: none !important;
-    animation: none !important;
-  }
+    body.media-page .media-wrap,
+    body.media-page #mediaGrid,
+    body.media-page .media-cta-btn {
+        transition: none !important;
+        animation: none !important;
+    }
 }
 
-
 /* MEDIA – disable horizontal drag (maradhat, ha már ez oldotta meg) */
-html, body{
-  overflow-x: hidden;
+html,
+body {
+    overflow-x: hidden;
 }
 
 /* MEDIA – responsive X offset */
 @media (max-width: 768px){
-  .media-wrap{ transform: none !important; }
+    .media-wrap {
+        transform: none !important;
+    }
 }
 
 /* tablet + kisebb desktop: 180px */
 @media (min-width: 769px) and (max-width: 1399px){
-  .media-wrap{ transform: translateX(245px) !important; }
+    .media-wrap {
+        transform: translateX(245px) !important;
+    }
 }
 
+html,
+body,
+#mobile-scale-root {
+    overflow-x: clip !important;
 
-
-
-html, body, #mobile-scale-root{
-  overflow-x: clip !important;   /* erősebb, mint hidden */
-  max-width: 100% !important;
+    /* erősebb, mint hidden */
+    max-width: 100% !important;
 }

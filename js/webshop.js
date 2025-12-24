@@ -30,13 +30,23 @@ function parseYYYY_MM_DD(s) {
   return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 0, 0, 0, 0);
 }
 
-function daysAgoFrom(dateObj) {
+function daysDiffFromToday(dateObj) {
   if (!dateObj) return null;
   const now = new Date();
-  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-  const startThat = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 0, 0, 0, 0);
-  const diffMs = startToday - startThat;
-  return Math.max(0, Math.floor(diffMs / 86400000));
+  const a = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const b = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+  const ms = a - b;
+  return Math.round(ms / 86400000);
+}
+
+function formatAddedLabel(dateObj) {
+  const diff = daysDiffFromToday(dateObj);
+  if (diff === null) return "Added —";
+  if (diff === 0) return "Added today";
+  if (diff === 1) return "Added yesterday";
+  if (diff > 1) return `Added ${diff} days ago`;
+  if (diff === -1) return "Added tomorrow";
+  return `Added ${Math.abs(diff)} days from now`;
 }
 
 function buildArtistLine(a1, a2) {
@@ -61,7 +71,7 @@ function priceFor(artist) {
 function makeCard(row) {
   const dateStr = safeText(row.newmusicdate);
   const d = parseYYYY_MM_DD(dateStr);
-  const ago = daysAgoFrom(d);
+const addedLabel = formatAddedLabel(d);
 
   const title = buildTitleWithFeat(row.newmusictitle, row.feat);
   const artistLine = buildArtistLine(row.newmusicartist, row.newmusicartist2);
@@ -76,7 +86,7 @@ function makeCard(row) {
   article.className = "ws-card";
 
   article.innerHTML = `
-    <div class="ws-added">${ago === null ? "Added —" : `Added ${ago} days ago`}</div>
+    <div class="ws-added">${addedLabel}</div>
 
     <div class="ws-text">
       <div class="ws-title">${title || "—"}</div>

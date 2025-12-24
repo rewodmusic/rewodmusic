@@ -13,11 +13,11 @@
         <meta property="og:type" content="website"/>
         <meta property="og:url" content="https://rewodmusic.com/"/>
         <meta property="og:title" content="REWOD – Media"/>
-        <meta property="og:description" content="Photos, art canvases and short-form video by REWOD."/>
+        <meta property="og:description" content="REWOD blends violin and symphonic sound into cinematic worlds of modern emotion."/>
         <meta property="og:image" content="https://rewodmusic.com/og-image.jpg"/>
         <meta name="twitter:card" content="summary_large_image"/>
         <meta name="twitter:title" content="REWOD – Media"/>
-        <meta name="twitter:description" content="Photos, art canvases and short-form video by REWOD."/>
+        <meta name="twitter:description" content="REWOD blends violin and symphonic sound into cinematic worlds of modern emotion."/>
         <meta name="twitter:image" content="https://rewodmusic.com/og-image.jpg"/>
         <!-- Fonts FIRST -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,200 +27,13 @@
         <!-- Global CSS -->
         <link href="css/style.css" rel="stylesheet"/>
         <!-- Media page override CSS (self-contained, to avoid dupe chaos) -->
-        <style>
-    /* =========================
+        <style>/* =========================
        MEDIA PAGE – STABLE LAYOUT
-       ========================= */
-    body.media-page { background:#fff; }
-    body.media-page .hero { background: transparent; }
-    body.media-page .hero .nav-right a { color:#000; }
-    body.media-page .hero .nav-right a:hover { color: rgba(0,0,0,0.45); }
-
-    :root{
-      --media-card-w: 300px;
-      --media-gap-x: 154px;
-      --media-gap-y: 70px;
-
-      --btn-font: 13px;
-      --btn-pad-y: 9px;
-      --btn-pad-x: 22px;
-      --btn-radius: 999px;
-      --btn-bg: rgba(0,0,0,0.08);
-      --btn-txt: #000;
-
-      --audio-box: 30px;
-      --audio-icon: 16px;
-      --audio-x: 10px;
-      --audio-y: 10px;
-      --audio-bg: rgba(255,255,255,0.70);
-    }
-
-    /* wrapper */
-    .media-wrap{
-      width: 100%;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 22px 18px 90px;
-    }
-
-    /* base: 1 column (mobile) */
-    .media-grid{
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr;
-      row-gap: 72px;
-      justify-items: center;
-      align-items: start;
-    }
-
-    /* blocks */
-    .media-block{
-      display:flex;
-      flex-direction: column;
-      align-items:center;
-      gap:18px;
-      margin:0;
-      width: 100%;
-      max-width: var(--media-card-w);
-    }
-
-    .media-title-img{ width: min(200px, 92vw); height:auto; display:block; }
-    .media-updated{
-      font-family: "Fraunces", serif;
-      font-weight: 400;
-      font-size: 10px;
-      color: rgba(0,0,0,0.45);
-      margin-top: -19px;
-      text-align: center;
-    }
-
-    /* main preview container */
-    .media-preview{
-      width: min(var(--media-card-w), 92vw);
-      border-radius: 18px;
-      overflow: hidden;
-      background: rgba(0,0,0,0.05);
-      position: relative;
-    }
-    .media-preview img,
-    .media-preview video{
-      width: 100%;
-      height: auto;
-      display:block;
-    }
-
-    /* Buttons */
-    .media-load-btn,
-    .media-cta-btn{
-      margin-top: 10px;
-      font-family: "Barlow", sans-serif;
-      font-weight: 500;
-      font-size: var(--btn-font);
-      letter-spacing: 0.12em;
-      color: var(--btn-txt);
-      background: var(--btn-bg);
-      padding: var(--btn-pad-y) var(--btn-pad-x);
-      border-radius: var(--btn-radius);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-    }
-    .media-load-btn:hover,
-    .media-cta-btn:hover { background: rgba(0,0,0,0.12); }
-
-    .media-cta-btn{ display:none; } /* only when expanded */
-
-    /* Expanded row */
-    .media-expanded-row{
-      width: 100%;
-      display: grid;
-      gap: 16px;
-      justify-content: center;
-      align-items: start;
-      margin-top: 6px;
-    }
-
-    /* Mobile: stacked */
-    .media-expanded-row{ grid-template-columns: 1fr; }
-
-    .media-cell{
-      width: min(var(--media-card-w), 92vw);
-      border-radius: 18px;
-      overflow:hidden;
-      background: rgba(0,0,0,0.05);
-      position: relative;
-    }
-    .media-cell img,
-    .media-cell video{ width:100%; height:auto; display:block; }
-
-    /* Audio overlay (SHORT only) */
-    .audio-toggle{
-      position:absolute;
-      top: var(--audio-y);
-      right: var(--audio-x);
-      width: var(--audio-box);
-      height: var(--audio-box);
-      border-radius: 12px;
-      background: var(--audio-bg);
-      border: 0;
-      padding:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-    }
-    .audio-toggle img{
-      width: var(--audio-icon);
-      height: var(--audio-icon);
-      display:block;
-    }
-
-    /* Desktop 2-column area grid with 2 rows */
-    @media (min-width: 769px){
-      .media-grid{
-        grid-template-columns: var(--media-card-w) var(--media-card-w);
-        column-gap: var(--media-gap-x);
-        row-gap: var(--media-gap-y);
-        justify-content: center;
-        grid-template-areas:
-          "photo art"
-          "short short";
-      }
-
-      #photoBlock{ grid-area: photo; }
-      #artBlock{ grid-area: art; }
-      #shortBlock{ grid-area: short; }
-
-      /* Active state (bring to first row, center) */
-      .media-grid[data-active="photo"]{
-        grid-template-areas:
-          "photo photo"
-          "art short";
-      }
-      .media-grid[data-active="art"]{
-        grid-template-areas:
-          "art art"
-          "photo short";
-      }
-      .media-grid[data-active="short"]{
-        grid-template-areas:
-          "short short"
-          "photo art";
-      }
-
-      /* Expanded row on desktop: 3 in one row */
-      .media-expanded-row{
-        grid-template-columns: repeat(3, var(--media-card-w));
-        gap: 18px;
-      }
-      .media-block{
-        max-width: none;
-      }
-      .media-cell{ width: var(--media-card-w); }
-    }
-  </style>
+       ========================= */body.media-page { background: #fff; } body.media-page .hero { background: transparent; } body.media-page .hero .nav-right a { color: #000; } body.media-page .hero .nav-right a:hover { color: rgba(0,0,0,0.45); } :root { --media-card-w: 300px; --media-gap-x: 154px; --media-gap-y: 70px; --btn-font: 13px; --btn-pad-y: 9px; --btn-pad-x: 22px; --btn-radius: 999px; --btn-bg: rgba(0,0,0,0.08); --btn-txt: #000; --audio-box: 30px; --audio-icon: 16px; --audio-x: 10px; --audio-y: 10px; --audio-bg: rgba(255,255,255,0.70); } /* wrapper */.media-wrap { width: 100%; max-width: 1100px; margin: 0 auto; padding: 22px 18px 90px; } /* base: 1 column (mobile) */.media-grid { width: 100%; display: grid; grid-template-columns: 1fr; row-gap: 72px; justify-items: center; align-items: start; } /* blocks */.media-block { display: flex; flex-direction: column; align-items: center; gap: 18px; margin: 0; width: 100%; max-width: var(--media-card-w); } .media-title-img { width: min(200px, 92vw); height: auto; display: block; } .media-updated { font-family: "Fraunces", serif; font-weight: 400; font-size: 10px; color: rgba(0,0,0,0.45); margin-top: -19px; text-align: center; } /* main preview container */.media-preview { width: min(var(--media-card-w), 92vw); border-radius: 18px; overflow: hidden; background: rgba(0,0,0,0.05); position: relative; } .media-preview img, .media-preview video { width: 100%; height: auto; display: block; } /* Buttons */.media-load-btn, .media-cta-btn { margin-top: 10px; font-family: "Barlow", sans-serif; font-weight: 500; font-size: var(--btn-font); letter-spacing: 0.12em; color: var(--btn-txt); background: var(--btn-bg); padding: var(--btn-pad-y) var(--btn-pad-x); border-radius: var(--btn-radius); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; } .media-load-btn:hover, .media-cta-btn:hover { background: rgba(0,0,0,0.12); } .media-cta-btn { display: none; } /* only when expanded *//* Expanded row */.media-expanded-row { width: 100%; display: grid; gap: 16px; justify-content: center; align-items: start; margin-top: 6px; } /* Mobile: stacked */.media-expanded-row { grid-template-columns: 1fr; } .media-cell { width: min(var(--media-card-w), 92vw); border-radius: 18px; overflow: hidden; background: rgba(0,0,0,0.05); position: relative; } .media-cell img, .media-cell video { width: 100%; height: auto; display: block; } /* Audio overlay (SHORT only) */.audio-toggle { position: absolute; top: var(--audio-y); right: var(--audio-x); width: var(--audio-box); height: var(--audio-box); border-radius: 12px; background: var(--audio-bg); border: 0; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; } .audio-toggle img { width: var(--audio-icon); height: var(--audio-icon); display: block; } /* Desktop 2-column area grid with 2 rows */@media (min-width: 769px){ .media-grid {  grid-template-columns: var(--media-card-w) var(--media-card-w);  column-gap: var(--media-gap-x);  row-gap: var(--media-gap-y);  justify-content: center;  grid-template-areas: "photo art"
+          "short short"; }  #photoBlock {  grid-area: photo; }  #artBlock {  grid-area: art; }  #shortBlock {  grid-area: short; }  /* Active state (bring to first row, center) */ .media-grid[data-active="photo"] {  grid-template-areas: "photo photo"
+          "art short"; }  .media-grid[data-active="art"] {  grid-template-areas: "art art"
+          "photo short"; }  .media-grid[data-active="short"] {  grid-template-areas: "short short"
+          "photo art"; }  /* Expanded row on desktop: 3 in one row */ .media-expanded-row {  grid-template-columns: repeat(3, var(--media-card-w));  gap: 18px; }  .media-block {  max-width: none; }  .media-cell {  width: var(--media-card-w); } }</style>
     </head>
     <!-- MOBILE HEADER (only mobile) -->
     <header class="m-header"><a class="m-logo" href="index.html" aria-label="Go to Home"> <img src="img/logo.png" alt="REWOD logo"> </a>
