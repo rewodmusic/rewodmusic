@@ -4242,7 +4242,7 @@ html, body{
 
 /* tablet + kisebb desktop: 180px */
 @media (min-width: 769px) and (max-width: 1399px){
-  .media-wrap{ transform: translateX(310px) !important; }
+  .media-wrap{ transform: translateX(290px) !important; }
 }
 
 /* nagy desktop: 300px */
