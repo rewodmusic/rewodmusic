@@ -4137,10 +4137,10 @@ body.menu-open {
   .media-wrap{ transform: translateX(300px); }
 }
 
-/* iPad + small desktop: kill the translate to avoid overflow */
-@media (min-width: 769px) and (max-width: 1399px){
-  .media-wrap{ transform: none !important; }
-}
+
+
+
+
 /* =========================================
    MEDIA PAGE – WHITE ENTER + REFLOW FADE
    DOES NOT TOUCH transform on .media-wrap
