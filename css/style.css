@@ -4242,12 +4242,12 @@ html, body{
 
 /* tablet + kisebb desktop: 180px */
 @media (min-width: 769px) and (max-width: 1399px){
-  .media-wrap{ transform: translateX(290px) !important; }
+  .media-wrap{ transform: translateX(270px) !important; }
 }
 
 /* nagy desktop: 300px */
 @media (min-width: 1400px){
-  .media-wrap{ transform: translateX(0px) !important; }
+  .media-wrap{ transform: translateX(280px) !important; }
 }
 
 
