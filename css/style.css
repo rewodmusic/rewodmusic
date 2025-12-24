@@ -4132,14 +4132,7 @@ body.menu-open {
     }
 }
 
-/* MEDIA – desktop: whole section X offset */
-@media (min-width: 769px){
-    .media-wrap {
-        transform: translateX(300px);
 
-        /* + jobbra, - balra */
-    }
-}
 
 
 /* =========================================
@@ -4234,6 +4227,27 @@ body.media-page #mediaGrid.is-media-fading-in {
     transition: none !important;
     animation: none !important;
   }
+}
+
+
+/* MEDIA – disable horizontal drag (maradhat, ha már ez oldotta meg) */
+html, body{
+  overflow-x: hidden;
+}
+
+/* MEDIA – responsive X offset */
+@media (max-width: 768px){
+  .media-wrap{ transform: none !important; }
+}
+
+/* kis desktop / iPad landscape / szűk ablak: 200px */
+@media (min-width: 769px) and (max-width: 1279px){
+  .media-wrap{ transform: translateX(250px) !important; }
+}
+
+/* nagy desktop: 300px */
+@media (min-width: 1280px){
+  .media-wrap{ transform: translateX(300px) !important; }
 }
 
 
