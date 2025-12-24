@@ -3834,7 +3834,7 @@ body.menu-open {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
     margin: 0;
 }
 
@@ -4210,6 +4210,12 @@ body.media-page .media-updated {
 
         /* desktop */
     }
+}
+
+body.media-page .media-load-btn {
+    margin-top: -13px !important;
+
+    /* 0 / 2 / 4 */
 }
 
 /* =========================================
