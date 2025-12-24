@@ -4136,7 +4136,6 @@ body.menu-open {
 
 
 
-
 /* =========================================
    MEDIA PAGE – WHITE ENTER + REFLOW FADE
    DOES NOT TOUCH transform on .media-wrap
@@ -4233,16 +4232,29 @@ body.media-page #mediaGrid.is-media-fading-in {
 
 
 
-/* MEDIA – fluid X offset (desktop → iPad → mobile safe) */
-.media-wrap{
-  transform: translateX(
-    clamp(
-      0px,
-      calc((100vw - 1100px) / 2),
-      300px
-    )
-  );
+
+/* MEDIA – disable horizontal drag (maradhat, ha már ez oldotta meg) */
+html, body{
+  overflow-x: hidden;
 }
+
+/* MEDIA – responsive X offset */
+@media (max-width: 768px){
+  .media-wrap{ transform: none !important; }
+}
+
+/* kis desktop / iPad landscape / szűk ablak: 200px */
+@media (min-width: 769px) and (max-width: 1279px){
+  .media-wrap{ transform: translateX(200px) !important; }
+}
+
+/* nagy desktop: 300px */
+@media (min-width: 1280px){
+  .media-wrap{ transform: translateX(300px) !important; }
+}
+
+
+
 
 
 html, body, #mobile-scale-root{
