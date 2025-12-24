@@ -4240,13 +4240,13 @@ html, body{
   .media-wrap{ transform: none !important; }
 }
 
-/* kis desktop / iPad landscape / szűk ablak: 200px */
-@media (min-width: 769px) and (max-width: 1279px){
+/* iPad/tablet jelleg: 180px */
+@media (min-width: 769px) and (hover: none) and (pointer: coarse){
   .media-wrap{ transform: translateX(180px) !important; }
 }
 
-/* nagy desktop: 300px */
-@media (min-width: 1280px){
+/* desktop (egérrel): 300px */
+@media (min-width: 769px) and (hover: hover) and (pointer: fine){
   .media-wrap{ transform: translateX(300px) !important; }
 }
 
