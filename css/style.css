@@ -4132,7 +4132,14 @@ body.menu-open {
     }
 }
 
+/* MEDIA – desktop: whole section X offset */
+@media (min-width: 769px){
+    .media-wrap {
+        transform: translateX(290px);
 
+        /* + jobbra, - balra */
+    }
+}
 
 
 /* =========================================
@@ -4245,10 +4252,7 @@ html, body{
   .media-wrap{ transform: translateX(270px) !important; }
 }
 
-/* nagy desktop: 300px */
-@media (min-width: 1400px){
-  .media-wrap{ transform: translateX(280px) !important; }
-}
+
 
 
 html, body, #mobile-scale-root{
