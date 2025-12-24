@@ -4135,7 +4135,7 @@ body.menu-open {
 /* MEDIA – desktop: whole section X offset */
 @media (min-width: 769px){
     .media-wrap {
-        transform: translateX(290px);
+        transform: translateX(265px);
 
         /* + jobbra, - balra */
     }
@@ -4249,7 +4249,7 @@ html, body{
 
 /* tablet + kisebb desktop: 180px */
 @media (min-width: 769px) and (max-width: 1399px){
-  .media-wrap{ transform: translateX(270px) !important; }
+  .media-wrap{ transform: translateX(245px) !important; }
 }
 
 
