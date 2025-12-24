@@ -15,9 +15,9 @@ const FOLDERS = {
 
 // preferencia sorrend (ha több formátum is létezik)
 const EXT = {
-  photo: ["jpg", "jpeg", "png", "webp"],
-  art: ["mp4", "mov"],
-  short: ["mp4", "mov"],
+  photo: ["jpg","jpeg","png","webp","JPG","JPEG","PNG","WEBP"],
+  art:   ["mp4","mov","MP4","MOV"],
+  short: ["mp4","mov","MP4","MOV"],
 };
 
 // icons
