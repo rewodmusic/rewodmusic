@@ -4240,14 +4240,14 @@ html, body{
   .media-wrap{ transform: none !important; }
 }
 
-/* iPad/tablet jelleg: 180px */
-@media (min-width: 769px) and (hover: none) and (pointer: coarse){
-  .media-wrap{ transform: translateX(180px) !important; }
+/* tablet + kisebb desktop: 180px */
+@media (min-width: 769px) and (max-width: 1399px){
+  .media-wrap{ transform: translateX(200px) !important; }
 }
 
-/* desktop (egérrel): 300px */
-@media (min-width: 769px) and (hover: hover) and (pointer: fine){
-  .media-wrap{ transform: translateX(280px) !important; }
+/* nagy desktop: 300px */
+@media (min-width: 1400px){
+  .media-wrap{ transform: translateX(270px) !important; }
 }
 
 
