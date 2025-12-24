@@ -3798,3 +3798,430 @@ body.menu-open {
         transform: translateX(var(--lr-descr-x-d)) !important;
     }
 }
+
+/* =========================
+   innen rossz
+
+/* =========================
+   MEDIA PAGE – SINGLE SOURCE OF TRUTH
+   ========================= */
+.media-page {
+    background: #fff;
+}
+
+.media-page .hero {
+    background: transparent;
+}
+
+.media-page .hero .nav-right a {
+    color: #000;
+}
+
+.media-page .hero .nav-right a:hover {
+    color: rgba(0,0,0,0.55);
+}
+
+/* wrapper */
+.media-wrap {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 18px 90px;
+}
+
+/* blocks */
+.media-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    margin: 0;
+}
+
+.media-title-img {
+    width: min(200px, 92vw);
+    height: auto;
+    display: block;
+}
+
+.media-updated {
+    font-family: "Fraunces",serif;
+    font-weight: 400;
+    font-size: 11px;
+    color: rgba(0,0,0,0.45);
+    margin-top: -19px;
+}
+
+/* canonical preview size */
+.media-preview {
+    width: min(300px, 92vw);
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.05);
+}
+
+.media-preview-photo img,
+.media-preview-video video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* +2 content (NEVER duplicate the first; JS already slice(1,3)) */
+.media-more-grid {
+    width: min(300px, 92vw);
+    display: grid;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.media-more-card {
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.05);
+}
+
+.media-more-card img,
+.media-more-card video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* buttons */
+:root {
+    --media-btn-font: 13px;
+    --media-btn-pad-y: 9px;
+    --media-btn-pad-x: 22px;
+    --media-btn-radius: 999px;
+    --media-btn-bg: rgba(0,0,0,0.08);
+    --media-btn-txt: #000;
+    --media-btn-mt: 10px;
+}
+
+.media-load-btn,
+.media-cta-btn {
+    margin-top: var(--media-btn-mt);
+    font-family: "Barlow", sans-serif;
+    font-weight: 500;
+    font-size: var(--media-btn-font);
+    letter-spacing: 0.12em;
+    color: var(--media-btn-txt);
+    background: var(--media-btn-bg);
+    padding: var(--media-btn-pad-y) var(--media-btn-pad-x);
+    border-radius: var(--media-btn-radius);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.media-load-btn:hover,
+.media-cta-btn:hover {
+    background: rgba(0,0,0,0.12);
+}
+
+/* CTA alapból rejtve (JS kapcsolja on/off) */
+.media-cta-btn {
+    display: none;
+}
+
+/* =========================
+   DESKTOP GRID AREAS + ACTIVE ROW SWITCH
+   ========================= */
+@media (min-width: 769px){
+    .media-wrap {
+        display: grid;
+        grid-template-columns: 300px 300px;
+        column-gap: 120px;
+
+        /* <<< ITT tudod csökkenteni a PHOTO–ART távolságot */
+        row-gap: 70px;
+        justify-content: center;
+        align-items: start;
+        grid-template-areas: "photo art"
+      "short short";
+    }
+
+    #photoBlock {
+        grid-area: photo;
+    }
+
+    #artBlock {
+        grid-area: art;
+    }
+
+    #shortBlock {
+        grid-area: short;
+    }
+
+    /* ACTIVE: PHOTO nyitva felül, ART+SHORT alul */
+    .media-wrap.is-active-photo {
+        grid-template-areas: "photo photo"
+      "art short";
+        column-gap: 80px;
+    }
+
+    /* ACTIVE: ART nyitva felül */
+    .media-wrap.is-active-art {
+        grid-template-areas: "art art"
+      "photo short";
+        column-gap: 80px;
+    }
+
+    /* ACTIVE: SHORT nyitva felül */
+    .media-wrap.is-active-short {
+        grid-template-areas: "short short"
+      "photo art";
+        column-gap: 120px;
+    }
+
+    /* desktop +2: két oszlop, 300px szélességgel */
+    .media-more-grid {
+        width: auto;
+        grid-template-columns: 300px 300px;
+        justify-content: center;
+    }
+}
+
+/* =========================
+   MOBILE
+   - csak “lenyílik”, nincs animált átrendezés
+   - nagyobb szekció gap
+   ========================= */
+@media (max-width: 768px){
+    .media-wrap {
+        padding: 20px 16px 40px;
+    }
+
+    .media-block {
+        margin: 16px 0 72px;
+    }
+
+    /* szekciók közti nagy gap */
+    .media-more-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================
+   SHORT AUDIO OVERLAY
+   ========================= */
+:root {
+    --audio-box-size: 30px;
+    --audio-icon-size: 16px;
+    --audio-box-opacity: 0.70;
+    --audio-x: 10px;
+    --audio-y: 10px;
+}
+
+.media-short-wrap {
+    position: relative;
+}
+
+.audio-toggle {
+    position: absolute;
+    top: var(--audio-y);
+    right: var(--audio-x);
+    width: var(--audio-box-size);
+    height: var(--audio-box-size);
+    border-radius: 12px;
+    background: rgba(255,255,255,var(--audio-box-opacity));
+    border: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.audio-toggle img {
+    width: var(--audio-icon-size);
+    height: var(--audio-icon-size);
+    display: block;
+}
+
+/* base one-shot fade */
+.audio-toggle.is-fading {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2.5s ease;
+}
+
+/* expanded short: persistent */
+.audio-toggle--persist {
+    transition: opacity .35s ease;
+}
+
+.audio-toggle--persist.is-flash-dim {
+    opacity: 0.45;
+    transition: opacity 2s ease;
+}
+
+/* DESKTOP: amikor egy view aktív, a 3 elem legyen 1 sorban */
+@media (min-width: 769px){
+    /* PHOTO nyitva */
+    .media-wrap.is-active-photo #photoPreview {
+        display: none;
+    }
+
+    .media-wrap.is-active-photo #photoMore {
+        grid-template-columns: repeat(3, 300px);
+        justify-content: center;
+    }
+
+    /* ART nyitva */
+    .media-wrap.is-active-art #artPreview {
+        display: none;
+    }
+
+    .media-wrap.is-active-art #artMore {
+        grid-template-columns: repeat(3, 300px);
+        justify-content: center;
+    }
+
+    /* SHORT nyitva (itt is 3 elem egy sorban) */
+    .media-wrap.is-active-short #shortPreview {
+        display: none;
+    }
+
+    .media-wrap.is-active-short #shortMore {
+        grid-template-columns: repeat(3, 300px);
+        justify-content: center;
+    }
+}
+
+/* === MEDIA expanded row: ALWAYS 1 row, centered === */
+.media-more-row {
+    display: grid;
+    grid-template-columns: repeat(2, min(300px, 92vw));
+
+    /* default: +2 elem */
+    gap: 18px;
+    justify-content: center;
+    width: 100%;
+}
+
+.media-more-card {
+    width: min(300px, 92vw);
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.05);
+    position: relative;
+}
+
+.media-more-card img,
+.media-more-card video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* a +2 mindig 1 sorban desktopon */
+@media (min-width: 769px){
+    .media-more-row {
+        grid-template-columns: repeat(2, 300px);
+    }
+}
+
+/* MOBILE: egymás alatt */
+@media (max-width: 768px){
+    .media-more-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* MEDIA – desktop: whole section X offset */
+@media (min-width: 769px){
+    .media-wrap {
+        transform: translateX(300px);
+
+        /* + jobbra, - balra */
+    }
+}
+
+/* =========================================
+   MEDIA PAGE – WHITE ENTER + REFLOW FADE
+   DOES NOT TOUCH transform on .media-wrap
+   ========================================= */
+body.media-page {
+    background: #fff !important;
+    color: #000 !important;
+}
+
+/* 1) PAGE ENTER: ONLY opacity (no transform) */
+html.js body.media-page .media-wrap {
+    opacity: 0;
+    transition: opacity 1050ms ease;
+    will-change: opacity;
+}
+
+html.js body.media-page.media-ready .media-wrap {
+    opacity: 1;
+}
+
+/* 2) Fade reflow (LOAD MORE click) – itt is csak opacity */
+body.media-page .media-wrap.is-media-fading-out,
+body.media-page #mediaGrid.is-media-fading-out {
+    opacity: 0;
+    transition: opacity 520ms ease;
+
+    /* <<< EZZEL lassítod a fade-outot */
+    will-change: opacity;
+}
+
+body.media-page .media-wrap.is-media-fading-in,
+body.media-page #mediaGrid.is-media-fading-in {
+    opacity: 1;
+    transition: opacity 1920ms cubic-bezier(.22,.61,.36,1);
+    will-change: opacity;
+}
+
+/* CTA appear maradhat (ha akarsz, lehet only opacity-ra is) */
+body.media-page .media-cta-btn {
+    opacity: 0;
+    transition: opacity 520ms cubic-bezier(.22,.61,.36,1);
+}
+
+body.media-page .media-cta-btn.is-visible {
+    opacity: 1;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+    body.media-page .media-wrap,
+    body.media-page .media-cta-btn {
+        transition: none !important;
+        opacity: 1 !important;
+    }
+}
+
+/* =========================================
+   MEDIA – HEIGHT LOCK (prevents footer jump)
+   ========================================= */
+body.media-page .media-wrap.is-height-locked {
+    overflow: visible;
+
+    /* ✅ ne vágja le az új tartalmat */
+}
+
+/* ha szeretnéd, hogy a fade se mozgasson semmit */
+body.media-page #mediaGrid.is-media-fading-out,
+body.media-page #mediaGrid.is-media-fading-in {
+    will-change: opacity;
+}
+
+@media (max-width: 768px){
+    body.media-page #mediaGrid.is-media-fading-out {
+        transition: opacity 280ms ease;
+
+        /* MOB_OUT */
+    }
+
+    body.media-page #mediaGrid.is-media-fading-in {
+        transition: opacity 2060ms cubic-bezier(.22,.61,.36,1);
+
+        /* MOB_IN */
+    }
+}
