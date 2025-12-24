@@ -4220,7 +4220,7 @@ body.media-page #mediaGrid.is-media-fading-in {
     }
 
     body.media-page #mediaGrid.is-media-fading-in {
-        transition: opacity 2060ms cubic-bezier(.22,.61,.36,1);
+        transition: opacity 960ms cubic-bezier(.22,.61,.36,1);
 
         /* MOB_IN */
     }
