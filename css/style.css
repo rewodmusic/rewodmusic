@@ -4247,7 +4247,7 @@ html, body{
 
 /* nagy desktop: 300px */
 @media (min-width: 1400px){
-  .media-wrap{ transform: translateX(260px) !important; }
+  .media-wrap{ transform: translateX(0px) !important; }
 }
 
 
