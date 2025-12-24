@@ -4257,3 +4257,10 @@ body.media-page{
   max-width: 100%;
   overflow-x: hidden;
 }
+
+@media (max-width: 1024px){
+  html, body{
+    overscroll-behavior-x: none;
+    touch-action: pan-y;
+  }
+}
