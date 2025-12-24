@@ -179,6 +179,7 @@ function getMediaGridEl() {
  * Mobilon: NINCS scroll, csak finom fade.
  */
 async function withMediaReflowTransition(runDomUpdate) {
+if (!isDesktop()) { await runDomUpdate(); return; } // ✅ MOBILE: zero anim
   const grid = getMediaGridEl();
   const desk = isDesktop();
   const reduce = prefersReducedMotion();

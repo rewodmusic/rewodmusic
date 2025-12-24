@@ -4225,3 +4225,12 @@ body.media-page #mediaGrid.is-media-fading-in {
         /* MOB_IN */
     }
 }
+
+@media (max-width: 768px){
+  body.media-page .media-wrap,
+  body.media-page #mediaGrid,
+  body.media-page .media-cta-btn{
+    transition: none !important;
+    animation: none !important;
+  }
+}
