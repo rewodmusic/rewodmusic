@@ -4135,7 +4135,7 @@ body.menu-open {
 /* MEDIA – desktop: whole section X offset */
 @media (min-width: 769px){
     .media-wrap {
-        transform: translateX(200px);
+        transform: translateX(300px);
 
         /* + jobbra, - balra */
     }
@@ -4233,4 +4233,27 @@ body.media-page #mediaGrid.is-media-fading-in {
     transition: none !important;
     animation: none !important;
   }
+}
+
+
+/* =========================
+   GLOBAL – LOCK HORIZONTAL SCROLL
+   ========================= */
+
+/* root */
+html, body{
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* media page specific (biztos, ami biztos) */
+body.media-page{
+  overflow-x: hidden;
+}
+
+/* grid + wrap extra safety */
+.media-wrap,
+.media-grid{
+  max-width: 100%;
+  overflow-x: hidden;
 }
