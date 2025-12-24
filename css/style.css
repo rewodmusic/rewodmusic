@@ -4214,7 +4214,7 @@ body.media-page #mediaGrid.is-media-fading-in {
 
 @media (max-width: 768px){
     body.media-page #mediaGrid.is-media-fading-out {
-        transition: opacity 180ms ease;
+        transition: opacity 0ms ease;
 
         /* MOB_OUT */
     }
