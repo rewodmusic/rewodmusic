@@ -4132,10 +4132,6 @@ body.menu-open {
     }
 }
 
-/* MEDIA – desktop X offset: ONLY on wide screens (prevents iPad horizontal drag) */
-@media (min-width: 1400px){
-  .media-wrap{ transform: translateX(300px); }
-}
 
 
 
@@ -4233,6 +4229,19 @@ body.media-page #mediaGrid.is-media-fading-in {
     transition: none !important;
     animation: none !important;
   }
+}
+
+
+
+/* MEDIA – fluid X offset (desktop → iPad → mobile safe) */
+.media-wrap{
+  transform: translateX(
+    clamp(
+      0px,
+      calc((100vw - 1100px) / 2),
+      300px
+    )
+  );
 }
 
 
