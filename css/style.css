@@ -4135,7 +4135,7 @@ body.menu-open {
 /* MEDIA – desktop: whole section X offset */
 @media (min-width: 769px){
     .media-wrap {
-        transform: translateX(300px);
+        transform: translateX(200px);
 
         /* + jobbra, - balra */
     }
