@@ -179,8 +179,8 @@ async function withMediaReflowTransition(runDomUpdate) {
   const DESK_OUT = 520;
   const DESK_IN  = 1920;
 
-  const MOB_OUT  = 280;   // finom, gyors
-  const MOB_IN   = 960;
+  const MOB_OUT  = 180;   // finom, gyors
+  const MOB_IN   = 260;
 
   // ha nincs grid vagy reduced motion -> sima DOM update
   if (!grid || reduce) {

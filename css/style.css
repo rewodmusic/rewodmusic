@@ -4214,13 +4214,13 @@ body.media-page #mediaGrid.is-media-fading-in {
 
 @media (max-width: 768px){
     body.media-page #mediaGrid.is-media-fading-out {
-        transition: opacity 280ms ease;
+        transition: opacity 180ms ease;
 
         /* MOB_OUT */
     }
 
     body.media-page #mediaGrid.is-media-fading-in {
-        transition: opacity 960ms cubic-bezier(.22,.61,.36,1);
+        transition: opacity 260ms cubic-bezier(.22,.61,.36,1);
 
         /* MOB_IN */
     }
