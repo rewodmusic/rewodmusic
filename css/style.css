@@ -4247,7 +4247,7 @@ html, body{
 
 /* desktop (egérrel): 300px */
 @media (min-width: 769px) and (hover: hover) and (pointer: fine){
-  .media-wrap{ transform: translateX(250px) !important; }
+  .media-wrap{ transform: translateX(280px) !important; }
 }
 
 
