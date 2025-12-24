@@ -72,7 +72,10 @@ async function fetchJson(url) {
 
 async function urlExists(url) {
   try {
-    const res = await fetch(url, { method: "HEAD", cache: "no-store" });
+    const res = await fetch(url, {
+      method: "GET",
+      cache: "no-store",
+    });
     return res.ok;
   } catch {
     return false;
