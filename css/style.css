@@ -4328,3 +4328,23 @@ body,
         overflow: hidden;
     }
 }
+
+@media (max-width: 768px){
+    .music-song-title,
+    .playlists-title::before,
+    .playlists-title::after {
+        font-family: "Inter Tight", system-ui, -apple-system, sans-serif !important;
+        font-weight: 900 !important;
+        letter-spacing: 0.05em !important;
+        -webkit-font-smoothing: auto !important;
+    }
+}
+
+@media (max-width: 768px){
+    body.page-music .music-song-title {
+        font-family: "Inter Tight", system-ui, -apple-system, sans-serif !important;
+        font-weight: 900 !important;
+        letter-spacing: 0.05em !important;
+        -webkit-font-smoothing: auto !important;
+    }
+}
