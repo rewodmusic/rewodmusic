@@ -1,20 +1,11 @@
 (() => {
   "use strict";
 
-  // =========================
-  //  "POTIK" – egyszerű állítók
-  // =========================
   const CFG = {
     jsonPath: "data/live.json",
-
-    // footer ne csússzon fel NO UPCOMING SHOWS esetén
-    emptySpacerMinHeight: 260, // px
-
-    // dátum parse: "YYYY_MM_DD"
+    emptySpacerMinHeight: 260,
     dateDelimiter: "_",
-
-    // mobil breakpoint (CSS-hez igazítsd)
-    mobileMQ: "(max-width: 640px)"
+    mobileMQ: "(max-width: 640px)" // CSS breakpointhoz igaz
   };
 
   const app = document.getElementById("liveApp");
@@ -42,11 +33,9 @@
   function formatWeekdayShort(dateObj) {
     return dateObj.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
   }
-
   function formatMonthShort(dateObj) {
     return dateObj.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
   }
-
   function formatMonthLong(dateObj) {
     return dateObj.toLocaleDateString("en-US", { month: "long" }).toUpperCase();
   }
@@ -83,6 +72,56 @@
     }
   }
 
+  // ---------- DESKTOP datebox slide (ONLY desktop) ----------
+  function getPanelDurationMs(panel) {
+    const cs = getComputedStyle(panel);
+
+    const durations = (cs.transitionDuration || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const props = (cs.transitionProperty || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const pickIndex = props.findIndex((p) => p.includes("max-height"));
+    const durStr = durations[pickIndex >= 0 ? pickIndex : 0] || "0s";
+
+    const toMs = (v) => (v.endsWith("ms") ? parseFloat(v) : parseFloat(v) * 1000);
+    const ms = toMs(durStr);
+    return Number.isFinite(ms) ? ms : 0;
+  }
+
+  function setDateboxShift(card, open, isMobile) {
+    // mobilon SEMMI animáció
+    const datebox = card.querySelector(".live-datebox");
+    const panel = card.querySelector("[data-panel]");
+    if (!datebox || !panel) return;
+
+    if (isMobile) {
+      datebox.style.transition = "none";
+      datebox.style.transform = "translateY(0px)";
+      return;
+    }
+
+    datebox.style.willChange = "transform";
+
+    const dur = getPanelDurationMs(panel);
+    if (dur > 0) datebox.style.transition = `transform ${dur}ms ease`;
+
+    if (!open) {
+      datebox.style.transform = "translateY(0px)";
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const h = panel.scrollHeight || 0;
+      datebox.style.transform = `translateY(${h / 2}px)`;
+    });
+  }
+
   // ---------- render ----------
   function renderEmpty() {
     app.innerHTML = `
@@ -95,7 +134,6 @@
     return `<div class="live-month-title">${formatMonthLong(dateObj)} ${dateObj.getFullYear()}</div>`;
   }
 
-  // DESKTOP card (a mostani, bevált struktúra)
   function renderEventCardDesktop(item, dateObj) {
     const weekday = formatWeekdayShort(dateObj);
     const day = String(dateObj.getDate());
@@ -153,7 +191,6 @@
     `;
   }
 
-  // MOBILE card (stackelt, gombok alul mindig; dátum nem animál)
   function renderEventCardMobile(item, dateObj) {
     const weekday = formatWeekdayShort(dateObj);
     const day = String(dateObj.getDate());
@@ -169,7 +206,6 @@
 
     const descrBlock = descr ? `<div class="live-descr">${escapeHTML(descr)}</div>` : "";
 
-    // Fontos: a panel a subtitle és a gombok közé kerül!
     return `
       <article class="live-card live-card--mobile" data-card>
         <div class="live-card-inner">
@@ -200,7 +236,6 @@
                 <div class="live-label">Show Type</div>
                 <div class="live-value">${type}</div>
               </div>
-
               <div class="live-col">
                 <div class="live-label">Program</div>
                 <div class="live-value">${program}</div>
@@ -214,7 +249,7 @@
     `;
   }
 
-  function bindInteractions() {
+  function bindInteractions(isMobile) {
     app.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-action='toggle']");
       if (!btn) return;
@@ -226,20 +261,38 @@
       if (!panel) return;
 
       const expanded = panel.dataset.expanded === "true";
-      setExpanded(panel, !expanded);
+      const willOpen = !expanded;
 
-      btn.classList.toggle("is-active", !expanded);
+      setExpanded(panel, willOpen);
+      btn.classList.toggle("is-active", willOpen);
 
-      if (!expanded) {
+      // datebox slide ONLY desktop
+      setDateboxShift(card, willOpen, isMobile);
+
+      // when opening, recalc height next frame
+      if (willOpen) {
         requestAnimationFrame(() => {
           panel.style.maxHeight = panel.scrollHeight + "px";
+          setDateboxShift(card, true, isMobile);
         });
       }
     });
 
     window.addEventListener("resize", () => {
-      const panels = app.querySelectorAll("[data-panel][data-expanded='true']");
-      panels.forEach((p) => (p.style.maxHeight = p.scrollHeight + "px"));
+      const nowMobile = mq.matches; // resize közben változhat
+      const cards = app.querySelectorAll("[data-card]");
+      cards.forEach((card) => {
+        const panel = card.querySelector("[data-panel]");
+        if (!panel) return;
+
+        const isOpen = panel.dataset.expanded === "true";
+        if (isOpen) {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+          setDateboxShift(card, true, nowMobile);
+        } else {
+          setDateboxShift(card, false, nowMobile);
+        }
+      });
     });
   }
 
@@ -249,7 +302,6 @@
       return;
     }
 
-    // group by month
     const groups = new Map();
     for (const x of normalized) {
       const key = monthKey(x.d);
@@ -268,11 +320,14 @@
     }
 
     app.innerHTML = html;
-    bindInteractions();
+    bindInteractions(isMobile);
 
-    // init panels collapsed
     const panels = app.querySelectorAll("[data-panel]");
     panels.forEach((p) => setExpanded(p, false));
+
+    // reset dateboxes
+    const cards = app.querySelectorAll("[data-card]");
+    cards.forEach((c) => setDateboxShift(c, false, isMobile));
   }
 
   async function init() {
@@ -293,10 +348,8 @@
         .filter((x) => x.d.getTime() >= today.getTime())
         .sort((a, b) => a.d.getTime() - b.d.getTime());
 
-      const isMobile = mq.matches;
-      renderFromNormalized(normalized, isMobile);
+      renderFromNormalized(normalized, mq.matches);
 
-      // ha átváltasz desktop<->mobil breakpointon (pl. devtools), rerender
       const onChange = () => renderFromNormalized(normalized, mq.matches);
       if (mq.addEventListener) mq.addEventListener("change", onChange);
       else mq.addListener(onChange);
