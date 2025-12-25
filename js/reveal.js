@@ -6,7 +6,7 @@
 
 
   // targetek
-  const intro = document.querySelector(".intro");
+
   const releases = document.querySelector(".releases");
   const playlists = document.querySelector(".playlists");
 
@@ -22,7 +22,7 @@
   }
 
   // ✅ gyors: intro induljon “korán”
-  const obsIntro = makeObserver("0px 0px -25% 0px");
+
   // ✅ releases: induljon normálisan (kicsit késleltetve)
   const obsReleases = makeObserver("0px 0px -15% 0px");
   // ✅ playlists: induljon sokkal később (csak amikor lejebb görgetsz)
@@ -35,7 +35,7 @@
     // el.classList.remove("is-in");
   });
 
-  if (intro) obsIntro.observe(intro);
+
   if (releases) obsReleases.observe(releases);
   if (playlists) obsPlaylists.observe(playlists);
 })();

@@ -4771,11 +4771,11 @@ body,
 
         /* ==== PROGRAM LABEL ==== */
         --live-m-program-label-x: -114px;
-        --live-m-program-label-y: -24px;
+        --live-m-program-label-y: -40px;
 
         /* ==== PROGRAM VALUE ==== */
         --live-m-program-value-x: -114px;
-        --live-m-program-value-y: -24px;
+        --live-m-program-value-y: -40px;
 
         /* Description box width POTI (a te külön :root-od helyett ide) */
         --live-m-descr-w: 290px;
