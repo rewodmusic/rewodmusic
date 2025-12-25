@@ -4713,8 +4713,9 @@ body,
 }
 
 /* =========================
-   LIVE – MOBILE LAYOUT FIX
-   (SAFE: mobile only, desktop untouched)
+   LIVE – MOBILE LAYOUT FIX (SAFE)
+   Only affects <=640px
+   Paste to END of live.css
    ========================= */
 @media (max-width: 640px) {
     /* ---- POTIK / ÁLLÍTÓK (mobil) ---- */
@@ -4731,88 +4732,72 @@ body,
         --live-m-btn-h: 42px;
         --live-m-btn-gap: 22px;
         --live-m-btn-bottom-gap: 15px;
-
-        /* hogy legyen hely a gomboknak alul (NE csússzon rá semmi) */
         --live-m-bottom-reserve: calc(var(--live-m-btn-h) + var(--live-m-btn-bottom-gap) + 18px);
-
-        /* expand layout */
         --live-m-descr-fs: 14px;
         --live-m-st-col-w: 134px;
         --live-m-pr-col-w: 126px;
         --live-m-program-xshift: 134px;
-
-        /* Program kezdete ennyivel jobbra a Show Type-tól */
         --live-m-spacer-h: 64px;
 
-        /* a “spacer” amit írtál */
         /* TITLE / SUBTITLE pozicionálás (mobil) */
         --live-m-title-x: 24px;
         --live-m-title-y: 0px;
         --live-m-sub-x: 144px;
         --live-m-sub-y: 0px;
 
-        /* ==== DATE BOX ==== */
+        /* DATE BOX */
         --live-m-date-x: 0px;
         --live-m-date-y: 0px;
 
-        /* ==== BUTTON GROUP ==== */
+        /* BUTTON GROUP */
         --live-m-btns-x: 0px;
         --live-m-btns-y: 0px;
 
-        /* ==== DESCRIPTION ==== */
+        /* DESCRIPTION */
         --live-m-descr-x: -144px;
         --live-m-descr-y: 0px;
 
-        /* ==== SHOW TYPE LABEL ==== */
+        /* SHOW TYPE */
         --live-m-type-label-x: -144px;
         --live-m-type-label-y: 0px;
-
-        /* ==== SHOW TYPE VALUE ==== */
         --live-m-type-value-x: -144px;
         --live-m-type-value-y: 0px;
 
-        /* ==== PROGRAM LABEL ==== */
+        /* PROGRAM */
         --live-m-program-label-x: -114px;
         --live-m-program-label-y: -19px;
-
-        /* ==== PROGRAM VALUE ==== */
         --live-m-program-value-x: -114px;
         --live-m-program-value-y: -19px;
 
-        /* Description box width POTI (a te külön :root-od helyett ide) */
+        /* descr box width */
         --live-m-descr-w: 290px;
 
-        /* Program value width POTI (a te külön :root-od helyett ide) */
+        /* Program value width */
         --live-m-program-value-w: 124px;
 
-        /* Section start gap POTI (a te külön @media helyett ide) */
+        /* section start gap */
         --live-mobile-section-start-gap: 11px;
     }
 
-    /* SECTION START GAP */
+    /* section start gap */
     .live-page,
     .live-inner,
     #liveApp {
         padding-top: var(--live-mobile-section-start-gap);
     }
 
-    /* A teljes fehér kártya mérete (EZ volt nálad csak “belső”) */
+    /* A teljes fehér kártya mérete */
     .live-card {
         width: var(--live-m-card-w);
         min-height: var(--live-m-card-minh);
         margin: 0 auto;
         position: relative;
         background: #f2f2f2;
-
-        /* a screenshot szerinti off-white */
         box-shadow: 0 10px 25px rgba(0,0,0,.35);
         padding-bottom: var(--live-m-bottom-reserve);
-
-        /* hely a gomboknak alul */
         overflow: hidden;
     }
 
-    /* felső “head” rész: dátum + title/subtitle */
     .live-card-inner {
         display: grid;
         grid-template-columns: var(--live-m-datebox-w) 1fr;
@@ -4821,40 +4806,89 @@ body,
         padding: var(--live-m-pad-top) var(--live-m-pad-x) 0 var(--live-m-pad-x);
     }
 
-    /* mobilon NINCS dátum anim – fixen marad */
+    /* mobilon NINCS dátum anim */
     .live-datebox {
         width: var(--live-m-datebox-w);
         transition: none !important;
-        transform: none !important;
-
-        /* nincs anim */
+        transform: translate(var(--live-m-date-x), var(--live-m-date-y)) !important;
     }
 
-    /* --- XY POTIK: mind mobilon --- */
+    .live-maincol {
+        width: var(--live-m-maincol-w);
+    }
+
     .live-title {
+        font-size: var(--live-m-title-fs);
+        line-height: 1.05;
         position: relative;
         transform: translate(var(--live-m-title-x), var(--live-m-title-y));
     }
 
     .live-subtitle {
+        font-size: var(--live-m-sub-fs);
+        line-height: 1.2;
+        margin-top: 10px;
         position: relative;
         transform: translate(var(--live-m-sub-x), var(--live-m-sub-y));
     }
 
-    /* (FONTOS) ha mégis mozgatni akarod mobilon a dateboxot: ez felülírja a transform:none-t */
-    .live-datebox {
-        position: relative;
-        transform: translate(var(--live-m-date-x), var(--live-m-date-y)) !important;
-    }
-
+    /* GOMBOK: mindig alul */
     .live-btncol {
-        position: relative;
-        transform: translate(var(--live-m-btns-x), var(--live-m-btns-y));
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%) translate(var(--live-m-btns-x), var(--live-m-btns-y));
+        bottom: var(--live-m-btn-bottom-gap);
+        display: flex;
+        gap: var(--live-m-btn-gap);
+        width: calc(var(--live-m-btn-w) * 2 + var(--live-m-btn-gap));
+        justify-content: center;
+        margin: 0;
     }
 
+    .live-btn {
+        width: var(--live-m-btn-w);
+        height: var(--live-m-btn-h);
+        line-height: var(--live-m-btn-h);
+        font-size: 18px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .live-expand {
+        padding: 0 var(--live-m-pad-x);
+        margin-top: 18px;
+    }
+
+    /* DESCRIPTION – box + balra zárt sorok */
     .live-descr {
+        width: var(--live-m-descr-w);
+        margin-left: auto;
+        margin-right: auto;
+        font-size: var(--live-m-descr-fs);
+        line-height: 1.35;
+        text-align: left;
+
+        /* <-- mobilon balra zár */
         position: relative;
         transform: translate(var(--live-m-descr-x), var(--live-m-descr-y));
+    }
+
+    .live-two-col {
+        position: relative;
+        margin-top: 22px;
+        display: block;
+    }
+
+    .live-two-col .live-col:nth-child(1) {
+        width: var(--live-m-st-col-w);
+    }
+
+    .live-two-col .live-col:nth-child(2) {
+        width: var(--live-m-pr-col-w);
+        margin-left: var(--live-m-program-xshift);
+        margin-top: calc(-1 * (17px + 10px));
     }
 
     .live-col:nth-child(1) .live-label {
@@ -4875,105 +4909,9 @@ body,
     .live-col:nth-child(2) .live-value {
         position: relative;
         transform: translate(var(--live-m-program-value-x), var(--live-m-program-value-y));
-    }
-
-    /* Description box width */
-    .live-descr {
-        width: var(--live-m-descr-w);
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .live-maincol {
-        width: var(--live-m-maincol-w);
-    }
-
-    .live-title {
-        font-size: var(--live-m-title-fs);
-        line-height: 1.05;
-    }
-
-    .live-subtitle {
-        font-size: var(--live-m-sub-fs);
-        line-height: 1.2;
-        margin-top: 10px;
-
-        /* title-sub gap “állító” jelleggel */
-    }
-
-    /* GOMBOK: mindig a fehér box alján, középen */
-    .live-btncol {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: var(--live-m-btn-bottom-gap);
-        display: flex;
-        gap: var(--live-m-btn-gap);
-        width: calc(var(--live-m-btn-w) * 2 + var(--live-m-btn-gap));
-        justify-content: center;
-        margin: 0;
-    }
-
-    .live-btn {
-        width: var(--live-m-btn-w);
-        height: var(--live-m-btn-h);
-        line-height: var(--live-m-btn-h);
-        font-size: 18px;
-
-        /* a te spec-ed */
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* EXPAND rész (INFO után) – középre igazított blokk, balra zárt szöveg */
-    .live-expand {
-        padding: 0 var(--live-m-pad-x);
-        margin-top: 18px;
-
-        /* subtitle -> descr gap (open only jelleg) */
-    }
-
-    .live-descr {
-        font-size: var(--live-m-descr-fs);
-        line-height: 1.35;
-        text-align: center;
-
-        /* kívül középre */
-        margin-top: 18px;
-    }
-
-    .live-descr * {
-        text-align: left;
-
-        /* belül a sorok balra zártak */
-    }
-
-    /* a te “kulcs” fix: mobilon legyen balra zárt a description */
-    .live-descr {
-        text-align: left;
-    }
-
-    /* Show Type / Program két oszlop, fix szélességekkel + külön Program X-shift állító */
-    .live-two-col {
-        position: relative;
-        margin-top: 22px;
-
-        /* descr -> show type gap */
+        width: var(--live-m-program-value-w) !important;
         display: block;
-    }
-
-    .live-two-col .live-col:nth-child(1) {
-        width: var(--live-m-st-col-w);
-    }
-
-    .live-two-col .live-col:nth-child(2) {
-        width: var(--live-m-pr-col-w);
-        margin-left: var(--live-m-program-xshift);
-        margin-top: calc(-1 * (17px + 10px));
-
-        /* vizuálisan egy Y-on legyen a két label */
+        max-width: none !important;
     }
 
     .live-label {
@@ -4986,14 +4924,6 @@ body,
         font-size: 14px;
     }
 
-    /* Program VALUE WIDTH (WORKING) — mobil only */
-    .live-expand .live-two-col .live-col:nth-child(2) .live-value {
-        width: var(--live-m-program-value-w) !important;
-        display: block;
-        max-width: none !important;
-    }
-
-    /* Spacer (REWOD Solo Show / Timeless Tour alatt) */
     .live-spacer {
         height: var(--live-m-spacer-h);
     }
