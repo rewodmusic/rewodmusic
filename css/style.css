@@ -1273,10 +1273,6 @@ body.upcoming-page .site-footer {
     }
 }
 
-body.menu-open {
-    overflow: hidden;
-}
-
 /* =========================
    MUSIC PAGE (Accordion Library) – HEIGHT-ANIM (NO MAX-HEIGHT BUGS)
    ========================= */
@@ -4283,4 +4279,52 @@ body,
 
     /* erősebb, mint hidden */
     max-width: 100% !important;
+}
+
+@media (max-width: 768px){
+    /* header mindig a legfelül */
+    .m-header {
+        position: sticky;
+        top: 0;
+        z-index: 11050;
+    }
+
+    /* menu overlay header alól indul */
+    #mMenu {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: var(--m-header-h);
+        bottom: 0;
+        z-index: 11000;
+        pointer-events: none;
+    }
+
+    #mMenu.is-open {
+        pointer-events: auto;
+    }
+
+    #mMenu .m-menu-inner {
+        height: calc(100vh - var(--m-header-h));
+        transform: translateX(100%);
+        transition: transform 260ms ease;
+    }
+
+    #mMenu.is-open .m-menu-inner {
+        transform: translateX(0);
+    }
+
+    /* ✅ scroll lock: body FIXED (nem overflow hidden) */
+    body.menu-open {
+        position: fixed;
+        left: 0;
+        right: 0;
+        width: 100%;
+        touch-action: none;
+    }
+
+    /* opcionális, hogy ne “pattanjon” */
+    html.menu-open {
+        overflow: hidden;
+    }
 }
