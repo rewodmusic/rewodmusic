@@ -1,56 +1,63 @@
 /* =========================
-   SONG PAGE – JS (query id + linktree) ✅ SAFE
+   SONG PAGE – dynamic by ?id=
+   + HOME blocks (latest/upcoming) SAFE
    ========================= */
 
 const CONFIG = {
   dataUrl: "/data/admin.json",
   kofiUrl: "https://ko-fi.com/rewodmusic",
-  signatureUrl: "/img/signature.png",
-  openLinksInNewTab: false // ✅ itt tudod szabályozni
+  signatureUrl: "/img/signature.png"
 };
 
-function safeText(s) {
-  return (s ?? "").toString();
-}
-function hasText(s) {
-  return safeText(s).trim().length > 0;
-}
+function safeText(s) { return (s ?? "").toString(); }
+function hasText(s) { return safeText(s).trim().length > 0; }
 
-/** "Bruno Mars" -> "brunomars", "Die With A Smile" -> "diewithasmile" */
-function compactSlug(s) {
+/** erős normalizálás id-k összehasonlításához (kötőjel/space/ékezet mindegy) */
+function normId(s) {
   return safeText(s)
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "")
-    .trim();
-}
-function rowId(row) {
-  const a = compactSlug(row.newmusicartist);
-  const t = compactSlug(row.newmusictitle);
-  if (!a || !t) return "";
-  return `${a}-${t}`;
-}
-function getQueryId() {
-  const p = new URLSearchParams(location.search);
-  return safeText(p.get("id")).trim().toLowerCase();
+    .replace(/[^a-z0-9]+/g, ""); // minden nem-alfanumot kidob
 }
 
-function setBtn(btn, url, forceSameTab = true) {
+/** klasszikus slug (artist-title), de összehasonlításhoz úgyis normId-t használunk */
+function slugify(s) {
+  return safeText(s)
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** rugalmas mező-lookup */
+function pick(row, keys, fallback = "") {
+  for (const k of keys) {
+    if (hasText(row?.[k])) return safeText(row[k]).trim();
+  }
+  return fallback;
+}
+
+/** id = "artist-title" (for display / link building) */
+function buildRowId(row) {
+  const artist = pick(row, ["artist", "newmusicartist", "musicartist"]);
+  const title  = pick(row, ["title", "newmusictitle", "musictitle"]);
+  return `${slugify(artist)}-${slugify(title)}`.replace(/^-+|-+$/g, "");
+}
+
+function getQueryId() {
+  const params = new URLSearchParams(window.location.search);
+  return safeText(params.get("id")).trim();
+}
+
+function setBtn(btn, url) {
   if (!btn) return;
   const u = safeText(url).trim();
 
   if (u && u !== "#") {
     btn.href = u;
-
-    // ✅ ne nyisson új ablakot (alapból)
-    if (CONFIG.openLinksInNewTab && !forceSameTab) {
-      btn.target = "_blank";
-      btn.rel = "noopener";
-    } else {
-      btn.removeAttribute("target");
-      btn.removeAttribute("rel");
-    }
-
+    btn.target = "_blank";
+    btn.rel = "noopener";
     btn.style.opacity = "1";
     btn.style.pointerEvents = "auto";
   } else {
@@ -61,12 +68,14 @@ function setBtn(btn, url, forceSameTab = true) {
 }
 
 function buildTitle(row) {
-  const t = safeText(row.newmusictitle).trim();
-  const f = safeText(row.feat).trim();
-  const a = safeText(row.newmusicartist).trim();
-  const tape = safeText(row.tape).trim().toLowerCase();
+  const t = pick(row, ["title", "newmusictitle"], "...");
+  const f = pick(row, ["feat"], "");
+  const tape = pick(row, ["tape"], "").toLowerCase();
 
-  if (tape === "x") return `${a} - ${t}`;
+  if (tape === "x") {
+    const a = pick(row, ["artist", "newmusicartist"], "REWOD");
+    return `${a} - ${t}`;
+  }
   if (f) return `REWOD ft. ${f} - ${t}`;
   return `REWOD - ${t}`;
 }
@@ -98,7 +107,7 @@ function setDescr(row) {
   const text = document.getElementById("latestDescrText");
   if (!services || !wrap || !text) return;
 
-  const d = safeText(row.descr).trim();
+  const d = pick(row, ["descr", "description"], "");
 
   if (!d) {
     services.classList.remove("has-descr");
@@ -111,9 +120,9 @@ function setDescr(row) {
   }
 
   if (!wrap.parentElement) services.appendChild(_latestDescrNode || wrap);
+
   services.classList.add("has-descr");
   wrap.hidden = false;
-
   text.textContent = `"${d}"\n- REWOD`;
 
   let sig = document.getElementById("latestSignature");
@@ -125,79 +134,138 @@ function setDescr(row) {
     wrap.appendChild(sig);
   }
 
-  const sigUrl = safeText(row.signatureUrl || row.signatureurl).trim() || CONFIG.signatureUrl;
+  const sigUrl = pick(row, ["signatureUrl", "signatureurl"], CONFIG.signatureUrl);
   sig.src = sigUrl;
   sig.loading = "lazy";
   sig.decoding = "async";
 }
 
-/* -------- HOME blocks helpers (only if elements exist) -------- */
+/* -------- HOME blocks (latest/upcoming) – SAFE -------- */
+
+function utcMidnightMs(dateStr) {
+  const s = safeText(dateStr).trim();
+  if (!s) return null;
+  const normalized = s.replace(/_/g, "-");
+  const m = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  return Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 0, 0, 0);
+}
+
+function formatCountdownText(msLeft) {
+  if (msLeft <= 0) return "Out now";
+  const totalSec = Math.floor(msLeft / 1000);
+  const days = Math.floor(totalSec / 86400);
+  const hours = Math.floor((totalSec % 86400) / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  const seconds = totalSec % 60;
+  return `${days} days ${hours} hours<br>${minutes} minutes ${seconds} seconds`;
+}
 
 function initHomeBlocks(rows) {
-  // ✅ csak akkor fusson, ha tényleg home elemek vannak ezen az oldalon
-  const hasHome =
+  // csak akkor csináljuk, ha tényleg léteznek a HOME elemek ezen az oldalon
+  const hasAny =
     document.getElementById("homeLatestTitle") ||
     document.getElementById("homeComingTitle") ||
-    document.getElementById("homeLatestListenBtn");
+    document.getElementById("homeComingCountdown");
 
-  if (!hasHome) return;
+  if (!hasAny) return;
 
-  const data = Array.isArray(rows) ? (rows[0] || {}) : (rows || {});
+  const latest = rows?.[0] || {};
 
+  // LATEST
   const latestTitleEl = document.getElementById("homeLatestTitle");
   const latestArtistEl = document.getElementById("homeLatestArtist");
-  if (latestTitleEl) latestTitleEl.textContent = safeText(data.newmusictitle).trim();
-  if (latestArtistEl) latestArtistEl.textContent = safeText(data.newmusicartist).trim();
+  if (latestTitleEl) latestTitleEl.textContent = pick(latest, ["newmusictitle", "title"], "");
+  if (latestArtistEl) latestArtistEl.textContent = pick(latest, ["newmusicartist", "artist"], "");
 
-  const btn = document.getElementById("homeLatestListenBtn");
-  if (btn) btn.href = "/latest/";
+  const latestCoverEl = document.getElementById("homeLatestCover");
+  const latestCoverUrl = pick(latest, ["coverUrl", "coverurl", "cover", "image", "img"], "");
+  if (latestCoverEl && latestCoverUrl) latestCoverEl.src = latestCoverUrl;
+
+  const latestBtn = document.getElementById("homeLatestListenBtn");
+  if (latestBtn) latestBtn.href = "/latest/";
+
+  // UPCOMING
+  const comingTitleEl = document.getElementById("homeComingTitle");
+  const comingArtistEl = document.getElementById("homeComingArtist");
+  if (comingTitleEl) comingTitleEl.textContent = pick(latest, ["comingmusictitle"], "");
+  if (comingArtistEl) comingArtistEl.textContent = pick(latest, ["comingmusicartist"], "");
+
+  const comingCoverEl = document.getElementById("homeComingCover");
+  const comingCoverUrl = pick(latest, ["comingCoverUrl", "comingcoverurl"], "");
+  if (comingCoverEl && comingCoverUrl) comingCoverEl.src = comingCoverUrl;
+
+  const countdownEl = document.getElementById("homeComingCountdown");
+  if (!countdownEl) return;
+
+  const targetUtc = utcMidnightMs(pick(latest, ["comingmusicdate"], ""));
+  if (!targetUtc) {
+    countdownEl.textContent = "--";
+    return;
+  }
+
+  function tick() {
+    countdownEl.innerHTML = formatCountdownText(targetUtc - Date.now());
+  }
+  tick();
+  window.setInterval(tick, 1000);
 }
 
 /* -------- MAIN -------- */
 
 async function initSong() {
   const res = await fetch(CONFIG.dataUrl, { cache: "no-store" });
-  const rows = await res.json();
-  if (!Array.isArray(rows) || rows.length === 0) return;
+  const data = await res.json();
+  if (!Array.isArray(data) || data.length === 0) return;
 
-  // ✅ home block csak ha van ilyen a DOM-ban
-  initHomeBlocks(rows);
+  // 0) HOME blokkok biztonságosan (mindig a data[0] alapján)
+  try { initHomeBlocks(data); } catch (e) { console.error("home blocks error:", e); }
 
-  // ✅ find song by ?id=
-  const qid = getQueryId();
-  let row = rows[0];
+  // 1) kiválasztás ?id= alapján (robosztus)
+  const wantedRaw = getQueryId();
+  const wanted = normId(wantedRaw);
 
-  if (qid) {
-    const found = rows.find(r => rowId(r) === qid);
-    if (found) row = found;
+  let row = null;
+
+  if (wanted) {
+    row =
+      data.find(r => normId(r?.id) === wanted) ||
+      data.find(r => normId(r?.slug) === wanted) ||
+      data.find(r => normId(buildRowId(r)) === wanted) ||
+      // extra: ha valaki a régi "compact" formátumot használta (hyphen nélküli)
+      data.find(r => normId(slugify(pick(r, ["newmusicartist","artist"])) + slugify(pick(r, ["newmusictitle","title"]))) === wanted);
   }
 
-  // title
-  const titleEl = document.getElementById("latestTitle");
-  if (titleEl) titleEl.textContent = buildTitle(row);
+  if (!row) row = data[0]; // fallback: latest
 
-  // tape
-  const isTape = safeText(row.tape).trim().toLowerCase() === "x";
+  // 2) SONG rész feltöltése
+  const coverEl = document.getElementById("latestCover");
+  const coverUrl = pick(row, ["coverUrl", "coverurl", "cover", "image", "img"], "");
+  if (coverEl && coverUrl) coverEl.src = coverUrl;
+
+  const titleEl = document.getElementById("latestTitle");
+  const titleStr = buildTitle(row);
+  if (titleEl) titleEl.textContent = titleStr;
+
+  const isTape = pick(row, ["tape"], "").toLowerCase() === "x";
   setTapeMode(isTape);
 
-  // buttons (✅ same tab by default)
-  setBtn(document.getElementById("btnSpotify"), row.spotifyurl, true);
-  setBtn(document.getElementById("btnApple"),  row.appleurl, true);
-  setBtn(document.getElementById("btnYouTube"), row.youtubeurl, true);
-  setBtn(document.getElementById("btnMMS"),    row.mymusicurl, true);
+  setBtn(document.getElementById("btnSpotify"), pick(row, ["spotifyurl", "spotifyUrl", "spotify"], ""));
+  setBtn(document.getElementById("btnApple"),   pick(row, ["appleurl", "appleUrl", "apple"], ""));
+  setBtn(document.getElementById("btnYouTube"), pick(row, ["youtubeurl", "youtubeUrl", "youtube"], ""));
+  setBtn(document.getElementById("btnMMS"),     pick(row, ["mymusicurl", "mymusicUrl", "sheeturl", "sheetUrl"], ""));
 
   const kofiBtn = document.getElementById("btnKofi");
   if (kofiBtn) {
     kofiBtn.href = CONFIG.kofiUrl;
-    kofiBtn.removeAttribute("target");
-    kofiBtn.removeAttribute("rel");
+    kofiBtn.target = "_blank";
+    kofiBtn.rel = "noopener";
   }
 
-  // descr + signature
   setDescr(row);
 
-  // page <title>
-  document.title = buildTitle(row);
+  // browser tab title
+  document.title = titleStr;
 }
 
 initSong().catch(console.error);
