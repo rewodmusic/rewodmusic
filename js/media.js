@@ -5,12 +5,12 @@
    + HEIGHT LOCK (prevents footer jump)
    ========================= */
 
-const MEDIA_JSON = "data/media.json";
+const MEDIA_JSON = "/data/media.json";
 
 const FOLDERS = {
-  photo: "img/0_media/photo/",
-  art: "img/0_media/art/",
-  short: "img/0_media/short/",
+  photo: "/img/0_media/photo/",
+  art: "/img/0_media/art/",
+  short: "/img/0_media/short/",
 };
 
 // preferencia sorrend (ha több formátum is létezik)
@@ -21,8 +21,8 @@ const EXT = {
 };
 
 // icons
-const ICON_MUTED  = "img/audio-muted.png";
-const ICON_ACTIVE = "img/audio-active.png";
+const ICON_MUTED  = "/img/audio-muted.png";
+const ICON_ACTIVE = "/img/audio-active.png";
 
 let mediaData = [];
 let activeType = ""; // "", "photo", "art", "short"

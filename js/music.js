@@ -7,14 +7,14 @@
 */
 
 const CONFIG = {
-  dataUrl: "data/admin.json",
-  playIcon: "img/playbutton.png",
-  signatureImg: "img/signature.png",
+  dataUrl: "/data/admin.json",
+  playIcon: "/img/playbutton.png",
+  signatureImg: "/img/signature.png",
   serviceIcons: {
-    spotify: "linktree/linktree_spotify.svg",
-    apple: "linktree/linktree_applemusic.svg",
-    youtube: "linktree/linktree_youtube.svg",
-    mms: "linktree/linktree_mms.png"
+    spotify: "/linktree/linktree_spotify.svg",
+    apple: "/linktree/linktree_applemusic.svg",
+    youtube: "/linktree/linktree_youtube.svg",
+    mms: "/linktree/linktree_mms.png"
   }
 };
 

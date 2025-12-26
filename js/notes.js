@@ -1,4 +1,4 @@
-const DATA_URL = "data/notes.json";
+const DATA_URL = "/data/notes.json";
 
 // desktop / mobile detection
 const isMobile = window.matchMedia("(max-width: 768px)").matches;

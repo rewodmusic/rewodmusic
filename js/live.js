@@ -2,7 +2,7 @@
   "use strict";
 
   const CFG = {
-    jsonPath: "data/live.json",
+    jsonPath: "/data/live.json",
     emptySpacerMinHeight: 260,
     dateDelimiter: "_",
     mobileMQ: "(max-width: 640px)" // CSS breakpointhoz igaz

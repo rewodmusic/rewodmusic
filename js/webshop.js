@@ -3,12 +3,12 @@
    Mobile: 5 cards
 */
 
-const DATA_URL = "data/admin.json";
+const DATA_URL = "/data/admin.json";
 
 const MAX_ITEMS_DESKTOP = 8;
 const MAX_ITEMS_MOBILE = 5;
 
-const PREVIEW_DIR = "img/0_sheetmusic"; // ide pakolod a previewket
+const PREVIEW_DIR = "/img/0_sheetmusic"; // ide pakolod a previewket
 const MYMUSICFIVE_URL = "https://www.mymusicfive.com/rewodmusic";
 
 function safeText(v) {
