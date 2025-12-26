@@ -1,6 +1,6 @@
 /* =========================
-   SONG PAGE – dynamic by ?id=
-   Based on latest.js (SAFE)
+   SONG PAGE – JS (LINKTREE + HOME SECTIONS) ✅ SAFE
+   /song/?id=bruno-mars-die-with-a-smile
    ========================= */
 
 const CONFIG = {
@@ -9,32 +9,11 @@ const CONFIG = {
   signatureUrl: "/img/signature.png"
 };
 
-function safeText(s) { return (s ?? "").toString(); }
-function hasText(s) { return safeText(s).trim().length > 0; }
-
-function slugify(s) {
-  return safeText(s)
-    .toLowerCase()
-    .trim()
-    .replace(/&/g, "and")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+function safeText(s) {
+  return (s ?? "").toString();
 }
-
-// rugalmas mező-lookup (mert nálad többféle kulcsnév is lehet)
-function pick(row, keys, fallback = "") {
-  for (const k of keys) {
-    if (hasText(row?.[k])) return safeText(row[k]).trim();
-  }
-  return fallback;
-}
-
-// id = "artist-title"
-function buildRowId(row) {
-  // ezekből próbálunk dolgozni (ha később átnevezed a JSON kulcsokat, itt csak bővítesz)
-  const artist = pick(row, ["artist", "newmusicartist", "musicartist", "comingmusicartist"]);
-  const title  = pick(row, ["title", "newmusictitle", "musictitle", "comingmusictitle"]);
-  return `${slugify(artist)}-${slugify(title)}`.replace(/^-+|-+$/g, "");
+function hasText(s) {
+  return safeText(s).trim().length > 0;
 }
 
 function setBtn(btn, url) {
@@ -55,16 +34,38 @@ function setBtn(btn, url) {
 }
 
 function buildTitle(row) {
-  const t = pick(row, ["title", "newmusictitle"], "...");
-  const f = pick(row, ["feat"], "");
-  const a = pick(row, ["artist", "newmusicartist"], "REWOD");
-  const tape = pick(row, ["tape"], "").toLowerCase();
+  const t = safeText(row.newmusictitle).trim();
+  const f = safeText(row.feat).trim();
+  const a = safeText(row.newmusicartist).trim();
+  const tape = safeText(row.tape).trim().toLowerCase();
 
-  // ha "original composition" van nálad artistként, akkor is szép marad
   if (tape === "x") return `${a} - ${t}`;
   if (f) return `REWOD ft. ${f} - ${t}`;
-  // ha az artist nem REWOD (cover), akkor is REWOD-ozzuk (ahogy a latest oldalon)
   return `REWOD - ${t}`;
+}
+
+/* --- slug/id helpers --- */
+function slugify(str) {
+  const s = safeText(str)
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // remove accents
+
+  return s
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-+/g, "-");
+}
+
+function rowId(row) {
+  const a = safeText(row.newmusicartist).trim();
+  const t = safeText(row.newmusictitle).trim();
+  return slugify(`${a}-${t}`);
+}
+
+function getQueryId() {
+  const p = new URLSearchParams(window.location.search);
+  return safeText(p.get("id")).trim();
 }
 
 /* --- TAPE UI: hide/show rows safely --- */
@@ -92,13 +93,13 @@ function setTapeMode(isTape) {
 let _latestDescrNode = null;
 
 function setDescr(row) {
-  const services = document.getElementById("latestServices");
+  const services = document.getElementById("latestServices"); // gray box
   const wrap = document.getElementById("latestDescr");
   const text = document.getElementById("latestDescrText");
 
   if (!services || !wrap || !text) return;
 
-  const d = pick(row, ["descr", "description"], "");
+  const d = safeText(row.descr).trim();
 
   if (!d) {
     services.classList.remove("has-descr");
@@ -110,10 +111,13 @@ function setDescr(row) {
     return;
   }
 
-  if (!wrap.parentElement) services.appendChild(_latestDescrNode || wrap);
+  if (!wrap.parentElement) {
+    services.appendChild(_latestDescrNode || wrap);
+  }
 
   services.classList.add("has-descr");
   wrap.hidden = false;
+
   text.textContent = `"${d}"\n- REWOD`;
 
   let sig = document.getElementById("latestSignature");
@@ -125,51 +129,121 @@ function setDescr(row) {
     wrap.appendChild(sig);
   }
 
-  const sigUrl = pick(row, ["signatureUrl", "signatureurl"], CONFIG.signatureUrl);
+  const sigUrl = safeText(row.signatureUrl || row.signatureurl).trim() || CONFIG.signatureUrl;
   sig.src = sigUrl;
   sig.loading = "lazy";
   sig.decoding = "async";
 }
 
-function getQueryId() {
-  const params = new URLSearchParams(window.location.search);
-  return safeText(params.get("id")).trim();
+/* --- HOME releases helpers --- */
+function buildArtistLine(a1, a2) {
+  const A = safeText(a1).trim();
+  const B = safeText(a2).trim();
+  if (A && B) return `${A}, ${B}`;
+  return A || "";
 }
 
-async function initSong() {
-  const res = await fetch(CONFIG.dataUrl, { cache: "no-store" });
-  const data = await res.json();
-  if (!Array.isArray(data) || data.length === 0) return;
+function buildTitleWithFeat(title, feat) {
+  const t = safeText(title).trim();
+  const f = safeText(feat).trim();
+  if (!t) return "";
+  return f ? `${t} ft. ${f}` : t;
+}
 
-  const wantedId = getQueryId();
+/**
+ * Countdown to UTC 00:00
+ * Accepts BOTH: YYYY-MM-DD and YYYY_MM_DD
+ */
+function utcMidnightMs(dateStr) {
+  const s = safeText(dateStr).trim();
+  if (!s) return null;
 
-  // keresés: vagy explicit row.id / row.slug, vagy generált artist-title
-  let row =
-    data.find(r => safeText(r.id).trim() === wantedId) ||
-    data.find(r => safeText(r.slug).trim() === wantedId) ||
-    data.find(r => buildRowId(r) === wantedId);
+  const normalized = s.replace(/_/g, "-");
+  const m = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
 
-  // fallback: ha nincs id vagy nem találjuk, mutassuk a legfrissebbet (data[0])
-  if (!row) row = data[0];
+  const y = Number(m[1]);
+  const mo = Number(m[2]) - 1;
+  const da = Number(m[3]);
 
-  // cover
-  const coverEl = document.getElementById("latestCover");
-  const coverUrl = pick(row, ["coverUrl", "cover", "image", "img"], "");
-  if (coverEl && coverUrl) coverEl.src = coverUrl;
+  return Date.UTC(y, mo, da, 0, 0, 0);
+}
+
+function formatCountdownText(msLeft) {
+  if (msLeft <= 0) return "Out now";
+
+  const totalSec = Math.floor(msLeft / 1000);
+  const days = Math.floor(totalSec / 86400);
+  const hours = Math.floor((totalSec % 86400) / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  const seconds = totalSec % 60;
+
+  return `${days} days ${hours} hours<br>${minutes} minutes ${seconds} seconds`;
+}
+
+function renderHomeSections(homeRow) {
+  if (!homeRow) return;
+
+  // LATEST
+  const latestTitle = buildTitleWithFeat(homeRow.newmusictitle, homeRow.feat);
+  const latestArtist = buildArtistLine(homeRow.newmusicartist, homeRow.newmusicartist2);
+
+  const homeLatestTitleEl = document.getElementById("homeLatestTitle");
+  const homeLatestArtistEl = document.getElementById("homeLatestArtist");
+  const homeLatestListenBtn = document.getElementById("homeLatestListenBtn");
+
+  if (homeLatestTitleEl) homeLatestTitleEl.textContent = latestTitle || "";
+  if (homeLatestArtistEl) homeLatestArtistEl.textContent = latestArtist || "";
+  if (homeLatestListenBtn) homeLatestListenBtn.href = "/latest/";
+
+  // UPCOMING
+  const comingTitle = buildTitleWithFeat(homeRow.comingmusictitle, homeRow.comingfeat);
+  const comingArtist = safeText(homeRow.comingmusicartist).trim();
+
+  const homeComingTitleEl = document.getElementById("homeComingTitle");
+  const homeComingArtistEl = document.getElementById("homeComingArtist");
+  const homeCountdownEl = document.getElementById("homeComingCountdown");
+
+  if (homeComingTitleEl) homeComingTitleEl.textContent = comingTitle || "";
+  if (homeComingArtistEl) homeComingArtistEl.textContent = comingArtist || "";
+
+  if (!homeCountdownEl) return;
+
+  const targetUtc = utcMidnightMs(homeRow.comingmusicdate);
+  if (!targetUtc) {
+    homeCountdownEl.textContent = "--";
+    return;
+  }
+
+  function tick() {
+    const msLeft = targetUtc - Date.now();
+    homeCountdownEl.innerHTML = formatCountdownText(msLeft);
+  }
+
+  tick();
+  window.setInterval(tick, 1000);
+}
+
+function renderSong(row) {
+  if (!row) return;
 
   // title
   const titleEl = document.getElementById("latestTitle");
-  if (titleEl) titleEl.textContent = buildTitle(row);
+  const titleText = buildTitle(row);
+  if (titleEl) titleEl.textContent = titleText;
+
+  // (nice to have) browser tab title
+  if (titleText) document.title = `${titleText} – REWOD`;
 
   // tape
-  const isTape = pick(row, ["tape"], "").toLowerCase() === "x";
+  const isTape = safeText(row.tape).trim().toLowerCase() === "x";
   setTapeMode(isTape);
 
-  // buttons (több lehetséges kulcsnévvel)
-  setBtn(document.getElementById("btnSpotify"), pick(row, ["spotifyurl", "spotifyUrl", "spotify"], ""));
-  setBtn(document.getElementById("btnApple"),  pick(row, ["appleurl", "appleUrl", "apple"], ""));
-  setBtn(document.getElementById("btnYouTube"), pick(row, ["youtubeurl", "youtubeUrl", "youtube"], ""));
-  setBtn(document.getElementById("btnMMS"),    pick(row, ["mymusicurl", "mymusicUrl", "sheeturl", "sheetUrl"], ""));
+  // buttons
+  setBtn(document.getElementById("btnSpotify"), row.spotifyurl);
+  setBtn(document.getElementById("btnApple"),  row.appleurl);
+  setBtn(document.getElementById("btnYouTube"), row.youtubeurl);
+  setBtn(document.getElementById("btnMMS"),    row.mymusicurl);
 
   const kofiBtn = document.getElementById("btnKofi");
   if (kofiBtn) {
@@ -178,7 +252,30 @@ async function initSong() {
     kofiBtn.rel = "noopener";
   }
 
+  // descr + signature
   setDescr(row);
+}
+
+async function initSong() {
+  const res = await fetch(CONFIG.dataUrl, { cache: "no-store" });
+  const data = await res.json();
+  const rows = Array.isArray(data) ? data : [];
+
+  if (rows.length === 0) return;
+
+  // HOME sections always use FIRST row (same as Home logic)
+  renderHomeSections(rows[0]);
+
+  // SONG row by ?id=
+  const id = getQueryId();
+  let row = rows[0];
+
+  if (id) {
+    const found = rows.find(r => rowId(r) === id);
+    if (found) row = found;
+  }
+
+  renderSong(row);
 }
 
 initSong().catch(console.error);
