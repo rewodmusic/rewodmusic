@@ -5026,13 +5026,25 @@ body,
     }
 }
 
+/* SONG PAGE – linktree section ne legyen túl magas */
+body.page-song .latest-release {
+    height: auto !important;
+    min-height: 0 !important;
+    padding-top: 10px !important;
+    padding-bottom: 0px !important;
+}
 
+/* SONG PAGE – MOBILE spacing fix */
+@media (max-width: 768px){
+    body.page-song .latest-release {
+        min-height: 0 !important;
+        height: auto !important;
+        padding-top: 24px !important;
+        padding-bottom: 5px !important;
+    }
 
-
-
-/* =========================
-   SONG PAGE – spacing fixes
-   ========================= */
-body.page-song .hero { background: transparent; }
-body.page-song .latest-release { padding-top: 0px; } /* ha még mindig nagy, vidd le 20px-ig */
-body.page-song .latest-release--no-cover .latest-title { margin-top: 0; }
+    /* ha még mindig túl sok az üres tér felül */
+    body.page-song .latest-title {
+        margin-top: 12px !important;
+    }
+}
