@@ -1,11 +1,12 @@
 /* =========================
-   SONG PAGE – JS (query id + linktree + home blocks) ✅ SAFE
+   SONG PAGE – JS (query id + linktree) ✅ SAFE
    ========================= */
 
 const CONFIG = {
   dataUrl: "/data/admin.json",
   kofiUrl: "https://ko-fi.com/rewodmusic",
-  signatureUrl: "/img/signature.png"
+  signatureUrl: "/img/signature.png",
+  openLinksInNewTab: false // ✅ itt tudod szabályozni
 };
 
 function safeText(s) {
@@ -18,9 +19,9 @@ function hasText(s) {
 /** "Bruno Mars" -> "brunomars", "Die With A Smile" -> "diewithasmile" */
 function compactSlug(s) {
   return safeText(s)
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove accents
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "") // keep only a-z0-9
+    .replace(/[^a-z0-9]+/g, "")
     .trim();
 }
 function rowId(row) {
@@ -34,14 +35,22 @@ function getQueryId() {
   return safeText(p.get("id")).trim().toLowerCase();
 }
 
-function setBtn(btn, url) {
+function setBtn(btn, url, forceSameTab = true) {
   if (!btn) return;
   const u = safeText(url).trim();
 
   if (u && u !== "#") {
     btn.href = u;
-    btn.target = "_blank";
-    btn.rel = "noopener";
+
+    // ✅ ne nyisson új ablakot (alapból)
+    if (CONFIG.openLinksInNewTab && !forceSameTab) {
+      btn.target = "_blank";
+      btn.rel = "noopener";
+    } else {
+      btn.removeAttribute("target");
+      btn.removeAttribute("rel");
+    }
+
     btn.style.opacity = "1";
     btn.style.pointerEvents = "auto";
   } else {
@@ -122,91 +131,26 @@ function setDescr(row) {
   sig.decoding = "async";
 }
 
-/* -------- HOME blocks helpers (latest/upcoming) -------- */
-
-function buildArtistLine(a1, a2) {
-  const A = safeText(a1).trim();
-  const B = safeText(a2).trim();
-  if (A && B) return `${A}, ${B}`;
-  return A || "";
-}
-function buildTitleWithFeat(title, feat) {
-  const t = safeText(title).trim();
-  const f = safeText(feat).trim();
-  if (!t) return "";
-  return f ? `${t} ft. ${f}` : t;
-}
-function utcMidnightMs(dateStr) {
-  const s = safeText(dateStr).trim();
-  if (!s) return null;
-  const normalized = s.replace(/_/g, "-");
-  const m = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!m) return null;
-  const y = Number(m[1]);
-  const mo = Number(m[2]) - 1;
-  const da = Number(m[3]);
-  return Date.UTC(y, mo, da, 0, 0, 0);
-}
-function formatCountdownText(msLeft) {
-  if (msLeft <= 0) return "Out now";
-  const totalSec = Math.floor(msLeft / 1000);
-  const days = Math.floor(totalSec / 86400);
-  const hours = Math.floor((totalSec % 86400) / 3600);
-  const minutes = Math.floor((totalSec % 3600) / 60);
-  const seconds = totalSec % 60;
-  return `${days} days ${hours} hours<br>${minutes} minutes ${seconds} seconds`;
-}
+/* -------- HOME blocks helpers (only if elements exist) -------- */
 
 function initHomeBlocks(rows) {
-  const data = Array.isArray(rows) ? (rows[0] || {}) : (rows || {});
+  // ✅ csak akkor fusson, ha tényleg home elemek vannak ezen az oldalon
+  const hasHome =
+    document.getElementById("homeLatestTitle") ||
+    document.getElementById("homeComingTitle") ||
+    document.getElementById("homeLatestListenBtn");
 
-  // LATEST (home)
-  const latestTitle = buildTitleWithFeat(data.newmusictitle, data.feat);
-  const latestArtist = buildArtistLine(data.newmusicartist, data.newmusicartist2);
+  if (!hasHome) return;
+
+  const data = Array.isArray(rows) ? (rows[0] || {}) : (rows || {});
 
   const latestTitleEl = document.getElementById("homeLatestTitle");
   const latestArtistEl = document.getElementById("homeLatestArtist");
-  if (latestTitleEl) latestTitleEl.textContent = latestTitle || "";
-  if (latestArtistEl) latestArtistEl.textContent = latestArtist || "";
-
-  const latestCoverEl = document.getElementById("homeLatestCover");
-  if (latestCoverEl && hasText(data.coverUrl)) latestCoverEl.src = data.coverUrl;
+  if (latestTitleEl) latestTitleEl.textContent = safeText(data.newmusictitle).trim();
+  if (latestArtistEl) latestArtistEl.textContent = safeText(data.newmusicartist).trim();
 
   const btn = document.getElementById("homeLatestListenBtn");
-  if (btn) {
-    // ha akarod: mindig a globál "latest/" legyen, vagy lehetne id-link is.
-    btn.href = "/latest/";
-    btn.style.opacity = "";
-    btn.style.pointerEvents = "";
-  }
-
-  // UPCOMING (home)
-  const comingTitle = buildTitleWithFeat(data.comingmusictitle, data.comingfeat);
-  const comingArtist = safeText(data.comingmusicartist).trim();
-
-  const comingTitleEl = document.getElementById("homeComingTitle");
-  const comingArtistEl = document.getElementById("homeComingArtist");
-  if (comingTitleEl) comingTitleEl.textContent = comingTitle || "";
-  if (comingArtistEl) comingArtistEl.textContent = comingArtist || "";
-
-  const comingCoverEl = document.getElementById("homeComingCover");
-  if (comingCoverEl && hasText(data.comingCoverUrl)) comingCoverEl.src = data.comingCoverUrl;
-
-  const countdownEl = document.getElementById("homeComingCountdown");
-  if (!countdownEl) return;
-
-  const targetUtc = utcMidnightMs(data.comingmusicdate);
-  if (!targetUtc) {
-    countdownEl.textContent = "--";
-    return;
-  }
-
-  function tick() {
-    const msLeft = targetUtc - Date.now();
-    countdownEl.innerHTML = formatCountdownText(msLeft);
-  }
-  tick();
-  window.setInterval(tick, 1000);
+  if (btn) btn.href = "/latest/";
 }
 
 /* -------- MAIN -------- */
@@ -216,10 +160,10 @@ async function initSong() {
   const rows = await res.json();
   if (!Array.isArray(rows) || rows.length === 0) return;
 
-  // 1) fill home blocks (latest/upcoming/playlists)
+  // ✅ home block csak ha van ilyen a DOM-ban
   initHomeBlocks(rows);
 
-  // 2) find song by ?id=
+  // ✅ find song by ?id=
   const qid = getQueryId();
   let row = rows[0];
 
@@ -236,23 +180,23 @@ async function initSong() {
   const isTape = safeText(row.tape).trim().toLowerCase() === "x";
   setTapeMode(isTape);
 
-  // buttons
-  setBtn(document.getElementById("btnSpotify"), row.spotifyurl);
-  setBtn(document.getElementById("btnApple"),  row.appleurl);
-  setBtn(document.getElementById("btnYouTube"), row.youtubeurl);
-  setBtn(document.getElementById("btnMMS"),    row.mymusicurl);
+  // buttons (✅ same tab by default)
+  setBtn(document.getElementById("btnSpotify"), row.spotifyurl, true);
+  setBtn(document.getElementById("btnApple"),  row.appleurl, true);
+  setBtn(document.getElementById("btnYouTube"), row.youtubeurl, true);
+  setBtn(document.getElementById("btnMMS"),    row.mymusicurl, true);
 
   const kofiBtn = document.getElementById("btnKofi");
   if (kofiBtn) {
     kofiBtn.href = CONFIG.kofiUrl;
-    kofiBtn.target = "_blank";
-    kofiBtn.rel = "noopener";
+    kofiBtn.removeAttribute("target");
+    kofiBtn.removeAttribute("rel");
   }
 
   // descr + signature
   setDescr(row);
 
-  // page <title> (browser tab)
+  // page <title>
   document.title = buildTitle(row);
 }
 
