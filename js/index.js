@@ -75,7 +75,7 @@ async function init() {
 
   const latestListenBtn = document.getElementById("latestListenBtn");
   if (latestListenBtn) {
-    latestListenBtn.href = "latest.html";
+    latestListenBtn.href = "latest/";
     latestListenBtn.style.opacity = "";
     latestListenBtn.style.pointerEvents = "";
   }

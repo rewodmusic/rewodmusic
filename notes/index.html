@@ -9,41 +9,48 @@
         <!-- Apple iOS -->
         <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon-192.png">
         <!-- Primary Meta -->
-        <title>WEBSHOP</title>
+        <title>NOTES</title>
         <meta name="description" content="REWOD blends expressive violin, piano, and symphonic sound into cinematic worlds where classical depth meets modern emotion."/>
         <!-- Open Graph / Facebook / Messenger -->
         <meta property="og:type" content="website"/>
         <meta property="og:url" content="https://rewodmusic.com/"/>
-        <meta property="og:title" content="REWOD – Webshop"/>
+        <meta property="og:title" content="REWOD – Notes"/>
         <meta property="og:description" content="REWOD blends violin and symphonic sound into cinematic worlds of modern emotion."/>
         <meta property="og:image" content="https://rewodmusic.com/og-image.jpg"/>
         <!-- Twitter / X -->
         <meta name="twitter:card" content="summary_large_image"/>
-        <meta name="twitter:title" content="REWOD – Webshop"/>
+        <meta name="twitter:title" content="REWOD – Notes"/>
         <meta name="twitter:description" content="Symphonic crossover violin music by REWOD."/>
         <meta name="twitter:image" content="https://rewodmusic.com/og-image.jpg"/>
-        <meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link href="css/style.css" rel="stylesheet"/>
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&display=swap" rel="stylesheet"/>
-        <link rel="preconnect" href="https://fonts.googleapis.com"/>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-        <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,200..900&display=swap" rel="stylesheet"/>
+        <!-- IM Fell English (OK Google Fonts) -->
+        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,200..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
+        <!-- Bandito Script: NE Google Fonts-ból! Helyi fontként töltsd (lásd CSS @font-face) -->
+        <link rel="stylesheet" href="css/style.css">
     </head>
     <!-- MOBILE HEADER (only mobile) -->
     <header class="m-header">
         <a class="m-logo" href="index.html" aria-label="Go to Home"> <img src="img/logo.png" alt="REWOD logo"> </a>
-        <button class="m-burger" id="mBurger" aria-label="Open menu" aria-controls="mMenu" aria-expanded="false"><span></span>
-            <span></span>
-            <span></span>
+        <button class="m-burger" id="mBurger" aria-label="Open menu" aria-controls="mMenu" aria-expanded="false">
+            <span></span><span></span><span></span>
         </button>
     </header>
     <!-- MOBILE SLIDE-IN MENU (starts under header) -->
     <div class="m-menu" id="mMenu" aria-hidden="true">
         <div class="m-menu-inner">
-            <nav class="m-nav" aria-label="Mobile navigation"><a href="index.html">HOME</a><a href="latest.html">LATEST RELEASE</a><a href="webshop.html">WEBSHOP</a><a href="music.html">MUSIC</a><a href="media.html">MEDIA</a><a href="upcoming.html">UPCOMING</a><a href="notes.html">NOTES</a><a href="live.html">LIVE</a>
+            <nav class="m-nav" aria-label="Mobile navigation">
+                <a href="./">HOME</a>
+                <a href="latest/">LATEST RELEASE</a>
+                <a href="webshop/">WEBSHOP</a>
+                <a href="music/">MUSIC</a>
+                <a href="media/">MEDIA</a>
+                <a href="upcoming/">UPCOMING</a>
+                <a href="notes/">NOTES</a>
+                <a href="live/">LIVE</a>
             </nav>
             <div class="m-flex-spacer"></div>
             <div class="m-menu-bottom">
@@ -55,39 +62,32 @@
             </div>
         </div>
     </div>
-    <body class="page-webshop">
-        <!-- HEADER (plain, no hero image) -->
-        <section class="hero hero--plain">
+    <body class="notes-page">
+        <!-- DESKTOP HEADER -->
+        <section class="hero hero--plain hero--transparent">
             <div class="hero-inner">
-                <div data-empty-placeholder class="nav-left"></div><a href="index.html" class="logo-link" aria-label="REWOD – Home"> <img src="img/logo.png" class="logo" alt="REWOD logo"></a>
-                <div class="nav-right">
-                    <a href="index.html">HOME</a>
-                    <a href="latest.html">LATEST RELEASE</a>
-                    <a href="webshop.html">WEBSHOP</a>
-                    <a href="music.html">MUSIC</a>
-                    <a href="media.html">MEDIA</a>
-                    <a href="upcoming.html">UPCOMING</a>
-                    <a href="notes.html">NOTES</a>
-                    <a href="live.html">LIVE</a>
+                <div data-empty-placeholder class="nav-left"></div>
+                <a href="index.html" class="logo-link" aria-label="REWOD – Home"> <img src="img/logo.png" class="logo" alt="REWOD logo"> </a>
+                <div class="nav-right"><a href="./">HOME</a>
+                <a href="latest/">LATEST RELEASE</a>
+                <a href="webshop/">WEBSHOP</a>
+                <a href="music/">MUSIC</a>
+                <a href="media/">MEDIA</a>
+                <a href="upcoming/">UPCOMING</a>
+                <a href="notes/">NOTES</a>
+                <a href="live/">LIVE</a>
                 </div>
             </div>
         </section>
-        <!-- WEBSHOP GRID (JSON-driven) -->
-        <section class="webshop-page">
-            <div class="webshop-inner">
-                <div class="webshop-grid" id="webshopGrid">
-                    <!-- JS injects cards here -->
-                </div>
-                <!-- ✅ ALWAYS visible CTA button (not conditional) -->
-                <div class="ws-loadmore-wrap"><a href="https://www.mymusicfive.com/rewodmusic" class="btn-listen load-more" target="_blank" rel="noopener">
-    LOAD MORE SHEET MUSIC </a>
-                </div>
-            </div>
+        <!-- NOTES -->
+        <section class="notes-wrapper">
+            <div class="notes-bg"></div>
+            <div class="notes-content" id="notesApp"></div>
+            <div class="notes-load-more" id="loadMore">Load More</div>
         </section>
-        <!-- FOOTER (same as everywhere) -->
+        <!-- FOOTER (ugyanaz mint a music.html-ben) -->
         <footer class="site-footer">
-            <div class="footer-inner">
-                <a href="index.html" class="footer-logo-link" aria-label="REWOD – Home"> <img class="footer-logo" src="img/logo.png" alt="REWOD logo"/></a>
+            <div class="footer-inner"><a href="index.html" class="footer-logo-link" aria-label="REWOD – Home"> <img class="footer-logo" src="img/logo.png" alt="REWOD logo"/></a>
                 <nav class="socialbar" aria-label="REWOD social links">
                     <a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank" rel="noopener"><img src="socialbars/spotify.svg" alt="Spotify"/></a>
                     <a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431?l=hu" target="_blank" rel="noopener"><img src="socialbars/applemusic.svg" alt="Apple Music"/></a>
@@ -103,8 +103,7 @@
 </div>
             </div>
         </footer>
-        <!-- JS -->
-        <script src="js/webshop.js"></script>
+        <script src="js/notes.js"></script>
         <script src="js/mobileMenu.js"></script>
     </body>
 </html>
