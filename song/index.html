@@ -8,12 +8,12 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon-192.png">
 
     <!-- Primary Meta -->
-    <title>REWOD – Song</title>
+    <title>SONG</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="description" content="REWOD blends expressive violin, piano, and symphonic sound into cinematic worlds where classical depth meets modern emotion."/>
 
-    <!-- Open Graph -->
+    <!-- OG -->
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="https://rewodmusic.com/song/"/>
     <meta property="og:title" content="REWOD – Song"/>
@@ -26,18 +26,17 @@
     <meta name="twitter:description" content="Symphonic crossover violin music by REWOD."/>
     <meta name="twitter:image" content="https://rewodmusic.com/og-image.jpg"/>
 
-    <!-- Fonts FIRST -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,200..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
     <link href="/css/style.css" rel="stylesheet"/>
   </head>
 
-  <body class="page-song has-hero">
+  <body class="page-song">
     <!-- MOBILE HEADER -->
     <header class="m-header">
       <a class="m-logo" href="/" aria-label="Go to Home">
@@ -48,7 +47,7 @@
       </button>
     </header>
 
-    <!-- MOBILE SLIDE-IN MENU -->
+    <!-- MOBILE MENU -->
     <div class="m-menu" id="mMenu" aria-hidden="true">
       <div class="m-menu-inner">
         <nav class="m-nav" aria-label="Mobile navigation">
@@ -66,30 +65,14 @@
 
         <div class="m-menu-bottom">
           <nav class="socialbar" aria-label="REWOD social links">
-            <a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank" rel="noopener">
-              <img src="/socialbars/spotify.svg" alt="Spotify"/>
-            </a>
-            <a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431?l=hu" target="_blank" rel="noopener">
-              <img src="/socialbars/applemusic.svg" alt="Apple Music"/>
-            </a>
-            <a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener">
-              <img src="/socialbars/youtube.svg" alt="YouTube"/>
-            </a>
-            <a class="social-link" href="http://tiktok.com/@rewodmusic" target="_blank" rel="noopener">
-              <img src="/socialbars/tiktok.svg" alt="TikTok"/>
-            </a>
-            <a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener">
-              <img src="/socialbars/instagram.svg" alt="Instagram"/>
-            </a>
-            <a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener">
-              <img src="/socialbars/mms.png" alt="MyMusicSheet"/>
-            </a>
-            <a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener">
-              <img src="/socialbars/kofi.svg" alt="Ko-fi"/>
-            </a>
-            <a class="social-link" href="mailto:contact@rewodmusic.com">
-              <img src="/socialbars/mail.png" alt="Email"/>
-            </a>
+            <a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank" rel="noopener"><img src="/socialbars/spotify.svg" alt="Spotify"/></a>
+            <a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431?l=hu" target="_blank" rel="noopener"><img src="/socialbars/applemusic.svg" alt="Apple Music"/></a>
+            <a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/youtube.svg" alt="YouTube"/></a>
+            <a class="social-link" href="http://tiktok.com/@rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/tiktok.svg" alt="TikTok"/></a>
+            <a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/instagram.svg" alt="Instagram"/></a>
+            <a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/mms.png" alt="MyMusicSheet"/></a>
+            <a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/kofi.svg" alt="Ko-fi"/></a>
+            <a class="social-link" href="mailto:contact@rewodmusic.com"><img src="/socialbars/mail.png" alt="Email"/></a>
           </nav>
 
           <div class="m-credit">
@@ -100,11 +83,10 @@
     </div>
 
     <div id="mobile-scale-root">
-      <!-- DESKTOP HERO / NAV -->
-      <section class="hero">
+      <!-- DESKTOP HERO HEADER (plain) -->
+      <section class="hero hero--plain">
         <div class="hero-inner">
           <div data-empty-placeholder class="nav-left"></div>
-
           <a href="/" class="logo-link" aria-label="REWOD – Home">
             <img src="/img/logo.png" class="logo" alt="REWOD logo">
           </a>
@@ -122,10 +104,8 @@
         </div>
       </section>
 
-      <!-- SONG LINKTREE (LATEST template, NO COVER) -->
-      <section class="latest-release">
-        <!-- ✅ cover removed -->
-
+      <!-- SONG LINKTREE (NO COVER IMAGE) -->
+      <section class="latest-release latest-release--no-cover">
         <div class="latest-title" id="latestTitle">REWOD – ...</div>
         <div class="latest-sub">Choose service</div>
 
@@ -155,6 +135,7 @@
             <a class="service-btn" id="btnKofi" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener">Donate</a>
           </div>
 
+          <!-- descr -->
           <div class="latest-descr" id="latestDescr" hidden>
             <div class="latest-descr-text" id="latestDescrText"></div>
             <img id="latestSignature" class="latest-descr-signature" alt="REWOD signature">
@@ -162,7 +143,7 @@
         </div>
       </section>
 
-      <!-- HOME: RELEASES (ID-k átnevezve) -->
+      <!-- HOME: RELEASES -->
       <section class="releases">
         <div class="releases-inner">
           <!-- LATEST -->
@@ -174,7 +155,7 @@
                 <div class="release-sub" id="homeLatestArtist">—</div>
                 <div class="release-song" id="homeLatestTitle">—</div>
               </div>
-              <a class="btn-listen" id="homeLatestListenBtn" href="/latest/" rel="noopener">LISTEN</a>
+              <a class="btn-listen" id="homeLatestListenBtn" href="#" rel="noopener">LISTEN</a>
             </div>
           </div>
 
@@ -195,7 +176,7 @@
         </div>
       </section>
 
-      <!-- HOME: OFFICIAL PLAYLISTS -->
+      <!-- HOME: PLAYLISTS -->
       <section class="playlists">
         <div class="playlists-inner">
           <h2 class="playlists-title">OFFICIAL PLAYLISTS</h2>
@@ -205,12 +186,16 @@
               <div class="pl-label">ORIGINALS</div>
             </div>
             <div class="pl-col pl-spotify">
-              <a class="btn-listen" data-pl="covers" data-platform="spotify" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank">SPOTIFY</a>
-              <a class="btn-listen" data-pl="originals" data-platform="spotify" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank">SPOTIFY</a>
+              <a class="btn-listen" data-pl="covers" data-platform="spotify"
+                 href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank">SPOTIFY</a>
+              <a class="btn-listen" data-pl="originals" data-platform="spotify"
+                 href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank">SPOTIFY</a>
             </div>
             <div class="pl-col pl-youtube">
-              <a class="btn-listen" data-pl="covers" data-platform="youtube" href="https://www.youtube.com/rewodmusic" target="_blank">YOUTUBE</a>
-              <a class="btn-listen" data-pl="originals" data-platform="youtube" href="https://www.youtube.com/rewodmusic" target="_blank">YOUTUBE</a>
+              <a class="btn-listen" data-pl="covers" data-platform="youtube"
+                 href="https://www.youtube.com/rewodmusic" target="_blank">YOUTUBE</a>
+              <a class="btn-listen" data-pl="originals" data-platform="youtube"
+                 href="https://www.youtube.com/rewodmusic" target="_blank">YOUTUBE</a>
             </div>
           </div>
         </div>
@@ -224,30 +209,14 @@
           </a>
 
           <nav class="socialbar" aria-label="REWOD social links">
-            <a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank" rel="noopener">
-              <img src="/socialbars/spotify.svg" alt="Spotify"/>
-            </a>
-            <a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431?l=hu" target="_blank" rel="noopener">
-              <img src="/socialbars/applemusic.svg" alt="Apple Music"/>
-            </a>
-            <a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener">
-              <img src="/socialbars/youtube.svg" alt="YouTube"/>
-            </a>
-            <a class="social-link" href="http://tiktok.com/@rewodmusic" target="_blank" rel="noopener">
-              <img src="/socialbars/tiktok.svg" alt="TikTok"/>
-            </a>
-            <a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener">
-              <img src="/socialbars/instagram.svg" alt="Instagram"/>
-            </a>
-            <a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener">
-              <img src="/socialbars/mms.png" alt="MyMusicSheet"/>
-            </a>
-            <a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener">
-              <img src="/socialbars/kofi.svg" alt="Ko-fi"/>
-            </a>
-            <a class="social-link" href="mailto:contact@rewodmusic.com">
-              <img src="/socialbars/mail.png" alt="Email"/>
-            </a>
+            <a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank" rel="noopener"><img src="/socialbars/spotify.svg" alt="Spotify"/></a>
+            <a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431?l=hu" target="_blank" rel="noopener"><img src="/socialbars/applemusic.svg" alt="Apple Music"/></a>
+            <a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/youtube.svg" alt="YouTube"/></a>
+            <a class="social-link" href="http://tiktok.com/@rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/tiktok.svg" alt="TikTok"/></a>
+            <a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/instagram.svg" alt="Instagram"/></a>
+            <a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/mms.png" alt="MyMusicSheet"/></a>
+            <a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/kofi.svg" alt="Ko-fi"/></a>
+            <a class="social-link" href="mailto:contact@rewodmusic.com"><img src="/socialbars/mail.png" alt="Email"/></a>
           </nav>
 
           <div class="footer-credit">

@@ -5026,3 +5026,13 @@ body,
     }
 }
 
+
+
+
+
+/* =========================
+   SONG PAGE – spacing fixes
+   ========================= */
+body.page-song .hero { background: transparent; }
+body.page-song .latest-release { padding-top: 34px; } /* ha még mindig nagy, vidd le 20px-ig */
+body.page-song .latest-release--no-cover .latest-title { margin-top: 0; }
