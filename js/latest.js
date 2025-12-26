@@ -3,9 +3,9 @@
    ========================= */
 
 const CONFIG = {
-  dataUrl: "data/admin.json",
+  dataUrl: "/data/admin.json",
   kofiUrl: "https://ko-fi.com/rewodmusic",
-  signatureUrl: "img/signature.png"
+  signatureUrl: "/img/signature.png"
 };
 
 function safeText(s) {
