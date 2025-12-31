@@ -240,8 +240,7 @@ async function initSong() {
 
   // 2) SONG rész feltöltése
   const coverEl = document.getElementById("latestCover");
-  const coverUrl = pick(row, ["coverUrl", "coverurl", "cover", "image", "img"], "");
-  if (coverEl && coverUrl) coverEl.src = coverUrl;
+if (coverEl) coverEl.src = "/img/profile.jpg";
 
   const titleEl = document.getElementById("latestTitle");
   const titleStr = buildTitle(row);
