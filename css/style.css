@@ -5030,7 +5030,7 @@ body,
 body.page-song .latest-release {
     height: auto !important;
     min-height: 0 !important;
-    padding-top: 10px !important;
+    padding-top: 5px !important;
     padding-bottom: 0px !important;
 }
 
