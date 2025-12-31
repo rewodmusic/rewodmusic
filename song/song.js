@@ -1,12 +1,14 @@
 /* =========================
    SONG PAGE – dynamic by ?id=
    + HOME blocks (latest/upcoming) SAFE
+   + PROFILE IMAGE on top (always)
    ========================= */
 
 const CONFIG = {
   dataUrl: "/data/admin.json",
   kofiUrl: "https://ko-fi.com/rewodmusic",
-  signatureUrl: "/img/signature.png"
+  signatureUrl: "/img/signature.png",
+  profileCoverUrl: "/img/profile.jpg"
 };
 
 function safeText(s) { return (s ?? "").toString(); }
@@ -17,10 +19,10 @@ function normId(s) {
   return safeText(s)
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, ""); // minden nem-alfanumot kidob
+    .replace(/[^a-z0-9]+/g, "");
 }
 
-/** klasszikus slug (artist-title), de összehasonlításhoz úgyis normId-t használunk */
+/** klasszikus slug (artist-title) */
 function slugify(s) {
   return safeText(s)
     .toLowerCase()
@@ -162,7 +164,6 @@ function formatCountdownText(msLeft) {
 }
 
 function initHomeBlocks(rows) {
-  // csak akkor csináljuk, ha tényleg léteznek a HOME elemek ezen az oldalon
   const hasAny =
     document.getElementById("homeLatestTitle") ||
     document.getElementById("homeComingTitle") ||
@@ -214,14 +215,21 @@ function initHomeBlocks(rows) {
 /* -------- MAIN -------- */
 
 async function initSong() {
+  // ✅ ALWAYS show profile image on top (independent from JSON)
+  const coverEl = document.getElementById("latestCover");
+  if (coverEl) {
+    coverEl.src = CONFIG.profileCoverUrl;
+    coverEl.alt = "REWOD profile";
+  }
+
   const res = await fetch(CONFIG.dataUrl, { cache: "no-store" });
   const data = await res.json();
   if (!Array.isArray(data) || data.length === 0) return;
 
-  // 0) HOME blokkok biztonságosan (mindig a data[0] alapján)
+  // 0) HOME blocks
   try { initHomeBlocks(data); } catch (e) { console.error("home blocks error:", e); }
 
-  // 1) kiválasztás ?id= alapján (robosztus)
+  // 1) pick row by ?id=
   const wantedRaw = getQueryId();
   const wanted = normId(wantedRaw);
 
@@ -232,16 +240,12 @@ async function initSong() {
       data.find(r => normId(r?.id) === wanted) ||
       data.find(r => normId(r?.slug) === wanted) ||
       data.find(r => normId(buildRowId(r)) === wanted) ||
-      // extra: ha valaki a régi "compact" formátumot használta (hyphen nélküli)
       data.find(r => normId(slugify(pick(r, ["newmusicartist","artist"])) + slugify(pick(r, ["newmusictitle","title"]))) === wanted);
   }
 
-  if (!row) row = data[0]; // fallback: latest
+  if (!row) row = data[0];
 
-  // 2) SONG rész feltöltése
-  const coverEl = document.getElementById("latestCover");
-if (coverEl) coverEl.src = "/img/profile.jpg";
-
+  // 2) fill song content
   const titleEl = document.getElementById("latestTitle");
   const titleStr = buildTitle(row);
   if (titleEl) titleEl.textContent = titleStr;
