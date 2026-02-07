@@ -132,19 +132,22 @@
             <script src="/js/mobileMenu.js"></script>
             <!-- iOS/iPadOS: open PDFs in new tab (don't navigate away from /press/) -->
             <script>
-        (function () {
-          var isIOS =
-            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-            (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  (function () {
+    var isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-          if (!isIOS) return;
+    if (!isIOS) return;
 
-          document.querySelectorAll("a.lt-pdf").forEach(function (a) {
-            a.setAttribute("target", "_blank");
-            a.setAttribute("rel", "noopener");
-          });
-        })();
-      </script>
+    document.querySelectorAll("a.lt-pdf").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        // iOS Safari: biztos new tab
+        window.open(a.href, "_blank", "noopener");
+      }, { passive: false });
+    });
+  })();
+</script>
         </div>
     </body>
 </html>
