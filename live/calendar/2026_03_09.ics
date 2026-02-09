@@ -12,9 +12,9 @@ DTSTART;TZID=Europe/Budapest:20260309T210000
 DTEND;TZID=Europe/Budapest:20260309T220000
 
 SUMMARY:REWOD Livestream
-DESCRIPTION:REWOD livestream event.\n\nJoin live for conversation, and Q&A.
-LOCATION:TikTok Livestream
-URL:https://www.rewodmusic.com/
+DESCRIPTION:REWOD music release livestream event.\n\nJoin live for conversation, and Q&A.
+LOCATION:YouTube
+URL:https://www.youtube.com/rewodmusic
 
 END:VEVENT
 
