@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//REWOD//LIVE REMINDER//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+
+BEGIN:VEVENT
+UID:rewod-livestream@rewodmusic.com
+DTSTAMP:20260201T120000Z
+
+DTSTART;TZID=Europe/Budapest:20260309T210000
+DTEND;TZID=Europe/Budapest:20260309T220000
+
+SUMMARY:REWOD Livestream
+DESCRIPTION:REWOD livestream event.\n\nJoin live for conversation, and Q&A.
+LOCATION:TikTok Livestream
+URL:https://www.rewodmusic.com/
+
+END:VEVENT
+
+END:VCALENDAR

@@ -1,14 +1,16 @@
 [
   {
-    "date": "2026_02_05",
-    "title": "rewod live show budapest",
-    "subtitle": "hotel four seasons, 9:00 pm",
+    "livestream": "x",
+    "date": "2026_03_09",
+    "title": "rewod tiktok livestream",
+    "subtitle": "9:00 pm",
     "descr": "Step into the world of enchantment and sophistication as MÚZSA Bar, nestled in the heart of the iconic Four Seasons Hotel Gresham Palace Budapest, unveils its exquisite monthly event.",
-    "type": "REWOD Solo Show",
-    "program": "Timeless",
-    "tickets": "https://www.muzsa.com"
+    "type": "Q&A",
+    "program": "TikTok",
+    "tickets": ""
   },
-    {
+  {
+    "livestream": "",
     "date": "2026_03_05",
     "title": "rewod live show budapest",
     "subtitle": "hotel four seasons, 9:00 pm",
@@ -16,14 +18,5 @@
     "type": "REWOD Solo Show",
     "program": "Timeless",
     "tickets": "https://www.muzsa.com"
-  },
-    {
-    "date": "2026_04_02",
-    "title": "rewod live show budapest",
-    "subtitle": "hotel four seasons, 9:00 pm",
-    "descr": "Step into the world of enchantment and sophistication as MÚZSA Bar, nestled in the heart of the iconic Four Seasons Hotel Gresham Palace Budapest, unveils its exquisite monthly event.",
-    "type": "REWOD Solo Show",
-    "program": "Timeless",
-    "tickets": "https://www.muzsa.com"
   }
-  ]
+]

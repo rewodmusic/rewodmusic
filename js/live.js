@@ -60,6 +60,19 @@
       .replaceAll("'", "&#039;");
   }
 
+  function isLivestream(item) {
+    return String(item?.livestream || "")
+      .trim()
+      .toLowerCase() === "x";
+  }
+
+  function calendarIcsHref(item) {
+    // a live/index.html mappájában van a calendar/ mappa
+    // és benne: 2026_02_05.ics
+    const key = String(item?.date || "").trim();
+    return key ? `calendar/${key}.ics` : "calendar/.ics";
+  }
+
   // accordion
   function setExpanded(panel, expanded) {
     panel.dataset.expanded = expanded ? "true" : "false";
@@ -134,6 +147,39 @@
     return `<div class="live-month-title">${formatMonthLong(dateObj)} ${dateObj.getFullYear()}</div>`;
   }
 
+  function renderActionButton(item) {
+    const stream = isLivestream(item);
+
+    if (stream) {
+      const href = calendarIcsHref(item);
+      return `
+        <a class="live-btn live-btn-tickets live-btn-remind"
+           href="${escapeHTML(href)}"
+           download>
+           REMIND
+        </a>
+      `;
+    }
+
+    const ticketsUrl = ensureAbsoluteUrl(item.tickets || "");
+    return `
+      <a class="live-btn live-btn-tickets"
+         href="${escapeHTML(ticketsUrl)}"
+         target="_blank"
+         rel="noopener">
+         TICKETS
+      </a>
+    `;
+  }
+
+  function renderLabels(item) {
+    const stream = isLivestream(item);
+    return {
+      typeLabel: stream ? "Stream Type" : "Show Type",
+      programLabel: stream ? "Platform" : "Program"
+    };
+  }
+
   function renderEventCardDesktop(item, dateObj) {
     const weekday = formatWeekdayShort(dateObj);
     const day = String(dateObj.getDate());
@@ -145,9 +191,10 @@
     const descr = String(item.descr || "").trim();
     const type = escapeHTML(item.type || "");
     const program = escapeHTML(item.program || "");
-    const ticketsUrl = ensureAbsoluteUrl(item.tickets || "");
 
     const descrBlock = descr ? `<div class="live-descr">${escapeHTML(descr)}</div>` : "";
+
+    const { typeLabel, programLabel } = renderLabels(item);
 
     return `
       <article class="live-card" data-card>
@@ -165,7 +212,7 @@
 
           <div class="live-btncol">
             <button class="live-btn live-btn-info" type="button" data-action="toggle">INFO</button>
-            <a class="live-btn live-btn-tickets" href="${escapeHTML(ticketsUrl)}" target="_blank" rel="noopener">TICKETS</a>
+            ${renderActionButton(item)}
           </div>
         </div>
 
@@ -175,11 +222,11 @@
 
             <div class="live-two-col">
               <div class="live-col">
-                <div class="live-label">Show Type</div>
+                <div class="live-label">${escapeHTML(typeLabel)}</div>
                 <div class="live-value">${type}</div>
               </div>
               <div class="live-col">
-                <div class="live-label">Program</div>
+                <div class="live-label">${escapeHTML(programLabel)}</div>
                 <div class="live-value">${program}</div>
               </div>
             </div>
@@ -202,9 +249,10 @@
     const descr = String(item.descr || "").trim();
     const type = escapeHTML(item.type || "");
     const program = escapeHTML(item.program || "");
-    const ticketsUrl = ensureAbsoluteUrl(item.tickets || "");
 
     const descrBlock = descr ? `<div class="live-descr">${escapeHTML(descr)}</div>` : "";
+
+    const { typeLabel, programLabel } = renderLabels(item);
 
     return `
       <article class="live-card live-card--mobile" data-card>
@@ -223,7 +271,7 @@
 
           <div class="live-btncol">
             <button class="live-btn live-btn-info" type="button" data-action="toggle">INFO</button>
-            <a class="live-btn live-btn-tickets" href="${escapeHTML(ticketsUrl)}" target="_blank" rel="noopener">TICKETS</a>
+            ${renderActionButton(item)}
           </div>
         </div>
 
@@ -233,11 +281,11 @@
 
             <div class="live-two-col">
               <div class="live-col">
-                <div class="live-label">Show Type</div>
+                <div class="live-label">${escapeHTML(typeLabel)}</div>
                 <div class="live-value">${type}</div>
               </div>
               <div class="live-col">
-                <div class="live-label">Program</div>
+                <div class="live-label">${escapeHTML(programLabel)}</div>
                 <div class="live-value">${program}</div>
               </div>
             </div>
