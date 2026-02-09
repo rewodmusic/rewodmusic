@@ -5216,3 +5216,69 @@ body.page-song .latest-release {
         border-radius: 14px;
     }
 }
+
+
+
+
+
+
+
+/* =========================
+   PATCH: SONG page – mobile countdown pill size fix
+   (because song page uses #homeComingCountdown / #homeLatestListenBtn)
+   PUT THIS AT THE VERY END
+   ========================= */
+@media (max-width: 768px){
+  /* apply the same mobile sizing as the homepage countdown/listen */
+  body.page-song #homeLatestListenBtn,
+  body.page-song #latestListenBtn{
+    width: var(--m-rel-listen-w);
+    height: var(--m-rel-listen-h);
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--m-rel-listen-font);
+    letter-spacing: 2px;
+    border-radius: 0;
+    margin-left: var(--m-rel-listen-x);
+    margin-top: var(--m-rel-listen-y);
+  }
+
+  body.page-song #homeComingCountdown,
+  body.page-song #comingCountdown{
+    width: var(--m-rel-count-w);
+    min-height: var(--m-rel-count-h);
+    font-size: var(--m-rel-count-font);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    padding: 0 10px;
+    margin-left: var(--m-rel-count-x);
+    margin-top: var(--m-rel-count-y);
+
+    /* safety: keep it from “stretching” weirdly */
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* optional: if your countdown injects spans, keep the 2-col layout on song page too */
+  body.page-song #homeComingCountdown > span,
+  body.page-song #comingCountdown > span{
+    display: block;
+    white-space: nowrap;
+    line-height: 1.15;
+  }
+
+  body.page-song #homeComingCountdown.countdown--grid,
+  body.page-song #comingCountdown.countdown--grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 14px;
+    row-gap: 2px;
+    align-items: start;
+    justify-content: stretch;
+    text-align: left;
+  }
+}
