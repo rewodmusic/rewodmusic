@@ -1,5 +1,4 @@
 (() => {
-  // TODO: ha a worker URL-ed más, itt írd át
   const API_URL = "https://rewod-newsletter.rewodmusic.workers.dev";
 
   const form = document.getElementById("newsletterForm");
@@ -11,39 +10,42 @@
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  // ensure button has a <span> wrapper for smooth opacity changes
+  const ensureBtnSpan = () => {
+    const hasSpan = btn.querySelector("span");
+    if (hasSpan) return hasSpan;
+
+    const label = btn.textContent || "SUBSCRIBE";
+    btn.textContent = "";
+    const span = document.createElement("span");
+    span.textContent = label; // keep your original casing (SUBSCRIBE)
+    btn.appendChild(span);
+    return span;
+  };
+
+  const btnSpan = ensureBtnSpan();
+
   const setStatus = (msg) => {
     statusEl.textContent = msg || "";
   };
 
   const setLoading = (loading) => {
-    // vizuál + duplaküldés elleni védelem
     btn.disabled = loading;
     btn.classList.toggle("is-loading", loading);
-
-    // opcionális: accessibility + natív UI
     btn.setAttribute("aria-busy", loading ? "true" : "false");
-    btn.setAttribute("aria-disabled", loading ? "true" : "false");
+
+    // keep label stable (no "Subscribing..." text => no overflow)
+    // if you ever want to change it, do it here:
+    // btnSpan.textContent = loading ? "SUBSCRIBE" : "SUBSCRIBE";
   };
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     setStatus("");
 
-    // ha már loading, ne csináljon semmit (dupla tap / Enter)
-    if (btn.disabled) return;
-
     const email = (input.value || "").trim().toLowerCase();
-
-    if (!email) {
-      setStatus("Please enter your email.");
-      input.focus();
-      return;
-    }
-    if (!emailRegex.test(email)) {
-      setStatus("Please enter a valid email.");
-      input.focus();
-      return;
-    }
+    if (!email) return setStatus("Please enter your email.");
+    if (!emailRegex.test(email)) return setStatus("Please enter a valid email.");
 
     setLoading(true);
 
@@ -57,16 +59,13 @@
       let data = {};
       try {
         data = await res.json();
-      } catch {
-        // ha nincs JSON, marad üres
-      }
+      } catch {}
 
       if (!res.ok) {
         setStatus(data?.error || "Something went wrong. Please try again.");
         return;
       }
 
-      // igazítsd a worker visszatéréséhez
       if (data?.status === "subscribed") {
         setStatus("Subscribed. You’ll get an email on the next original release.");
         input.value = "";

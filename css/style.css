@@ -5461,4 +5461,48 @@ body.page-song .latest-release {
         transform: rotate(360deg);
     }
 }
+
+/* ===== Apple-style loading ===== */
+.newsletter-form .btn-listen {
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter-form .btn-listen span {
+    transition: opacity 180ms ease;
+}
+
+.newsletter-form .btn-listen.is-loading {
+    cursor: default;
+    background: #3a3a3a;
+}
+
+.newsletter-form .btn-listen.is-loading span {
+    opacity: 0.35;
+}
+
+/* spinner középre */
+.newsletter-form .btn-listen.is-loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* finom "pressed" érzés */
+.newsletter-form .btn-listen.is-loading {
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
 }
