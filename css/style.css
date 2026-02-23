@@ -5428,4 +5428,37 @@ body.page-song .latest-release {
     align-items: center;
     gap: var(--up-gap-mobile-input-btn);
 }
+
+/* --- Subscribe button: loading state --- */
+.newsletter-form .btn-subscribe {
+    /* ha eddig .btn-listen volt, nyugodtan maradhat, csak legyen egy külön class is */
+    position: relative;
+    white-space: nowrap;
+}
+
+/* amikor tölt */
+.newsletter-form .btn-subscribe.is-loading {
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+/* spinner a gombon belül (jobb oldalt) */
+.newsletter-form .btn-subscribe.is-loading::after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-top-color: rgba(255,255,255,0.95);
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+    animation: spin 900ms linear infinite;
+}
+
+@keyframes spin{
+    to {
+        transform: rotate(360deg);
+    }
+}
 }

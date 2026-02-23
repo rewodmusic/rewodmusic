@@ -16,18 +16,34 @@
   };
 
   const setLoading = (loading) => {
+    // vizuál + duplaküldés elleni védelem
     btn.disabled = loading;
-    btn.textContent = loading ? "Subscribing..." : "Subscribe";
+    btn.classList.toggle("is-loading", loading);
+
+    // opcionális: accessibility + natív UI
+    btn.setAttribute("aria-busy", loading ? "true" : "false");
+    btn.setAttribute("aria-disabled", loading ? "true" : "false");
   };
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     setStatus("");
 
+    // ha már loading, ne csináljon semmit (dupla tap / Enter)
+    if (btn.disabled) return;
+
     const email = (input.value || "").trim().toLowerCase();
 
-    if (!email) return setStatus("Please enter your email.");
-    if (!emailRegex.test(email)) return setStatus("Please enter a valid email.");
+    if (!email) {
+      setStatus("Please enter your email.");
+      input.focus();
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      setStatus("Please enter a valid email.");
+      input.focus();
+      return;
+    }
 
     setLoading(true);
 
@@ -41,16 +57,16 @@
       let data = {};
       try {
         data = await res.json();
-      } catch {}
+      } catch {
+        // ha nincs JSON, marad üres
+      }
 
       if (!res.ok) {
         setStatus(data?.error || "Something went wrong. Please try again.");
         return;
       }
 
-      // igazítsd ahhoz, amit a worker visszaad:
-      // - "subscribed" amikor új
-      // - "already_subscribed" amikor már létezik
+      // igazítsd a worker visszatéréséhez
       if (data?.status === "subscribed") {
         setStatus("Subscribed. You’ll get an email on the next original release.");
         input.value = "";
