@@ -10,20 +10,20 @@
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // ensure button has a <span> wrapper for smooth opacity changes
+  // Ensure the button label is wrapped, so CSS can fade it while spinner shows
   const ensureBtnSpan = () => {
-    const hasSpan = btn.querySelector("span");
-    if (hasSpan) return hasSpan;
+    const existing = btn.querySelector("span");
+    if (existing) return existing;
 
-    const label = btn.textContent || "SUBSCRIBE";
+    const label = (btn.textContent || "SUBSCRIBE").trim();
     btn.textContent = "";
     const span = document.createElement("span");
-    span.textContent = label; // keep your original casing (SUBSCRIBE)
+    span.textContent = label; // keeps SUBSCRIBE uppercase
     btn.appendChild(span);
     return span;
   };
 
-  const btnSpan = ensureBtnSpan();
+  ensureBtnSpan();
 
   const setStatus = (msg) => {
     statusEl.textContent = msg || "";
@@ -33,10 +33,6 @@
     btn.disabled = loading;
     btn.classList.toggle("is-loading", loading);
     btn.setAttribute("aria-busy", loading ? "true" : "false");
-
-    // keep label stable (no "Subscribing..." text => no overflow)
-    // if you ever want to change it, do it here:
-    // btnSpan.textContent = loading ? "SUBSCRIBE" : "SUBSCRIBE";
   };
 
   form.addEventListener("submit", async (e) => {
@@ -57,9 +53,7 @@
       });
 
       let data = {};
-      try {
-        data = await res.json();
-      } catch {}
+      try { data = await res.json(); } catch {}
 
       if (!res.ok) {
         setStatus(data?.error || "Something went wrong. Please try again.");
@@ -75,7 +69,7 @@
         setStatus("Done.");
         input.value = "";
       }
-    } catch (err) {
+    } catch {
       setStatus("Network error. Please try again.");
     } finally {
       setLoading(false);
