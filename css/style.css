@@ -5217,68 +5217,215 @@ body.page-song .latest-release {
     }
 }
 
-
-
-
-
-
-
 /* =========================
    PATCH: SONG page – mobile countdown pill size fix
    (because song page uses #homeComingCountdown / #homeLatestListenBtn)
    PUT THIS AT THE VERY END
    ========================= */
 @media (max-width: 768px){
-  /* apply the same mobile sizing as the homepage countdown/listen */
-  body.page-song #homeLatestListenBtn,
-  body.page-song #latestListenBtn{
-    width: var(--m-rel-listen-w);
-    height: var(--m-rel-listen-h);
-    padding: 0;
+    /* apply the same mobile sizing as the homepage countdown/listen */
+    body.page-song #homeLatestListenBtn,
+    body.page-song #latestListenBtn {
+        width: var(--m-rel-listen-w);
+        height: var(--m-rel-listen-h);
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--m-rel-listen-font);
+        letter-spacing: 2px;
+        border-radius: 0;
+        margin-left: var(--m-rel-listen-x);
+        margin-top: var(--m-rel-listen-y);
+    }
+
+    body.page-song #homeComingCountdown,
+    body.page-song #comingCountdown {
+        width: var(--m-rel-count-w);
+        min-height: var(--m-rel-count-h);
+        font-size: var(--m-rel-count-font);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: left;
+        padding: 0 10px;
+        margin-left: var(--m-rel-count-x);
+        margin-top: var(--m-rel-count-y);
+
+        /* safety: keep it from “stretching” weirdly */
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* optional: if your countdown injects spans, keep the 2-col layout on song page too */
+    body.page-song #homeComingCountdown > span,
+    body.page-song #comingCountdown > span {
+        display: block;
+        white-space: nowrap;
+        line-height: 1.15;
+    }
+
+    body.page-song #homeComingCountdown.countdown--grid,
+    body.page-song #comingCountdown.countdown--grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 14px;
+        row-gap: 2px;
+        align-items: start;
+        justify-content: stretch;
+        text-align: left;
+    }
+}
+
+/* =========================
+   UPCOMING – NEWSLETTER (SUBSCRIBE)
+   matches PLAYLISTS .btn-listen style
+   ========================= */
+.upcoming-newsletter-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-top: 22px;
+
+    /* a follow szöveg alatt */
+}
+
+.upcoming-newsletter {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.upcoming-newsletter .newsletter-form {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--m-rel-listen-font);
-    letter-spacing: 2px;
-    border-radius: 0;
-    margin-left: var(--m-rel-listen-x);
-    margin-top: var(--m-rel-listen-y);
-  }
+    gap: 14px;
 
-  body.page-song #homeComingCountdown,
-  body.page-song #comingCountdown{
-    width: var(--m-rel-count-w);
-    min-height: var(--m-rel-count-h);
-    font-size: var(--m-rel-count-font);
-    display: flex;
+    /* ✅ stílusos gap */
+    flex-wrap: wrap;
+
+    /* mobilon szépen törik */
+}
+
+.upcoming-newsletter .newsletter-input {
+    width: 320px;
+
+    /* ✅ rövidebb */
+    height: 32px;
+
+    /* ugyanaz mint a gomb */
+    padding: 0 12px;
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.22);
+    outline: none;
+    font-family: "Barlow", system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+}
+
+.upcoming-newsletter .newsletter-input::placeholder {
+    color: rgba(255,255,255,0.55);
+}
+
+.upcoming-newsletter .newsletter-input:focus {
+    border-color: rgba(255,255,255,0.45);
+}
+
+/* ✅ SUBSCRIBE gomb: 1:1 a PLAYLISTS .btn-listen mintája */
+.upcoming-newsletter .btn-listen {
+    width: 150px;
+    height: 32px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: left;
-    padding: 0 10px;
-    margin-left: var(--m-rel-count-x);
-    margin-top: var(--m-rel-count-y);
+    background: #444444;
+    color: #ffffff;
+    font-family: "Barlow", system-ui, -apple-system, sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 180ms ease;
+}
 
-    /* safety: keep it from “stretching” weirdly */
-    max-width: 100%;
-    box-sizing: border-box;
-  }
+.upcoming-newsletter .btn-listen:hover {
+    background: #323232;
+}
 
-  /* optional: if your countdown injects spans, keep the 2-col layout on song page too */
-  body.page-song #homeComingCountdown > span,
-  body.page-song #comingCountdown > span{
-    display: block;
-    white-space: nowrap;
-    line-height: 1.15;
-  }
+/* status is középen */
+.upcoming-newsletter-wrap .newsletter-status {
+    min-height: 18px;
+    text-align: center;
+    font-family: "Barlow", system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: rgba(255,255,255,0.72);
+}
 
-  body.page-song #homeComingCountdown.countdown--grid,
-  body.page-song #comingCountdown.countdown--grid{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 14px;
-    row-gap: 2px;
-    align-items: start;
-    justify-content: stretch;
-    text-align: left;
-  }
+/* ✅ Mobil finomhangolás */
+@media (max-width: 520px) {
+    .upcoming-newsletter .newsletter-input {
+        width: min(320px, 82vw);
+    }
+}
+
+/* UPCOMING – newsletter button: always uppercase */
+.upcoming-newsletter .btn-listen {
+    text-transform: uppercase !important;
+}
+
+.upcoming-newsletter .btn-listen:hover,
+.upcoming-newsletter .btn-listen:active,
+.upcoming-newsletter .btn-listen:focus,
+.upcoming-newsletter .btn-listen:focus-visible {
+    text-transform: uppercase !important;
+}
+
+/* =========================
+   UPCOMING – spacing controls
+   ========================= */
+/* default értékek (ha nem írsz mást) */
+.upcoming-wrap {
+    --up-gap-desktop-follow: 64px;
+
+    /* DESKTOP: cover/text blokk -> follow szöveg */
+    --up-gap-mobile-follow-form: 18px;
+
+    /* MOBILE: follow szöveg -> form */
+    --up-gap-mobile-input-btn: 14px;
+
+    /* MOBILE: input -> button */
+}
+
+/* DESKTOP: a follow szöveg távolsága a fenti tartalomtól */
+@media (min-width: 901px){
+    .upcoming-follow {
+        margin-top: var(--up-gap-desktop-follow);
+    }
+}
+
+@media (max-width: 900px){
+    /* MOBILE: follow szöveg és a form között */
+    .upcoming-newsletter {
+        margin-top: var(--up-gap-mobile-follow-form);
+    }
+
+    /* ezt kapcsold ki, mert így nem lesz félreértés */
+    .upcoming-follow {
+        margin-bottom: 0;
+    }
+}
+
+/* a form belső gapje mobilon */
+.upcoming-newsletter .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--up-gap-mobile-input-btn);
+}
 }
