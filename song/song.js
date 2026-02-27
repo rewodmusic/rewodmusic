@@ -8,7 +8,15 @@ const CONFIG = {
   dataUrl: "/data/admin.json",
   kofiUrl: "https://ko-fi.com/rewodmusic",
   signatureUrl: "/img/signature.png",
-  profileCoverUrl: "/img/profile.jpg"
+
+  // ✅ NEW: cover images by rule
+  covers: {
+    latest: "/img/latest.jpg",
+    original: "/img/profile_original.jpg",
+    feat: "/img/profile_feat.jpg",
+    tape: "/img/profile_tape.jpg",
+    default: "/img/profile.jpg"
+  }
 };
 
 function safeText(s) { return (s ?? "").toString(); }
@@ -163,9 +171,7 @@ function formatCountdownText(msLeft) {
   return `${days} days ${hours} hours<br>${minutes} minutes ${seconds} seconds`;
 }
 
-/* ✅ NEW: HOME block feat display rule
-   - If artist contains "REWOD" then do NOT append " ft. X" to the title line
-*/
+/* ✅ NEW: HOME ft-fix helpers (ONLY affects HOME blocks) */
 function artistContainsRewod(artistStr) {
   return safeText(artistStr).toLowerCase().includes("rewod");
 }
@@ -175,6 +181,7 @@ function appendFeatIfNeeded(title, feat, artistStr) {
   const f = safeText(feat).trim();
   if (!t) return "";
   if (!f) return t;
+  // if artist already mentions REWOD, do NOT add "ft. X" again on the title line
   if (artistContainsRewod(artistStr)) return t;
   return `${t} ft. ${f}`;
 }
@@ -238,16 +245,49 @@ function initHomeBlocks(rows) {
   window.setInterval(tick, 1000);
 }
 
+/* -------- ✅ NEW: dynamic cover rules -------- */
+
+function setDynamicCover(row, allRows) {
+  const coverEl = document.getElementById("latestCover");
+  if (!coverEl) return;
+
+  // fallback always
+  let src = CONFIG.covers.default;
+
+  // "latest row" = first element in admin.json (your current logic everywhere else uses rows[0] as latest)
+  const latestRow = allRows?.[0] || null;
+
+  // helper: compare current row to latest row robustly (your ?id logic may match via buildRowId etc.)
+  const rowKey = normId(buildRowId(row));
+  const latestKey = latestRow ? normId(buildRowId(latestRow)) : "";
+
+  const isLatestPage = !!latestRow && rowKey && latestKey && rowKey === latestKey;
+
+  if (isLatestPage) {
+    src = CONFIG.covers.latest;
+  } else {
+    const tape = pick(row, ["tape"], "").toLowerCase();
+    const feat = pick(row, ["feat"], "").trim();
+    const artist = pick(row, ["newmusicartist", "artist"], "").toLowerCase().trim();
+
+    if (tape === "x") {
+      src = CONFIG.covers.tape;
+    } else if (feat) {
+      src = CONFIG.covers.feat;
+    } else if (artist === "original composition") {
+      src = CONFIG.covers.original;
+    } else {
+      src = CONFIG.covers.default;
+    }
+  }
+
+  coverEl.src = src;
+  coverEl.alt = "REWOD cover";
+}
+
 /* -------- MAIN -------- */
 
 async function initSong() {
-  // ✅ ALWAYS show profile image on top (independent from JSON)
-  const coverEl = document.getElementById("latestCover");
-  if (coverEl) {
-    coverEl.src = CONFIG.profileCoverUrl;
-    coverEl.alt = "REWOD profile";
-  }
-
   const res = await fetch(CONFIG.dataUrl, { cache: "no-store" });
   const data = await res.json();
   if (!Array.isArray(data) || data.length === 0) return;
@@ -270,6 +310,9 @@ async function initSong() {
   }
 
   if (!row) row = data[0];
+
+  // ✅ NEW: dynamic cover rules (replaces the old "always profile" block)
+  setDynamicCover(row, data);
 
   // 2) fill song content
   const titleEl = document.getElementById("latestTitle");
