@@ -11,11 +11,18 @@ function buildArtistLine(a1, a2) {
   return A || "";
 }
 
-function buildTitleWithFeat(title, feat) {
+/* ✅ NEW: if artist line already mentions REWOD, don't add "ft. X" on title */
+function artistContainsRewod(artistStr) {
+  return safeText(artistStr).toLowerCase().includes("rewod");
+}
+
+function buildTitleWithFeat(title, feat, artistStr = "") {
   const t = safeText(title);
   const f = safeText(feat);
   if (!t) return "";
-  return f ? `${t} ft. ${f}` : t;
+  if (!f) return t;
+  if (artistContainsRewod(artistStr)) return t; // ✅ prevent double ft
+  return `${t} ft. ${f}`;
 }
 
 /**
@@ -64,8 +71,8 @@ async function init() {
   const data = Array.isArray(rows) ? (rows[0] || {}) : (rows || {});
 
   // LATEST
-  const latestTitle = buildTitleWithFeat(data.newmusictitle, data.feat);
   const latestArtist = buildArtistLine(data.newmusicartist, data.newmusicartist2);
+  const latestTitle = buildTitleWithFeat(data.newmusictitle, data.feat, latestArtist);
 
   const latestTitleEl = document.getElementById("latestTitle");
   const latestArtistEl = document.getElementById("latestArtist");
@@ -81,8 +88,8 @@ async function init() {
   }
 
   // UPCOMING
-  const comingTitle = buildTitleWithFeat(data.comingmusictitle, data.comingfeat);
   const comingArtist = safeText(data.comingmusicartist);
+  const comingTitle = buildTitleWithFeat(data.comingmusictitle, data.comingfeat, comingArtist);
 
   const comingTitleEl = document.getElementById("comingTitle");
   const comingArtistEl = document.getElementById("comingArtist");
@@ -100,10 +107,10 @@ async function init() {
     return;
   }
 
- function tick() {
-  const msLeft = targetUtc - Date.now();
-  countdownEl.innerHTML = formatCountdownText(msLeft);
-}
+  function tick() {
+    const msLeft = targetUtc - Date.now();
+    countdownEl.innerHTML = formatCountdownText(msLeft);
+  }
 
   tick();
   window.setInterval(tick, 1000);
