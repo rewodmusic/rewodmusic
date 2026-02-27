@@ -48,10 +48,24 @@ function pick(row, keys, fallback = "") {
   return fallback;
 }
 
-/** id = "artist-title" (for display / link building) */
+/* ✅ NEW: detect originals (exact rule you asked) */
+function isOriginalComposition(row) {
+  const a = pick(row, ["newmusicartist", "artist"], "").toLowerCase().trim();
+  return a === "original composition";
+}
+
+/** id = "artist-title" (for display / link building)
+ * ✅ NEW RULE:
+ * - if original composition -> ONLY "title"
+ */
 function buildRowId(row) {
-  const artist = pick(row, ["artist", "newmusicartist", "musicartist"]);
   const title  = pick(row, ["title", "newmusictitle", "musictitle"]);
+
+  if (isOriginalComposition(row)) {
+    return `${slugify(title)}`.replace(/^-+|-+$/g, "");
+  }
+
+  const artist = pick(row, ["artist", "newmusicartist", "musicartist"]);
   return `${slugify(artist)}-${slugify(title)}`.replace(/^-+|-+$/g, "");
 }
 
@@ -306,12 +320,16 @@ async function initSong() {
       data.find(r => normId(r?.id) === wanted) ||
       data.find(r => normId(r?.slug) === wanted) ||
       data.find(r => normId(buildRowId(r)) === wanted) ||
+
+      /* ✅ NEW: allow originals to be matched by title-only id */
+      data.find(r => isOriginalComposition(r) && normId(slugify(pick(r, ["newmusictitle","title"]))) === wanted) ||
+
       data.find(r => normId(slugify(pick(r, ["newmusicartist","artist"])) + slugify(pick(r, ["newmusictitle","title"]))) === wanted);
   }
 
   if (!row) row = data[0];
 
-  // ✅ NEW: dynamic cover rules (replaces the old "always profile" block)
+  // ✅ dynamic cover rules
   setDynamicCover(row, data);
 
   // 2) fill song content
