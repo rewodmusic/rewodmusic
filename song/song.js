@@ -9,14 +9,18 @@ const CONFIG = {
   kofiUrl: "https://ko-fi.com/rewodmusic",
   signatureUrl: "/img/signature.png",
 
-  // ✅ NEW: cover images by rule
+  // ✅ cover images by rule
   covers: {
     latest: "/img/latest.jpg",
     original: "/img/profile_original.jpg",
     feat: "/img/profile_feat.jpg",
     tape: "/img/profile_tape.jpg",
     default: "/img/profile.jpg"
-  }
+  },
+
+  // ✅ NEW: newsletter folder for release images (originals + feats)
+  newsletterDir: "/newsletter",
+  newsletterExt: ".jpg"
 };
 
 function safeText(s) { return (s ?? "").toString(); }
@@ -48,14 +52,14 @@ function pick(row, keys, fallback = "") {
   return fallback;
 }
 
-/* ✅ NEW: detect originals (exact rule you asked) */
+/* ✅ detect originals (exact rule you asked) */
 function isOriginalComposition(row) {
   const a = pick(row, ["newmusicartist", "artist"], "").toLowerCase().trim();
   return a === "original composition";
 }
 
 /** id = "artist-title" (for display / link building)
- * ✅ NEW RULE:
+ * ✅ RULE:
  * - if original composition -> ONLY "title"
  */
 function buildRowId(row) {
@@ -185,7 +189,7 @@ function formatCountdownText(msLeft) {
   return `${days} days ${hours} hours<br>${minutes} minutes ${seconds} seconds`;
 }
 
-/* ✅ NEW: HOME ft-fix helpers (ONLY affects HOME blocks) */
+/* ✅ HOME ft-fix helpers (ONLY affects HOME blocks) */
 function artistContainsRewod(artistStr) {
   return safeText(artistStr).toLowerCase().includes("rewod");
 }
@@ -259,7 +263,16 @@ function initHomeBlocks(rows) {
   window.setInterval(tick, 1000);
 }
 
-/* -------- ✅ NEW: dynamic cover rules -------- */
+/* -------- ✅ dynamic cover rules (+ newsletter lookup for original/feat) -------- */
+
+/** ✅ helper: try preferred src, fallback on error (404 etc.) */
+function setImgWithFallback(imgEl, preferredSrc, fallbackSrc) {
+  imgEl.onerror = () => {
+    imgEl.onerror = null;
+    imgEl.src = fallbackSrc;
+  };
+  imgEl.src = preferredSrc;
+}
 
 function setDynamicCover(row, allRows) {
   const coverEl = document.getElementById("latestCover");
@@ -268,34 +281,54 @@ function setDynamicCover(row, allRows) {
   // fallback always
   let src = CONFIG.covers.default;
 
-  // "latest row" = first element in admin.json (your current logic everywhere else uses rows[0] as latest)
+  // "latest row" = first element in admin.json
   const latestRow = allRows?.[0] || null;
 
-  // helper: compare current row to latest row robustly (your ?id logic may match via buildRowId etc.)
+  // compare current row to latest row robustly
   const rowKey = normId(buildRowId(row));
   const latestKey = latestRow ? normId(buildRowId(latestRow)) : "";
 
   const isLatestPage = !!latestRow && rowKey && latestKey && rowKey === latestKey;
 
+  // 1) latest page => latest.jpg
   if (isLatestPage) {
-    src = CONFIG.covers.latest;
-  } else {
-    const tape = pick(row, ["tape"], "").toLowerCase();
-    const feat = pick(row, ["feat"], "").trim();
-    const artist = pick(row, ["newmusicartist", "artist"], "").toLowerCase().trim();
-
-    if (tape === "x") {
-      src = CONFIG.covers.tape;
-    } else if (feat) {
-      src = CONFIG.covers.feat;
-    } else if (artist === "original composition") {
-      src = CONFIG.covers.original;
-    } else {
-      src = CONFIG.covers.default;
-    }
+    coverEl.src = CONFIG.covers.latest;
+    coverEl.alt = "REWOD cover";
+    return;
   }
 
-  coverEl.src = src;
+  // 2) non-latest rules
+  const tape = pick(row, ["tape"], "").toLowerCase();
+  const feat = pick(row, ["feat"], "").trim();
+  const artist = pick(row, ["newmusicartist", "artist"], "").toLowerCase().trim();
+
+  // title slug used for /newsletter/{title}.jpg
+  const titleSlug = slugify(pick(row, ["newmusictitle", "title"]));
+
+  if (tape === "x") {
+    // tape has no newsletter lookup
+    src = CONFIG.covers.tape;
+    coverEl.src = src;
+    coverEl.alt = "REWOD cover";
+    return;
+  }
+
+  // ✅ NEW RULE:
+  // originals + feats try /newsletter/{title}.jpg first, then fallback to current method
+  const isOriginal = (artist === "original composition");
+  const isFeat = !!feat;
+
+  if (isOriginal || isFeat) {
+    const preferred = `${CONFIG.newsletterDir}/${titleSlug}${CONFIG.newsletterExt}`;
+    const fallback = isOriginal ? CONFIG.covers.original : CONFIG.covers.feat;
+
+    setImgWithFallback(coverEl, preferred, fallback);
+    coverEl.alt = "REWOD cover";
+    return;
+  }
+
+  // default cover
+  coverEl.src = CONFIG.covers.default;
   coverEl.alt = "REWOD cover";
 }
 
@@ -321,7 +354,7 @@ async function initSong() {
       data.find(r => normId(r?.slug) === wanted) ||
       data.find(r => normId(buildRowId(r)) === wanted) ||
 
-      /* ✅ NEW: allow originals to be matched by title-only id */
+      /* ✅ allow originals to be matched by title-only id */
       data.find(r => isOriginalComposition(r) && normId(slugify(pick(r, ["newmusictitle","title"]))) === wanted) ||
 
       data.find(r => normId(slugify(pick(r, ["newmusicartist","artist"])) + slugify(pick(r, ["newmusictitle","title"]))) === wanted);
@@ -329,7 +362,7 @@ async function initSong() {
 
   if (!row) row = data[0];
 
-  // ✅ dynamic cover rules
+  // ✅ dynamic cover rules (+ newsletter lookup)
   setDynamicCover(row, data);
 
   // 2) fill song content
