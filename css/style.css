@@ -5606,7 +5606,7 @@ body.page-song .latest-release {
     overflow: visible;
 }
 
-/* force full black / full opacity for button text even in default state */
+/* label always inherits button color */
 .note-track-btn-label {
     font-family: "Barlow", sans-serif;
     font-weight: 700;
@@ -5614,8 +5614,8 @@ body.page-song .latest-release {
     letter-spacing: 0.06em;
     text-transform: uppercase;
     line-height: 1;
-    color: rgba(0,0,0,1) !important;
-    opacity: 1 !important;
+    color: currentColor;
+    opacity: 1;
     white-space: nowrap;
 }
 
@@ -5791,8 +5791,8 @@ body.page-song .latest-release {
         text-overflow: ellipsis;
         white-space: nowrap;
         display: block;
-        color: rgba(0,0,0,1) !important;
-        opacity: 1 !important;
+        color: currentColor;
+        opacity: 1;
     }
 
     .note-head + .note-text {
