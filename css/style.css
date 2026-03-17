@@ -5506,3 +5506,351 @@ body.page-song .latest-release {
         transform: translate(-50%, -50%) rotate(360deg);
     }
 }
+
+/* =========================================
+   NOTES – interactive track buttons + sticky player
+   ADD THIS TO THE VERY END OF style.css
+   ========================================= */
+:root {
+    --notes-track-btn-radius: 10px;
+    --notes-track-btn-bg: rgba(255,255,255,0.88);
+    --notes-track-btn-text: rgba(0,0,0,1);
+    --notes-track-btn-font: 11px;
+    --notes-track-btn-pad-y: 7px;
+    --notes-track-btn-pad-x: 14px;
+    --notes-track-btn-gap: 7px;
+    --notes-track-btn-icon: 15px;
+    --notes-sticky-bottom: 7px;
+    --notes-sticky-radius: 10px;
+    --notes-sticky-bg: rgba(255,255,255,0.88);
+    --notes-sticky-desktop-w: 980px;
+    --notes-sticky-desktop-h: 84px;
+    --notes-sticky-mobile-side: 19px;
+    --notes-sticky-mobile-h: 78px;
+
+    /* desktop placeholder scale */
+    --notes-sticky-placeholder-logo-w: 62px;
+    --notes-sticky-placeholder-logo-opacity: 0.34;
+    --notes-sticky-placeholder-text-opacity: 0.72;
+    --notes-sticky-placeholder-violin-opacity: 0.78;
+    --notes-sticky-placeholder-text-size: 17px;
+    --notes-sticky-placeholder-violin-w: 28px;
+    --notes-sticky-space-desktop: 132px;
+    --notes-sticky-space-mobile: 120px;
+}
+
+/* give room above the fixed player */
+.notes-wrapper {
+    padding-bottom: max(120px, var(--notes-sticky-space-desktop)) !important;
+}
+
+/* note row with date + button */
+.note-head {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+/* keep your handwritten date feel */
+.note-head .note-date {
+    margin-bottom: 0 !important;
+    flex: 0 0 auto;
+}
+
+/* text spacing after date/button row */
+.note-head + .note-text {
+    margin-top: 6px;
+}
+
+/* pill button */
+.note-track-btn {
+    appearance: none;
+    border: none;
+    outline: none;
+    background: var(--notes-track-btn-bg);
+    color: var(--notes-track-btn-text);
+    opacity: 0.88;
+    border-radius: var(--notes-track-btn-radius);
+    padding: var(--notes-track-btn-pad-y) var(--notes-track-btn-pad-x);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--notes-track-btn-gap);
+    cursor: pointer;
+    white-space: nowrap;
+    text-align: center;
+    transition: background-color 180ms ease, color 180ms ease, opacity 180ms ease, transform 180ms ease;
+    flex: 0 0 auto;
+    box-shadow: none;
+}
+
+.note-track-btn:hover {
+    opacity: 1;
+}
+
+.note-track-btn:active {
+    transform: translateY(1px);
+}
+
+.note-track-btn-icon {
+    width: var(--notes-track-btn-icon);
+    height: var(--notes-track-btn-icon);
+    display: block;
+    flex: 0 0 var(--notes-track-btn-icon);
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35));
+}
+
+.note-track-btn-label {
+    font-family: "Barlow", sans-serif;
+    font-weight: 700;
+    font-size: var(--notes-track-btn-font);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1;
+    color: currentColor;
+    white-space: nowrap;
+}
+
+/* sticky player wrapper */
+.notes-sticky-player {
+    position: fixed;
+    left: 50%;
+    bottom: var(--notes-sticky-bottom);
+    transform: translateX(-50%);
+    z-index: 1200;
+    width: min(var(--notes-sticky-desktop-w), calc(100vw - 24px));
+    pointer-events: none;
+}
+
+/* outer shell */
+.notes-sticky-shell {
+    width: 100%;
+    height: var(--notes-sticky-desktop-h);
+    border-radius: var(--notes-sticky-radius);
+    overflow: hidden;
+    pointer-events: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+}
+
+/* placeholder */
+.notes-sticky-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--notes-sticky-bg);
+    border-radius: var(--notes-sticky-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 8px 18px;
+    text-align: center;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.notes-sticky-placeholder-logo {
+    width: var(--notes-sticky-placeholder-logo-w);
+    height: auto;
+    display: block;
+    opacity: var(--notes-sticky-placeholder-logo-opacity);
+    flex: 0 0 auto;
+}
+
+.notes-sticky-placeholder-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.notes-sticky-placeholder-text {
+    font-family: "Barlow", sans-serif;
+    font-weight: 700;
+    font-size: var(--notes-sticky-placeholder-text-size);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    color: rgba(0,0,0,var(--notes-sticky-placeholder-text-opacity));
+    text-transform: none;
+    white-space: nowrap;
+}
+
+.notes-sticky-placeholder-violin {
+    width: var(--notes-sticky-placeholder-violin-w);
+    height: auto;
+    display: block;
+    opacity: var(--notes-sticky-placeholder-violin-opacity);
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35));
+}
+
+/* spotify iframe state */
+.notes-sticky-embed {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--notes-sticky-radius);
+    overflow: hidden;
+    background: rgba(18,18,18,0.98);
+}
+
+.notes-sticky-embed iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: none;
+}
+
+/* hidden state fix */
+#notesStickyPlaceholder[hidden],
+#notesStickyEmbed[hidden] {
+    display: none !important;
+}
+
+/* desktop alignment tuning */
+@media (min-width: 769px) {
+    .note-head {
+        align-items: flex-start;
+    }
+
+    .note-track-btn {
+        margin-top: 3px;
+    }
+
+    .notes-sticky-player {
+        width: min(var(--notes-sticky-desktop-w), calc(100vw - 40px));
+    }
+
+    .notes-sticky-shell {
+        height: var(--notes-sticky-desktop-h);
+        border-radius: 10px;
+    }
+}
+
+/* mobile */
+@media (max-width: 768px) {
+    :root {
+        --notes-track-btn-font: 11px;
+        --notes-track-btn-pad-y: 7px;
+        --notes-track-btn-pad-x: 10px;
+        --notes-track-btn-gap: 5px;
+        --notes-track-btn-icon: 13px;
+
+        /* mobile placeholder scale */
+        --notes-sticky-placeholder-logo-w: 58px;
+        --notes-sticky-placeholder-text-size: 15px;
+        --notes-sticky-placeholder-violin-w: 30px;
+    }
+
+    .notes-wrapper {
+        padding-bottom: max(110px, var(--notes-sticky-space-mobile)) !important;
+    }
+
+    /* mobile note header = stacked layout with right-pushed button */
+    .note-head {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        gap: 0px !important;
+    }
+
+    .note-head .note-date {
+        width: var(--m-notes-maxw) !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        flex: 0 0 auto;
+    }
+
+    .note-track-btn {
+        max-width: none !important;
+        width: fit-content !important;
+        align-self: flex-end !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 0 !important;
+        margin-right: -14px !important;
+        flex: 0 0 auto;
+    }
+
+    .note-track-btn-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+    }
+
+    .note-head + .note-text {
+        margin-top: 10px !important;
+    }
+
+    .notes-sticky-player {
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100vw - (var(--notes-sticky-mobile-side) * 2));
+    }
+
+    .notes-sticky-shell {
+        height: var(--notes-sticky-mobile-h);
+        border-radius: 10px;
+    }
+
+    .notes-sticky-placeholder {
+        gap: 12px;
+        padding: 8px 12px;
+        justify-content: center;
+    }
+
+    .notes-sticky-placeholder-copy {
+        gap: 6px;
+    }
+
+    .notes-sticky-placeholder-text {
+        max-width: none;
+        white-space: nowrap;
+    }
+}
+
+/* very small phones */
+@media (max-width: 420px) {
+    .note-track-btn {
+        max-width: 100% !important;
+    }
+
+    .notes-sticky-placeholder {
+        gap: 10px;
+        padding: 7px 10px;
+    }
+
+    .notes-sticky-placeholder-logo {
+        width: 42px;
+    }
+
+    .notes-sticky-placeholder-text {
+        font-size: 13px;
+    }
+
+    .notes-sticky-placeholder-violin {
+        width: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .notes-sticky-placeholder-logo {
+        width: 54px !important;
+    }
+
+    .notes-sticky-placeholder-text {
+        font-size: 14px !important;
+    }
+
+    .notes-sticky-placeholder-violin {
+        width: 25px !important;
+    }
+}
