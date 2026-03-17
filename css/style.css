@@ -5854,3 +5854,9 @@ body.page-song .latest-release {
         width: 25px !important;
     }
 }
+
+@media (max-width: 768px) {
+    .notes-sticky-player {
+        bottom: 5px !important;
+    }
+}
