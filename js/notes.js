@@ -7,6 +7,9 @@ const isMobile = window.matchMedia("(max-width: 768px)").matches;
 const INITIAL_COUNT = isMobile ? 15 : 6;
 const LOAD_MORE_COUNT = 5;
 
+const DEFAULT_HEADPHONE_ICON = "/img/emoji_headphone_dark.png";
+const ACTIVE_HEADPHONE_ICON = "/img/emoji_headphone.png";
+
 let allNotes = [];
 let visibleCount = 0;
 let activeTrackIndex = null;
@@ -56,7 +59,7 @@ function createTrackButton(note, index) {
 
   const icon = document.createElement("img");
   icon.className = "note-track-btn-icon";
-  icon.src = "/img/emoji_headphone.png";
+  icon.src = DEFAULT_HEADPHONE_ICON;
   icon.alt = "";
   icon.setAttribute("aria-hidden", "true");
 
@@ -99,10 +102,9 @@ function createNoteEl(note, index) {
     head.appendChild(trackButton);
   }
 
-const textEl = document.createElement("div");
-textEl.className = "note-text";
-textEl.innerHTML = (note.notespost || "")
-  .replace(/<br\s*\/?>/gi, "<br>");
+  const textEl = document.createElement("div");
+  textEl.className = "note-text";
+  textEl.innerHTML = (note.notespost || "").replace(/<br\s*\/?>/gi, "<br>");
 
   el.appendChild(head);
   el.appendChild(textEl);
@@ -114,7 +116,8 @@ function updateButtonVisual(button, note, isActive) {
   if (!button || !note) return;
 
   const label = button.querySelector(".note-track-btn-label");
-  if (!label) return;
+  const icon = button.querySelector(".note-track-btn-icon");
+  if (!label || !icon) return;
 
   if (isActive) {
     const bgColor = normalizeHex(note.buttoncolor, "6dcff6");
@@ -125,6 +128,8 @@ function updateButtonVisual(button, note, isActive) {
     button.style.color = fontColor;
     button.style.opacity = "1";
     button.setAttribute("aria-pressed", "true");
+
+    icon.src = ACTIVE_HEADPHONE_ICON;
     label.textContent = `STOP - ${note.songname || "Untitled"}`;
   } else {
     button.classList.remove("is-active");
@@ -132,6 +137,8 @@ function updateButtonVisual(button, note, isActive) {
     button.style.color = "";
     button.style.opacity = "";
     button.setAttribute("aria-pressed", "false");
+
+    icon.src = DEFAULT_HEADPHONE_ICON;
     label.textContent = `PLAY - ${note.songname || "Untitled"}`;
   }
 }

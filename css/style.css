@@ -5531,10 +5531,10 @@ body.page-song .latest-release {
     /* desktop placeholder scale */
     --notes-sticky-placeholder-logo-w: 62px;
     --notes-sticky-placeholder-logo-opacity: 0.34;
-    --notes-sticky-placeholder-text-opacity: 0.72;
-    --notes-sticky-placeholder-violin-opacity: 0.78;
+
+    /* <-- EZT ÁLLÍTOD a select a track to listen^^ szöveg opacity-jére */
+    --notes-sticky-placeholder-text-opacity: 0.5;
     --notes-sticky-placeholder-text-size: 17px;
-    --notes-sticky-placeholder-violin-w: 28px;
     --notes-sticky-space-desktop: 132px;
     --notes-sticky-space-mobile: 120px;
 }
@@ -5600,9 +5600,13 @@ body.page-song .latest-release {
     height: var(--notes-track-btn-icon);
     display: block;
     flex: 0 0 var(--notes-track-btn-icon);
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35));
+    filter: none;
+    object-fit: contain;
+    object-position: center;
+    overflow: visible;
 }
 
+/* force full black / full opacity for button text even in default state */
 .note-track-btn-label {
     font-family: "Barlow", sans-serif;
     font-weight: 700;
@@ -5610,7 +5614,8 @@ body.page-song .latest-release {
     letter-spacing: 0.06em;
     text-transform: uppercase;
     line-height: 1;
-    color: currentColor;
+    color: rgba(0,0,0,1) !important;
+    opacity: 1 !important;
     white-space: nowrap;
 }
 
@@ -5664,8 +5669,10 @@ body.page-song .latest-release {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 0;
     min-width: 0;
+    height: 100%;
+    transform: translateY(1px);
 }
 
 .notes-sticky-placeholder-text {
@@ -5679,12 +5686,13 @@ body.page-song .latest-release {
     white-space: nowrap;
 }
 
+/* violin fully removed */
 .notes-sticky-placeholder-violin {
-    width: var(--notes-sticky-placeholder-violin-w);
-    height: auto;
-    display: block;
-    opacity: var(--notes-sticky-placeholder-violin-opacity);
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35));
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+    filter: none !important;
 }
 
 /* spotify iframe state */
@@ -5739,9 +5747,8 @@ body.page-song .latest-release {
         --notes-track-btn-icon: 13px;
 
         /* mobile placeholder scale */
-        --notes-sticky-placeholder-logo-w: 58px;
-        --notes-sticky-placeholder-text-size: 15px;
-        --notes-sticky-placeholder-violin-w: 30px;
+        --notes-sticky-placeholder-logo-w: 54px;
+        --notes-sticky-placeholder-text-size: 14px;
     }
 
     .notes-wrapper {
@@ -5757,7 +5764,7 @@ body.page-song .latest-release {
         flex-direction: column !important;
         align-items: stretch !important;
         justify-content: flex-start !important;
-        gap: 0px !important;
+        gap: 0 !important;
     }
 
     .note-head .note-date {
@@ -5784,6 +5791,8 @@ body.page-song .latest-release {
         text-overflow: ellipsis;
         white-space: nowrap;
         display: block;
+        color: rgba(0,0,0,1) !important;
+        opacity: 1 !important;
     }
 
     .note-head + .note-text {
@@ -5794,6 +5803,7 @@ body.page-song .latest-release {
         left: 50%;
         transform: translateX(-50%);
         width: calc(100vw - (var(--notes-sticky-mobile-side) * 2));
+        bottom: 5px !important;
     }
 
     .notes-sticky-shell {
@@ -5808,12 +5818,20 @@ body.page-song .latest-release {
     }
 
     .notes-sticky-placeholder-copy {
-        gap: 6px;
+        gap: 0;
+        transform: translateY(1px);
     }
 
     .notes-sticky-placeholder-text {
         max-width: none;
         white-space: nowrap;
+    }
+
+    /* extra safety so the dark icon bottom never clips on mobile */
+    .note-track-btn-icon {
+        object-fit: contain;
+        object-position: center;
+        transform: translateY(0.5px);
     }
 }
 
@@ -5834,29 +5852,5 @@ body.page-song .latest-release {
 
     .notes-sticky-placeholder-text {
         font-size: 13px;
-    }
-
-    .notes-sticky-placeholder-violin {
-        width: 16px;
-    }
-}
-
-@media (max-width: 768px) {
-    .notes-sticky-placeholder-logo {
-        width: 54px !important;
-    }
-
-    .notes-sticky-placeholder-text {
-        font-size: 14px !important;
-    }
-
-    .notes-sticky-placeholder-violin {
-        width: 25px !important;
-    }
-}
-
-@media (max-width: 768px) {
-    .notes-sticky-player {
-        bottom: 5px !important;
     }
 }
