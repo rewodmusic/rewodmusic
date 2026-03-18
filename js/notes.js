@@ -4,7 +4,7 @@ const DATA_URL = "/data/notes.json";
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
 // limits
-const INITIAL_COUNT = isMobile ? 15 : 6;
+const INITIAL_COUNT = isMobile ? 5 : 6;
 const LOAD_MORE_COUNT = 5;
 
 const DEFAULT_HEADPHONE_ICON = "/img/emoji_headphone_dark.png";
@@ -271,33 +271,26 @@ async function initNotes() {
   renderNotes();
   renderStickyPlaceholder();
 
-  if (isMobile) {
-    if (loadMoreBtn) loadMoreBtn.style.display = "none";
-    return;
-  }
+if (!loadMoreBtn) return;
 
-  if (!loadMoreBtn) return;
+loadMoreBtn.style.display = visibleCount >= allNotes.length ? "none" : "";
 
-  loadMoreBtn.addEventListener("click", () => {
-    const prev = visibleCount;
+loadMoreBtn.addEventListener("click", () => {
+  const prev = visibleCount;
 
-    visibleCount = Math.min(
-      visibleCount + LOAD_MORE_COUNT,
-      allNotes.length
-    );
+  visibleCount = Math.min(
+    visibleCount + LOAD_MORE_COUNT,
+    allNotes.length
+  );
 
-    if (visibleCount === prev) return;
+  if (visibleCount === prev) return;
 
-    renderNotes({ onlyAppendNew: true, slowAnimateNew: true });
-
-    if (visibleCount >= allNotes.length) {
-      loadMoreBtn.style.display = "none";
-    }
-  });
+  renderNotes({ onlyAppendNew: true, slowAnimateNew: true });
 
   if (visibleCount >= allNotes.length) {
     loadMoreBtn.style.display = "none";
   }
+});
 }
 
 initNotes().catch(console.error);

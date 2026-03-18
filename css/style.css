@@ -805,7 +805,7 @@ body.page-music {
 
 /* single note */
 .note-entry {
-    margin-bottom: 48px;
+    margin-bottom: 78px;
     opacity: 0;
     transform: translateY(16px);
     animation: noteFade 0.6s ease forwards;
@@ -3125,7 +3125,7 @@ body.upcoming-page .site-footer {
         --m-notes-gap-top: 44px;
 
         /* section start -> first item */
-        --m-notes-gap-between: 26px;
+        --m-notes-gap-between: 46px;
 
         /* items közti gap */
         --m-notes-gap-last-to-loadmore: 40px;
@@ -3407,12 +3407,6 @@ body.upcoming-page .site-footer {
     * {
         animation: none !important;
         transition: none !important;
-    }
-}
-
-@media (max-width: 768px){
-    body.notes-page .notes-load-more {
-        display: none !important;
     }
 }
 
