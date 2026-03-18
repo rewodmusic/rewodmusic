@@ -878,7 +878,7 @@ body.page-music {
     --upcoming-gap-from-header: 90px;
 
     /* 🔥 header alja ↔ tartalom */
-    --upcoming-gap-to-footer: 140px;
+    --upcoming-gap-to-footer: 120px;
     --upcoming-cover-text-gap: 90px;
 
     /* 🔥 kép ↔ szövegbox */
@@ -3125,7 +3125,7 @@ body.upcoming-page .site-footer {
         --m-notes-gap-top: 44px;
 
         /* section start -> first item */
-        --m-notes-gap-between: 46px;
+        --m-notes-gap-between: 51px;
 
         /* items közti gap */
         --m-notes-gap-last-to-loadmore: 40px;
