@@ -1,8 +1,6 @@
 /* MUSIC PAGE – JSON loader + accordion (HEIGHT animation, CSS chevron arrow)
    + TAPE RECORDINGS support (tape: "x")
-   + TIMELESS REPERTOIRE support (timeless: "x")
-   + TAPE RECORDINGS: ONLY YOUTUBE in service panel
-   + TIMELESS REPERTOIRE: SPOTIFY + APPLE + YOUTUBE only (no MMS)
+   + TAPE RECORDINGS: ONLY YOUTUBE in service panel (no extra rows)
    + DESCR support:
      if item.descr has text -> service panel gets extra "descr view" block (text + signature)
      + inserts a dedicated divider-gap element so the divider can be moved down via CSS
@@ -36,10 +34,6 @@ function isTapeItem(item) {
   return safeText(item.tape).trim().toLowerCase() === "x";
 }
 
-function isTimelessItem(item) {
-  return safeText(item.timeless).trim().toLowerCase() === "x";
-}
-
 function hasDescr(item) {
   return safeText(item.descr).trim().length > 0;
 }
@@ -60,15 +54,6 @@ function buildTapeTitle(item) {
   return `${artist} - ${title}`;
 }
 
-function buildTimelessTitle(item) {
-  const artist = safeText(item.newmusicartist).trim();
-  const title = safeText(item.newmusictitle).trim();
-  if (!artist && !title) return "";
-  if (!artist) return title;
-  if (!title) return artist;
-  return `${artist} - ${title}`;
-}
-
 function normalizeItem(raw) {
   return {
     date: raw.newmusicdate || raw.date,
@@ -77,7 +62,6 @@ function normalizeItem(raw) {
     newmusicartist2: raw.newmusicartist2,
     feat: raw.feat,
     tape: raw.tape,
-    timeless: raw.timeless,
     descr: raw.descr,
     mymusicurl: raw.mymusicurl,
     youtubeurl: raw.youtubeurl,
@@ -101,22 +85,10 @@ function sortTapeABC(a, b) {
   return at.localeCompare(bt, "en", { sensitivity: "base" });
 }
 
-function sortTimelessABC(a, b) {
-  const aa = safeText(a.newmusicartist).trim();
-  const ba = safeText(b.newmusicartist).trim();
-  const at = safeText(a.newmusictitle).trim();
-  const bt = safeText(b.newmusictitle).trim();
-
-  const c1 = aa.localeCompare(ba, "en", { sensitivity: "base" });
-  if (c1 !== 0) return c1;
-  return at.localeCompare(bt, "en", { sensitivity: "base" });
-}
-
 function groupData(items) {
   const originals = [];
   const features = [];
   const tape = [];
-  const timeless = [];
   const artists = new Map();
 
   for (const it of items) {
@@ -124,11 +96,6 @@ function groupData(items) {
 
     if (isTapeItem(it)) {
       tape.push(it);
-      continue;
-    }
-
-    if (isTimelessItem(it)) {
-      timeless.push(it);
       continue;
     }
 
@@ -149,7 +116,6 @@ function groupData(items) {
   originals.sort(sortByDateDesc);
   features.sort(sortByDateDesc);
   tape.sort(sortTapeABC);
-  timeless.sort(sortTimelessABC);
 
   const artistKeys = Array.from(artists.keys()).sort((a, b) =>
     a.localeCompare(b, "en", { sensitivity: "base" })
@@ -164,8 +130,7 @@ function groupData(items) {
     top: [
       { id: "originals", label: "ORIGINALS", items: originals, mode: "normal" },
       { id: "features", label: "FEATURES", items: features, mode: "normal" },
-      { id: "tape", label: "TAPE RECORDINGS", items: tape, mode: "tape" },
-      { id: "timeless", label: "TIMELESS REPERTOIRE", items: timeless, mode: "timeless" }
+      { id: "tape", label: "TAPE RECORDINGS", items: tape, mode: "tape" }
     ],
     artists: artistGroups
   };
@@ -293,11 +258,6 @@ function renderServicePanel(item, mode = "normal") {
     rows = rows.filter(r => r.key === "youtube");
   }
 
-// TIMELESS: ONLY SPOTIFY + APPLE (no MMS, no YOUTUBE)
-if (mode === "timeless") {
-  rows = rows.filter(r => r.key === "spotify" || r.key === "apple");
-}
-
   for (const r of rows) {
     const row = document.createElement("div");
     row.className = `music-service-row ${r.key}`;
@@ -418,8 +378,6 @@ function renderSongs(panelEl, items, { mode = "normal" } = {}) {
 
     if (mode === "tape") {
       title.textContent = buildTapeTitle(it);
-    } else if (mode === "timeless") {
-      title.textContent = buildTimelessTitle(it);
     } else {
       title.textContent = upper(buildDisplayTitle(it));
     }
@@ -464,7 +422,6 @@ function renderCategory(appEl, cat) {
   catRow.setAttribute("tabindex", "0");
 
   if (cat.id === "tape") catRow.classList.add("music-cat--tape");
-  if (cat.id === "timeless") catRow.classList.add("music-cat--timeless");
 
   const label = document.createElement("div");
   label.className = "music-cat-label";
