@@ -1,32 +1,14 @@
 [
   {
     "item": "1",
-    "title": "netflixes sori neve 1",
+    "title": "Four Hands, Two Sonatas",
     "subtitle": "Netflix",
-    "link": "google.com"
+    "link": "https://www.netflix.com"
   },
   {
     "item": "2",
-    "title": "ez a masodik sori neve ez a masodik sori neve ez a masodik sori neve ez a masodik sori neve",
-    "subtitle": "HBO",
-    "link": "google.com"
-  },
-  {
-    "item": "3",
-    "title": "Harmadik sorozat neve",
-    "subtitle": "Rakuten Viki",
-    "link": "google.com"
-  },
-  {
-    "item": "4",
-    "title": "4Harmadik sorozat neve",
-    "subtitle": "Rakuten Viki",
-    "link": "google.com"
-  },
-  {
-    "item": "5",
-    "title": "5Harmadik sorozat neve",
-    "subtitle": "Rakuten Viki",
-    "link": "google.com"
+    "title": "Mousetrap",
+    "subtitle": "Netflix",
+    "link": "https://www.netflix.com"
   }
   ]

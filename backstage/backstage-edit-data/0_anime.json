@@ -1,32 +1,32 @@
 [
   {
     "item": "1",
-    "title": "Naruto",
+    "title": "Tomodachi Game",
     "subtitle": "Crunchiroll",
-    "link": "google.com"
+    "link": "https://www.crunchyroll.com"
   },
   {
     "item": "2",
-    "title": "Smoking Behind the Supermarket with You",
+    "title": "Liar Game",
     "subtitle": "Crunchiroll",
-    "link": "google.com"
+    "link": "https://www.crunchyroll.com"
   },
   {
     "item": "3",
-    "title": "Boruto: Naruto Next Generations",
+    "title": "Higurashi no Naku Koro ni",
     "subtitle": "Crunchiroll",
-    "link": "google.com"
+    "link": "https://www.crunchyroll.com"
   },
     {
     "item": "4",
-    "title": "Higurashi: when they cry - gou",
+    "title": "Classroom of the Elite",
     "subtitle": "Crunchiroll",
-    "link": "google.com"
+    "link": "https://www.crunchyroll.com"
   },
     {
     "item": "5",
-    "title": "Tomodachi Game",
+    "title": "Smoking Behind the Supermarket with You",
     "subtitle": "Crunchiroll",
-    "link": "google.com"
+    "link": "https://www.crunchyroll.com"
   }
 ]
