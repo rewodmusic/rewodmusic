@@ -7250,4 +7250,31 @@ color: rgba(255,255,255,0.90);
             margin-top: 6px !important;
         }
     }
+
+    @media (max-width: 768px) {
+        .backstage-list-module:has(#musicList) {
+            margin-top: 60px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .backstage-lists {
+            margin-bottom: -50px !important;
+        }
+    }
+
+    /* =========================================
+   BACKSTAGE – PAGE LOAD REVEAL
+   ========================================= */
+    .backstage-page {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    .backstage-page.backstage-page-loaded {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 420ms ease,
+        transform 520ms ease;
+    }
 }

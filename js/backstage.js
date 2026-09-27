@@ -25,6 +25,33 @@
 
 
     /* =========================================================
+       PAGE REVEAL / FADE-IN
+       ========================================================= */
+
+    function revealBackstagePage() {
+        const page =
+            document.querySelector(".backstage-page") ||
+            document.querySelector("main") ||
+            document.body;
+
+        if (!page) return;
+
+        /*
+            Two RAFs ensure the browser paints the initial hidden
+            state first. Then the visible class is added.
+
+            This makes the page appear as one finished page instead
+            of visibly assembling individual elements.
+        */
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                page.classList.add("backstage-page-loaded");
+            });
+        });
+    }
+
+
+    /* =========================================================
        HELPERS
        ========================================================= */
 
@@ -34,7 +61,9 @@
         });
 
         if (!response.ok) {
-            throw new Error(`Could not load ${url} (${response.status})`);
+            throw new Error(
+                `Could not load ${url} (${response.status})`
+            );
         }
 
         return response.json();
@@ -79,10 +108,12 @@
         if (twelveHour) {
             let hour = Number(twelveHour[1]);
             const minute = Number(twelveHour[2] || 0);
-            const meridiem = twelveHour[3].toLowerCase();
+            const meridiem =
+                twelveHour[3].toLowerCase();
 
             if (hour === 12) {
-                hour = meridiem === "am" ? 0 : 12;
+                hour =
+                    meridiem === "am" ? 0 : 12;
             } else if (meridiem === "pm") {
                 hour += 12;
             }
@@ -110,8 +141,11 @@
 
 
     function buildDateTime(dateString, timeText) {
-        const date = parseDateString(dateString);
-        const time = extractTimeFromText(timeText);
+        const date =
+            parseDateString(dateString);
+
+        const time =
+            extractTimeFromText(timeText);
 
         if (!date || !time) return null;
 
@@ -155,20 +189,21 @@
     }
 
 
-function formatScheduleDate(date) {
-    return date
-        .toLocaleDateString("en-US", {
-            weekday: "long"
-        })
-        .toUpperCase();
-}
+    function formatScheduleDate(date) {
+        return date
+            .toLocaleDateString("en-US", {
+                weekday: "long"
+            })
+            .toUpperCase();
+    }
 
 
     function formatScheduleTime(date) {
         let hour = date.getHours();
         const minute = date.getMinutes();
 
-        const meridiem = hour >= 12 ? "pm" : "am";
+        const meridiem =
+            hour >= 12 ? "pm" : "am";
 
         hour %= 12;
 
@@ -208,11 +243,18 @@ function formatScheduleDate(date) {
     ];
 
 
-    function setFlexibleImage(img, basePath, itemNumber) {
+    function setFlexibleImage(
+        img,
+        basePath,
+        itemNumber
+    ) {
         let candidateIndex = 0;
 
         const tryNext = () => {
-            if (candidateIndex >= IMAGE_EXTENSIONS.length) {
+            if (
+                candidateIndex >=
+                IMAGE_EXTENSIONS.length
+            ) {
                 img.onerror = null;
                 img.removeAttribute("src");
                 img.classList.add("is-missing");
@@ -236,15 +278,18 @@ function formatScheduleDate(date) {
        ========================================================= */
 
     function normaliseLivestreams(liveData) {
-        if (!Array.isArray(liveData)) return [];
+        if (!Array.isArray(liveData)) {
+            return [];
+        }
 
         return liveData
             .filter(isLivestream)
             .map(item => {
-                const dateTime = buildDateTime(
-                    item.date,
-                    item.subtitle
-                );
+                const dateTime =
+                    buildDateTime(
+                        item.date,
+                        item.subtitle
+                    );
 
                 return {
                     raw: item,
@@ -252,7 +297,10 @@ function formatScheduleDate(date) {
                 };
             })
             .filter(item => item.dateTime)
-            .sort((a, b) => a.dateTime - b.dateTime);
+            .sort(
+                (a, b) =>
+                    a.dateTime - b.dateTime
+            );
     }
 
 
@@ -264,18 +312,35 @@ function formatScheduleDate(date) {
 
 
     function initCountdown(livestreams) {
-        const countdown = document.getElementById(
-            "backstageCountdown"
-        );
+        const countdown =
+            document.getElementById(
+                "backstageCountdown"
+            );
 
-        const empty = document.getElementById(
-            "backstageCountdownEmpty"
-        );
+        const empty =
+            document.getElementById(
+                "backstageCountdownEmpty"
+            );
 
-        const daysEl = document.getElementById("countdownDays");
-        const hoursEl = document.getElementById("countdownHours");
-        const minutesEl = document.getElementById("countdownMinutes");
-        const secondsEl = document.getElementById("countdownSeconds");
+        const daysEl =
+            document.getElementById(
+                "countdownDays"
+            );
+
+        const hoursEl =
+            document.getElementById(
+                "countdownHours"
+            );
+
+        const minutesEl =
+            document.getElementById(
+                "countdownMinutes"
+            );
+
+        const secondsEl =
+            document.getElementById(
+                "countdownSeconds"
+            );
 
         if (
             !countdown ||
@@ -293,7 +358,8 @@ function formatScheduleDate(date) {
             const now = new Date();
 
             return livestreams.find(
-                stream => stream.dateTime > now
+                stream =>
+                    stream.dateTime > now
             );
         }
 
@@ -306,7 +372,10 @@ function formatScheduleDate(date) {
                 empty.hidden = false;
 
                 if (countdownTimer) {
-                    clearInterval(countdownTimer);
+                    clearInterval(
+                        countdownTimer
+                    );
+
                     countdownTimer = null;
                 }
 
@@ -317,42 +386,202 @@ function formatScheduleDate(date) {
             empty.hidden = true;
 
             const now = new Date();
-            let difference = next.dateTime.getTime() - now.getTime();
+
+            const difference =
+                next.dateTime.getTime() -
+                now.getTime();
 
             if (difference <= 0) {
                 render();
                 return;
             }
 
-            const totalSeconds = Math.floor(difference / 1000);
+            const totalSeconds =
+                Math.floor(
+                    difference / 1000
+                );
 
-            const days = Math.floor(
-                totalSeconds / 86400
-            );
+            const days =
+                Math.floor(
+                    totalSeconds / 86400
+                );
 
-            const hours = Math.floor(
-                (totalSeconds % 86400) / 3600
-            );
+            const hours =
+                Math.floor(
+                    (totalSeconds % 86400) /
+                    3600
+                );
 
-            const minutes = Math.floor(
-                (totalSeconds % 3600) / 60
-            );
+            const minutes =
+                Math.floor(
+                    (totalSeconds % 3600) /
+                    60
+                );
 
             const seconds =
                 totalSeconds % 60;
 
-            daysEl.textContent = String(days);
-            hoursEl.textContent = pad2(hours);
-            minutesEl.textContent = pad2(minutes);
-            secondsEl.textContent = pad2(seconds);
+            daysEl.textContent =
+                String(days);
+
+            hoursEl.textContent =
+                pad2(hours);
+
+            minutesEl.textContent =
+                pad2(minutes);
+
+            secondsEl.textContent =
+                pad2(seconds);
         }
 
 
         render();
 
-        countdownTimer = setInterval(
-            render,
-            1000
+        countdownTimer =
+            setInterval(
+                render,
+                1000
+            );
+    }
+
+
+    /* =========================================================
+       CHARACTER VIDEO AUTOPLAY
+       ========================================================= */
+
+    function prepareCharacterVideo(video) {
+        if (!video) return;
+
+        /*
+            Important for iOS / Safari / mobile browsers.
+        */
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+
+        video.setAttribute("muted", "");
+        video.setAttribute("playsinline", "");
+        video.setAttribute(
+            "webkit-playsinline",
+            ""
+        );
+
+
+        function tryPlay() {
+            const playPromise =
+                video.play();
+
+            if (
+                playPromise &&
+                typeof playPromise.catch ===
+                    "function"
+            ) {
+                playPromise.catch(() => {
+                    /*
+                        Browser may still block autoplay.
+                        The interaction fallback below
+                        will try again.
+                    */
+                });
+            }
+        }
+
+
+        /*
+            Try immediately.
+        */
+        tryPlay();
+
+
+        /*
+            Try when the browser has enough video data.
+        */
+        video.addEventListener(
+            "loadeddata",
+            tryPlay
+        );
+
+
+        video.addEventListener(
+            "canplay",
+            tryPlay
+        );
+
+
+        /*
+            Some mobile browsers pause media when the page
+            goes into the background.
+
+            Try again when the page becomes visible.
+        */
+        document.addEventListener(
+            "visibilitychange",
+            () => {
+                if (
+                    !document.hidden &&
+                    video.paused
+                ) {
+                    tryPlay();
+                }
+            }
+        );
+
+
+        /*
+            Final mobile Safari fallback.
+
+            If autoplay was blocked during page load,
+            the first real user interaction unlocks it.
+        */
+        let unlocked = false;
+
+        function unlockVideo() {
+            if (unlocked) return;
+
+            unlocked = true;
+
+            tryPlay();
+
+            document.removeEventListener(
+                "touchstart",
+                unlockVideo
+            );
+
+            document.removeEventListener(
+                "pointerdown",
+                unlockVideo
+            );
+
+            document.removeEventListener(
+                "click",
+                unlockVideo
+            );
+        }
+
+
+        document.addEventListener(
+            "touchstart",
+            unlockVideo,
+            {
+                passive: true,
+                once: true
+            }
+        );
+
+        document.addEventListener(
+            "pointerdown",
+            unlockVideo,
+            {
+                once: true
+            }
+        );
+
+        document.addEventListener(
+            "click",
+            unlockVideo,
+            {
+                once: true
+            }
         );
     }
 
@@ -362,74 +591,158 @@ function formatScheduleDate(date) {
        ========================================================= */
 
     function initCharacterPreview() {
-        const video = document.getElementById("characterVideo");
+        const video =
+            document.getElementById(
+                "characterVideo"
+            );
 
         const buttons = Array.from(
-            document.querySelectorAll(".backstage-race-button")
+            document.querySelectorAll(
+                ".backstage-race-button"
+            )
         );
 
-        if (!video || !buttons.length) return;
+        if (
+            !video ||
+            !buttons.length
+        ) {
+            return;
+        }
+
+
+        /*
+            Prepare and force initial autoplay.
+        */
+        prepareCharacterVideo(video);
 
 
         buttons.forEach(button => {
-            button.addEventListener("click", () => {
-                const race = button.dataset.race;
+            button.addEventListener(
+                "click",
+                () => {
+                    const race =
+                        button.dataset.race;
 
-                if (!race) return;
+                    if (!race) return;
 
-                const alreadyActive =
-                    button.classList.contains("is-active");
+                    const alreadyActive =
+                        button.classList.contains(
+                            "is-active"
+                        );
 
-                if (alreadyActive) return;
+                    if (alreadyActive) {
+                        /*
+                            If mobile browser somehow paused
+                            the current video, clicking the
+                            active race also restarts it.
+                        */
+                        const playPromise =
+                            video.play();
+
+                        if (
+                            playPromise &&
+                            typeof playPromise.catch ===
+                                "function"
+                        ) {
+                            playPromise.catch(
+                                () => {}
+                            );
+                        }
+
+                        return;
+                    }
 
 
-                buttons.forEach(otherButton => {
-                    otherButton.classList.toggle(
-                        "is-active",
-                        otherButton === button
+                    buttons.forEach(
+                        otherButton => {
+                            otherButton.classList.toggle(
+                                "is-active",
+                                otherButton === button
+                            );
+                        }
                     );
-                });
 
 
-video.classList.add("is-switching");
+                    video.classList.add(
+                        "is-switching"
+                    );
 
-setTimeout(() => {
 
-    video.pause();
+                    setTimeout(() => {
 
-    video.src =
-        `${PATHS.characterBase}${race}.mp4`;
+                        video.pause();
 
-    video.load();
+                        /*
+                            Re-apply these before every
+                            source change for mobile Safari.
+                        */
+                        video.muted = true;
+                        video.defaultMuted = true;
+                        video.playsInline = true;
 
-    const showNewVideo = () => {
+                        video.setAttribute(
+                            "muted",
+                            ""
+                        );
 
-        const playPromise = video.play();
+                        video.setAttribute(
+                            "playsinline",
+                            ""
+                        );
 
-        if (
-            playPromise &&
-            typeof playPromise.catch === "function"
-        ) {
-            playPromise.catch(() => {});
-        }
+                        video.setAttribute(
+                            "webkit-playsinline",
+                            ""
+                        );
 
-        requestAnimationFrame(() => {
-            video.classList.remove("is-switching");
-        });
-    };
 
-    if (video.readyState >= 2) {
-        showNewVideo();
-    } else {
-        video.addEventListener(
-            "loadeddata",
-            showNewVideo,
-            { once: true }
-        );
-    }
+                        video.src =
+                            `${PATHS.characterBase}${race}.mp4`;
 
-}, 220);
-            });
+                        video.load();
+
+
+                        const showNewVideo = () => {
+                            const playPromise =
+                                video.play();
+
+                            if (
+                                playPromise &&
+                                typeof playPromise.catch ===
+                                    "function"
+                            ) {
+                                playPromise.catch(
+                                    () => {}
+                                );
+                            }
+
+                            requestAnimationFrame(
+                                () => {
+                                    video.classList.remove(
+                                        "is-switching"
+                                    );
+                                }
+                            );
+                        };
+
+
+                        if (
+                            video.readyState >= 2
+                        ) {
+                            showNewVideo();
+                        } else {
+                            video.addEventListener(
+                                "loadeddata",
+                                showNewVideo,
+                                {
+                                    once: true
+                                }
+                            );
+                        }
+
+                    }, 220);
+                }
+            );
         });
     }
 
@@ -439,70 +752,99 @@ setTimeout(() => {
        ========================================================= */
 
     async function initCurrentGoal() {
-        const nameEl = document.getElementById(
-            "currentGoalName"
-        );
+        const nameEl =
+            document.getElementById(
+                "currentGoalName"
+            );
 
-        const fillEl = document.getElementById(
-            "currentGoalProgress"
-        );
+        const fillEl =
+            document.getElementById(
+                "currentGoalProgress"
+            );
 
-        const percentEl = document.getElementById(
-            "currentGoalPercent"
-        );
+        const percentEl =
+            document.getElementById(
+                "currentGoalPercent"
+            );
 
-        const imageEl = document.getElementById(
-            "currentGoalImage"
-        );
+        const imageEl =
+            document.getElementById(
+                "currentGoalImage"
+            );
 
-        if (!nameEl || !fillEl || !percentEl) {
+        if (
+            !nameEl ||
+            !fillEl ||
+            !percentEl
+        ) {
             return;
         }
 
 
         try {
-            const data = await fetchJSON(PATHS.goal);
+            const data =
+                await fetchJSON(
+                    PATHS.goal
+                );
 
             const goal =
-                Array.isArray(data) ? data[0] : null;
+                Array.isArray(data)
+                    ? data[0]
+                    : null;
 
             if (!goal) {
-                throw new Error("No current goal.");
+                throw new Error(
+                    "No current goal."
+                );
             }
 
 
-            const price = Number(goal.price);
-            const balance = Number(goal.balance);
+            const price =
+                Number(goal.price);
+
+            const balance =
+                Number(goal.balance);
 
             let percentage = 0;
+
 
             if (
                 Number.isFinite(price) &&
                 price > 0 &&
                 Number.isFinite(balance)
             ) {
-                percentage = Math.round(
-                    (balance / price) * 100
-                );
+                percentage =
+                    Math.round(
+                        (balance / price) *
+                        100
+                    );
             }
 
 
-            percentage = Math.max(
-                0,
-                Math.min(100, percentage)
-            );
+            percentage =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        percentage
+                    )
+                );
 
 
             nameEl.textContent =
-                goal.name || "Current goal";
+                goal.name ||
+                "Current goal";
 
             percentEl.textContent =
                 `${percentage}%`;
 
-            requestAnimationFrame(() => {
-                fillEl.style.width =
-                    `${percentage}%`;
-            });
+
+            requestAnimationFrame(
+                () => {
+                    fillEl.style.width =
+                        `${percentage}%`;
+                }
+            );
 
 
             if (imageEl) {
@@ -533,27 +875,38 @@ setTimeout(() => {
        ========================================================= */
 
     async function initCharacterStatus() {
-        const statusEl = document.getElementById(
-            "characterStatus"
-        );
+        const statusEl =
+            document.getElementById(
+                "characterStatus"
+            );
 
         if (!statusEl) return;
 
 
         try {
-            const data = await fetchJSON(PATHS.status);
+            const data =
+                await fetchJSON(
+                    PATHS.status
+                );
 
             const status =
-                Array.isArray(data) ? data[0] : null;
+                Array.isArray(data)
+                    ? data[0]
+                    : null;
 
             const online =
-                String(status?.online || "")
+                String(
+                    status?.online || ""
+                )
                     .trim()
                     .toLowerCase() === "x";
 
 
             statusEl.textContent =
-                online ? "ONLINE" : "OFFLINE";
+                online
+                    ? "ONLINE"
+                    : "OFFLINE";
+
 
             statusEl.classList.toggle(
                 "is-online",
@@ -568,7 +921,8 @@ setTimeout(() => {
         } catch (error) {
             console.error(error);
 
-            statusEl.textContent = "OFFLINE";
+            statusEl.textContent =
+                "OFFLINE";
 
             statusEl.classList.remove(
                 "is-online"
@@ -585,33 +939,48 @@ setTimeout(() => {
        SCHEDULE
        ========================================================= */
 
-    function normaliseManualSchedule(scheduleData) {
-        if (!Array.isArray(scheduleData)) return [];
+    function normaliseManualSchedule(
+        scheduleData
+    ) {
+        if (!Array.isArray(scheduleData)) {
+            return [];
+        }
 
         return scheduleData
             .map(item => {
-                const dateTime = buildDateTime(
-                    item.date,
-                    item.hour
-                );
+                const dateTime =
+                    buildDateTime(
+                        item.date,
+                        item.hour
+                    );
 
                 return {
                     dateTime,
-                    type: item.type || ""
+                    type:
+                        item.type || ""
                 };
             })
-            .filter(item => item.dateTime);
+            .filter(
+                item =>
+                    item.dateTime
+            );
     }
 
 
-    function livestreamsForSchedule(livestreams) {
-        return livestreams.map(stream => ({
-            dateTime: stream.dateTime,
-            type:
-                stream.raw.type ||
-                stream.raw.title ||
-                "livestream"
-        }));
+    function livestreamsForSchedule(
+        livestreams
+    ) {
+        return livestreams.map(
+            stream => ({
+                dateTime:
+                    stream.dateTime,
+
+                type:
+                    stream.raw.type ||
+                    stream.raw.title ||
+                    "livestream"
+            })
+        );
     }
 
 
@@ -619,45 +988,66 @@ setTimeout(() => {
         manualSchedule,
         livestreams
     ) {
-        const container = document.getElementById(
-            "backstageSchedule"
-        );
+        const container =
+            document.getElementById(
+                "backstageSchedule"
+            );
 
-        const empty = document.getElementById(
-            "backstageScheduleEmpty"
-        );
+        const empty =
+            document.getElementById(
+                "backstageScheduleEmpty"
+            );
 
-        if (!container || !empty) return;
+        if (
+            !container ||
+            !empty
+        ) {
+            return;
+        }
 
 
         const now = new Date();
+
 
         /*
             "Next 7 days" means from right now
             until exactly seven days from now.
         */
-        const end = new Date(
-            now.getTime() + 7 * 24 * 60 * 60 * 1000
-        );
+        const end =
+            new Date(
+                now.getTime() +
+                7 *
+                24 *
+                60 *
+                60 *
+                1000
+            );
 
 
         const combined = [
-            ...normaliseManualSchedule(manualSchedule),
-            ...livestreamsForSchedule(livestreams)
+            ...normaliseManualSchedule(
+                manualSchedule
+            ),
+
+            ...livestreamsForSchedule(
+                livestreams
+            )
         ];
 
 
-        const upcoming = combined
-            .filter(item => {
-                return (
-                    item.dateTime >= now &&
-                    item.dateTime <= end
+        const upcoming =
+            combined
+                .filter(item => {
+                    return (
+                        item.dateTime >= now &&
+                        item.dateTime <= end
+                    );
+                })
+                .sort(
+                    (a, b) =>
+                        a.dateTime -
+                        b.dateTime
                 );
-            })
-            .sort(
-                (a, b) =>
-                    a.dateTime - b.dateTime
-            );
 
 
         container.innerHTML = "";
@@ -675,29 +1065,48 @@ setTimeout(() => {
 
 
         upcoming.forEach(item => {
-            const row = document.createElement("div");
+            const row =
+                document.createElement(
+                    "div"
+                );
 
             row.className =
                 "backstage-schedule-row";
 
 
-            const date = document.createElement("div");
+            const date =
+                document.createElement(
+                    "div"
+                );
+
             date.className =
                 "backstage-schedule-date";
 
             date.textContent =
-                formatScheduleDate(item.dateTime);
+                formatScheduleDate(
+                    item.dateTime
+                );
 
 
-            const time = document.createElement("div");
+            const time =
+                document.createElement(
+                    "div"
+                );
+
             time.className =
                 "backstage-schedule-time";
 
             time.textContent =
-                formatScheduleTime(item.dateTime);
+                formatScheduleTime(
+                    item.dateTime
+                );
 
 
-            const type = document.createElement("div");
+            const type =
+                document.createElement(
+                    "div"
+                );
+
             type.className =
                 "backstage-schedule-type";
 
@@ -711,7 +1120,9 @@ setTimeout(() => {
                 type
             );
 
-            container.appendChild(row);
+            container.appendChild(
+                row
+            );
         });
     }
 
@@ -731,34 +1142,52 @@ setTimeout(() => {
         container.innerHTML = "";
 
 
-        if (!Array.isArray(data)) return;
-
-
-data.forEach(item => {
-    const row = document.createElement(
-        item.link ? "a" : "div"
-    );
-
-    row.className =
-        "backstage-media-row";
-
-    if (item.link) {
-        let href = String(item.link).trim();
-
-        if (
-            !href.startsWith("http://") &&
-            !href.startsWith("https://")
-        ) {
-            href = `https://${href}`;
+        if (!Array.isArray(data)) {
+            return;
         }
 
-        row.href = href;
-        row.target = "_blank";
-        row.rel = "noopener noreferrer";
-    }
+
+        data.forEach(item => {
+            const row =
+                document.createElement(
+                    item.link
+                        ? "a"
+                        : "div"
+                );
+
+            row.className =
+                "backstage-media-row";
 
 
-            const image = document.createElement("img");
+            if (item.link) {
+                let href =
+                    String(
+                        item.link
+                    ).trim();
+
+                if (
+                    !href.startsWith(
+                        "http://"
+                    ) &&
+                    !href.startsWith(
+                        "https://"
+                    )
+                ) {
+                    href =
+                        `https://${href}`;
+                }
+
+                row.href = href;
+                row.target = "_blank";
+                row.rel =
+                    "noopener noreferrer";
+            }
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
 
             image.className =
                 "backstage-media-cover";
@@ -777,13 +1206,19 @@ data.forEach(item => {
             );
 
 
-            const text = document.createElement("div");
+            const text =
+                document.createElement(
+                    "div"
+                );
 
             text.className =
                 "backstage-media-copy";
 
 
-            const title = document.createElement("div");
+            const title =
+                document.createElement(
+                    "div"
+                );
 
             title.className =
                 "backstage-media-title";
@@ -792,7 +1227,10 @@ data.forEach(item => {
                 item.title || "";
 
 
-            const subtitle = document.createElement("div");
+            const subtitle =
+                document.createElement(
+                    "div"
+                );
 
             subtitle.className =
                 "backstage-media-subtitle";
@@ -817,7 +1255,9 @@ data.forEach(item => {
                 text
             );
 
-            container.appendChild(row);
+            container.appendChild(
+                row
+            );
         });
     }
 
@@ -829,35 +1269,58 @@ data.forEach(item => {
                 series,
                 music
             ] = await Promise.all([
-                fetchJSON(PATHS.anime),
-                fetchJSON(PATHS.series),
-                fetchJSON(PATHS.music)
+                fetchJSON(
+                    PATHS.anime
+                ),
+
+                fetchJSON(
+                    PATHS.series
+                ),
+
+                fetchJSON(
+                    PATHS.music
+                )
             ]);
 
 
             renderMediaList({
                 container:
-                    document.getElementById("animeList"),
+                    document.getElementById(
+                        "animeList"
+                    ),
+
                 data: anime,
-                basePath: PATHS.animeBase,
+                basePath:
+                    PATHS.animeBase,
+
                 type: "anime"
             });
 
 
             renderMediaList({
                 container:
-                    document.getElementById("seriesList"),
+                    document.getElementById(
+                        "seriesList"
+                    ),
+
                 data: series,
-                basePath: PATHS.seriesBase,
+                basePath:
+                    PATHS.seriesBase,
+
                 type: "series"
             });
 
 
             renderMediaList({
                 container:
-                    document.getElementById("musicList"),
+                    document.getElementById(
+                        "musicList"
+                    ),
+
                 data: music,
-                basePath: PATHS.musicBase,
+                basePath:
+                    PATHS.musicBase,
+
                 type: "music"
             });
 
@@ -876,13 +1339,21 @@ data.forEach(item => {
 
     async function initBackstage() {
 
+        /*
+            Character video starts immediately instead of
+            waiting for JSON requests.
+        */
         initCharacterPreview();
 
-        initCurrentGoal();
 
-        initCharacterStatus();
-
-        initMediaLists();
+        /*
+            These can load independently.
+        */
+        const independentTasks = [
+            initCurrentGoal(),
+            initCharacterStatus(),
+            initMediaLists()
+        ];
 
 
         let livestreams = [];
@@ -891,10 +1362,14 @@ data.forEach(item => {
 
         try {
             const liveData =
-                await fetchJSON(PATHS.live);
+                await fetchJSON(
+                    PATHS.live
+                );
 
             livestreams =
-                normaliseLivestreams(liveData);
+                normaliseLivestreams(
+                    liveData
+                );
 
         } catch (error) {
             console.error(
@@ -904,12 +1379,16 @@ data.forEach(item => {
         }
 
 
-        initCountdown(livestreams);
+        initCountdown(
+            livestreams
+        );
 
 
         try {
             manualSchedule =
-                await fetchJSON(PATHS.schedule);
+                await fetchJSON(
+                    PATHS.schedule
+                );
 
         } catch (error) {
             console.error(
@@ -923,16 +1402,56 @@ data.forEach(item => {
             manualSchedule,
             livestreams
         );
+
+
+        /*
+            Wait for the independent Backstage data to settle
+            before revealing the finished page.
+
+            Promise.allSettled prevents one failed JSON request
+            from keeping the entire page invisible.
+        */
+        await Promise.allSettled(
+            independentTasks
+        );
+
+
+        revealBackstagePage();
     }
 
 
-    if (document.readyState === "loading") {
+    /* =========================================================
+       START
+       ========================================================= */
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
         document.addEventListener(
             "DOMContentLoaded",
-            initBackstage
+            () => {
+                initBackstage().catch(
+                    error => {
+                        console.error(error);
+
+                        /*
+                            Never leave the page invisible if
+                            something unexpected fails.
+                        */
+                        revealBackstagePage();
+                    }
+                );
+            }
         );
+
     } else {
-        initBackstage();
+        initBackstage().catch(
+            error => {
+                console.error(error);
+                revealBackstagePage();
+            }
+        );
     }
 
 })();
