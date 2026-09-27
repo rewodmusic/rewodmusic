@@ -6973,4 +6973,189 @@ color: rgba(255,255,255,0.90);
             1.8fr !important;
     }
 }
+
+@media (max-width: 768px) {
+    .backstage-intro {
+        width: calc(100% + 80px) !important;
+        max-width: none !important;
+        margin-left: -35px !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .backstage-narrow-text {
+        width: 100% !important;
+        max-width: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .backstage-intro {
+        padding-top: 05px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .backstage-vision-heading {
+        transform: translateX(-45px) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .backstage-vision-heading {
+        margin-bottom: 15px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .backstage-game-grid {
+        margin-top: 40px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    @media (max-width: 768px) {
+        .backstage-character-stage {
+            width: 305px !important;
+            height: 343px !important;
+        }
+
+        .backstage-character-video {
+            width: 305px !important;
+            height: 343px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .backstage-goal-section {
+            margin-top: -80px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .backstage-goal-section > .backstage-heading {
+            font-size: 32px !important;
+            line-height: 1 !important;
+            font-weight: 800 !important;
+            letter-spacing: 0 !important;
+            text-align: center !important;
+            width: 100% !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        /* GOAL ITEM KÉP – kisebb */
+        .backstage-goal-image {
+            width: 75px !important;
+            height: 75px !important;
+        }
+
+        /* LOADING / PROGRESS BAR – szélesebb */
+        .backstage-goal-progress-wrap {
+            width: 130% !important;
+            max-width: none !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .backstage-goal-progress-wrap {
+            margin-top: -9px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .backstage-character-status-block {
+            margin-top: 40px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .backstage-game-status {
+            margin-top: 50px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        /* IF YOU WANT... + 4VISION teljes mobil blokk */
+        .backstage-game-status .backstage-join-text {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            text-align: center !important;
+            gap: 12px !important;
+        }
+
+        /* CSAK AZ IF YOU WANT... SZÖVEG */
+        .backstage-game-status .backstage-join-text > span {
+            display: block !important;
+            width: 100% !important;
+            font-family: "Inter Tight", sans-serif !important;
+            font-size: 18px !important;
+            font-weight: 800 !important;
+            line-height: 1.05 !important;
+            text-align: center !important;
+            text-transform: uppercase !important;
+            margin: 0 !important;
+        }
+
+        /* 4VISION LINK */
+        .backstage-game-status .backstage-vision-link {
+            display: block !important;
+            width: fit-content !important;
+            margin: 0 auto !important;
+        }
+
+        /* CSAK A 4VISION LOGÓ */
+        .backstage-game-status .backstage-inline-vision-logo {
+            display: block !important;
+            width: 190px !important;
+            height: auto !important;
+            max-width: none !important;
+            margin: 0 !important;
+
+            /* X / Y állító */
+            transform: translate(-15px, -50px) !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        /* A KÉT ELEM EGYÜTT, VALÓBAN KÖZÉPRE */
+        .backstage-vision-heading {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            padding: 0 !important;
+            gap: 12px !important;
+            transform: none !important;
+        }
+
+        /* 4VISION LOGÓ */
+        .backstage-vision-heading .backstage-vision-logo {
+            width: 145px !important;
+            height: auto !important;
+            max-width: 145px !important;
+            flex: 0 0 125px !important;
+            margin: 0 !important;
+
+            /* CSAK A LOGÓ Y TENGELYE */
+            transform: translateY(0px) !important;
+        }
+
+        /* CHARACTER PREVIEW */
+        .backstage-vision-heading > span {
+            width: 125px !important;
+            flex: 0 0 125px !important;
+            margin: 0 !important;
+            white-space: normal !important;
+            text-align: left !important;
+            line-height: 1.05 !important;
+        }
+    }
 }
