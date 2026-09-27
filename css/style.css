@@ -7277,4 +7277,19 @@ color: rgba(255,255,255,0.90);
         transition: opacity 420ms ease,
         transform 520ms ease;
     }
+
+    @media (max-width: 768px) {
+        /* SERIES – kapjon több helyet a cím */
+        .backstage-media-list--series .backstage-media-copy {
+            flex: 1 1 auto !important;
+            width: auto !important;
+            max-width: none !important;
+            min-width: 0 !important;
+        }
+
+        .backstage-media-list--series .backstage-media-title {
+            width: auto !important;
+            max-width: none !important;
+        }
+    }
 }
