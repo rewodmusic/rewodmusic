@@ -7293,3 +7293,61 @@ color: rgba(255,255,255,0.90);
         }
     }
 }
+
+@media (max-width: 768px) {
+    /* SERIES – minden láthatatlan szélességkorlát ki */
+    .backstage-list-module--series,
+    .backstage-list-module--series .backstage-media-list,
+    .backstage-list-module--series .backstage-media-row,
+    .backstage-list-module--series .backstage-media-copy,
+    .backstage-list-module--series .backstage-media-title {
+        max-width: none !important;
+    }
+
+    .backstage-list-module--series {
+        width: 100% !important;
+    }
+
+    .backstage-list-module--series .backstage-media-list {
+        width: 100% !important;
+    }
+
+    .backstage-list-module--series .backstage-media-row {
+        width: calc(100vw - 30px) !important;
+    }
+
+    .backstage-list-module--series .backstage-media-copy {
+        flex: 1 1 0 !important;
+        width: auto !important;
+        min-width: 0 !important;
+    }
+
+    .backstage-list-module--series .backstage-media-title {
+        width: 100% !important;
+        white-space: normal !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* ANIME – picit több hely a szövegnek */
+    .backstage-list-module--anime .backstage-media-row {
+        width: calc(100vw - 45px) !important;
+        max-width: none !important;
+    }
+
+    .backstage-list-module--anime .backstage-media-copy,
+    .backstage-list-module--anime .backstage-media-title {
+        max-width: none !important;
+    }
+
+    /* MUSIC – picit több hely a szövegnek */
+    .backstage-list-module--music .backstage-media-row {
+        width: calc(100vw - 45px) !important;
+        max-width: none !important;
+    }
+
+    .backstage-list-module--music .backstage-media-copy,
+    .backstage-list-module--music .backstage-media-title {
+        max-width: none !important;
+    }
+}
