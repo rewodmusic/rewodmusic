@@ -7052,7 +7052,7 @@ color: rgba(255,255,255,0.90);
 
         /* LOADING / PROGRESS BAR – szélesebb */
         .backstage-goal-progress-wrap {
-            width: 130% !important;
+            width: 110% !important;
             max-width: none !important;
         }
     }
@@ -7156,6 +7156,98 @@ color: rgba(255,255,255,0.90);
             white-space: normal !important;
             text-align: left !important;
             line-height: 1.05 !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .backstage-vision-heading {
+            transform: translateX(-20px) !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .backstage-vision-heading .backstage-vision-logo {
+            transform: translateY(-4px) !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .backstage-game-status + .backstage-schedule-section {
+            margin-top: 40px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        /* =========================================
+       ANIME / SERIES / MUSIC CÍMEK
+       ========================================= */
+        .backstage-list-module > .backstage-heading {
+            font-size: 27px !important;
+            line-height: 1.05 !important;
+            width: 100% !important;
+            text-align: center !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        /* =========================================
+       TELJES LISTA
+       ========================================= */
+        .backstage-media-list {
+            width: 100% !important;
+        }
+
+        /* =========================================
+       EGY-EGY ITEM
+       ========================================= */
+        .backstage-media-row {
+            width: 100% !important;
+
+            /* COVER + SZÖVEG közti gap */
+            gap: 16px !important;
+            justify-content: flex-start !important;
+            align-items: flex-start !important;
+
+            /* EZZEL TOLJUK BALRA AZ ÖSSZES ITEMET */
+            transform: translateX(-25px);
+        }
+
+        /* =========================================
+       COVER MÉRETEK
+       ========================================= */
+        /* ANIME */
+        .backstage-media-list--anime .backstage-media-cover {
+            width: 75px !important;
+            height: auto !important;
+        }
+
+        /* SERIES */
+        .backstage-media-list--series .backstage-media-cover {
+            width: 115px !important;
+            height: auto !important;
+        }
+
+        /* MUSIC */
+        .backstage-media-list--music .backstage-media-cover {
+            width: 75px !important;
+            height: 75px !important;
+        }
+
+        /* =========================================
+       NARUTO / CÍMEK
+       ========================================= */
+        .backstage-media-title {
+            font-size: 18px !important;
+            line-height: 1.1 !important;
+        }
+
+        /* =========================================
+       CRUNCHYROLL / NETFLIX / ARTIST
+       ========================================= */
+        .backstage-media-subtitle {
+            font-size: 14px !important;
+            line-height: 1.2 !important;
+            margin-top: 6px !important;
         }
     }
 }
