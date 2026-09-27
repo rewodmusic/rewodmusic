@@ -7313,7 +7313,7 @@ color: rgba(255,255,255,0.90);
     }
 
     .backstage-list-module--series .backstage-media-row {
-        width: calc(100vw - 30px) !important;
+        width: calc(100vw - 40px) !important;
     }
 
     .backstage-list-module--series .backstage-media-copy {
@@ -7331,7 +7331,7 @@ color: rgba(255,255,255,0.90);
 @media (max-width: 768px) {
     /* ANIME – picit több hely a szövegnek */
     .backstage-list-module--anime .backstage-media-row {
-        width: calc(100vw - 45px) !important;
+        width: calc(100vw - 55px) !important;
         max-width: none !important;
     }
 
@@ -7342,7 +7342,7 @@ color: rgba(255,255,255,0.90);
 
     /* MUSIC – picit több hely a szövegnek */
     .backstage-list-module--music .backstage-media-row {
-        width: calc(100vw - 45px) !important;
+        width: calc(100vw - 55px) !important;
         max-width: none !important;
     }
 
