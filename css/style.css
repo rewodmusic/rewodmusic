@@ -6835,4 +6835,142 @@ color: rgba(255,255,255,0.90);
     padding-bottom: 0 !important;
     align-items: flex-start;
 }
+
+/* ============================================================
+   BACKSTAGE — MOBILE OVERRIDES
+   ============================================================ */
+@media (max-width: 768px) {
+    /* ========================================================
+       1. ALL BACKSTAGE TITLES — SAME FONT ON MOBILE
+       ======================================================== */
+    .backstage-heading,
+    .backstage-lists .backstage-heading,
+    .backstage-vision-heading span,
+    .backstage-character-status-title {
+        font-family: "Inter Tight", sans-serif !important;
+        font-weight: 800 !important;
+    }
+
+    /* ========================================================
+       2. COUNTDOWN — MOBILE CONTROLS
+       ======================================================== */
+    .backstage-countdown {
+        /* teljes countdown szélessége / elemek közti gap */
+        gap: 10px !important;
+        justify-content: center;
+    }
+
+    .backstage-countdown-unit {
+        /* egy szám saját szélessége */
+        min-width: 55px !important;
+    }
+
+    .backstage-countdown-number {
+        /* 2 : 04 : 03 : 09 */
+        font-size: 38px !important;
+        line-height: 1 !important;
+    }
+
+    .backstage-countdown-label {
+        /* DAYS / HOURS / MINUTES / SECONDS */
+        margin-top: 8px !important;
+        font-size: 8px !important;
+        letter-spacing: 0.16em !important;
+    }
+
+    .backstage-countdown-separator {
+        /* : mérete */
+        font-size: 30px !important;
+
+        /* külön finomhangolható */
+        margin: 0 1px !important;
+    }
+
+    /* ========================================================
+       3. CHARACTER + CURRENT GOAL
+       NO SPLIT VIEW ON MOBILE
+       ======================================================== */
+    .backstage-game-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 55px !important;
+    }
+
+    /* remove desktop vertical divider */
+    .backstage-game-grid::after {
+        display: none !important;
+        content: none !important;
+    }
+
+    /* remove desktop left/right spacing */
+    .backstage-character,
+    .backstage-goal-section {
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* CURRENT GOAL goes underneath character */
+    .backstage-goal-section {
+        margin-top: 0 !important;
+    }
+
+    /* ========================================================
+       4. ANIME + SERIES
+       NO SPLIT VIEW ON MOBILE
+       ======================================================== */
+    .backstage-watch-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 55px !important;
+    }
+
+    .backstage-list-module--anime,
+    .backstage-list-module--series {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* MUSIC ALSO FULL WIDTH */
+    .backstage-list-module--music {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* headings no longer squeezed into half-column */
+    .backstage-lists .backstage-heading {
+        width: 100% !important;
+        font-size: 25px !important;
+        line-height: 1 !important;
+        white-space: nowrap;
+    }
+
+    /* ========================================================
+       5. SCHEDULE — WIDER ON MOBILE
+       ======================================================== */
+    .backstage-schedule-section {
+        width: calc(100% + 32px) !important;
+        margin-left: -16px !important;
+        margin-right: -16px !important;
+    }
+
+    .backstage-schedule {
+        width: 100% !important;
+        max-width: none !important;
+    }
+
+    /* slightly more room for schedule content */
+    .backstage-schedule-row {
+        width: 100% !important;
+        grid-template-columns: 1.05fr
+            0.85fr
+            1.8fr !important;
+    }
+}
 }
