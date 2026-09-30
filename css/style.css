@@ -222,7 +222,7 @@ body.page-music {
 body.page-home .releases {
     --releases-bg-grayscale: 0%;
     --releases-bg-opacity: 100%;
-    --releases-bg-blur: 0px;
+    --releases-bg-blur: 11px;
     position: relative;
     isolation: isolate;
     overflow: hidden;
@@ -590,7 +590,7 @@ body.page-latest {
     --latest-bg-grayscale: 0%;
     --latest-bg-darken: 85%;
     --latest-bg-opacity: 100%;
-    --latest-bg-blur: 0px;
+    --latest-bg-blur: 11px;
     position: relative;
     background: #000;
 }
@@ -647,7 +647,7 @@ body.page-song {
     --song-bg-grayscale: 0%;
     --song-bg-darken: 85%;
     --song-bg-opacity: 100%;
-    --song-bg-blur: 0px;
+    --song-bg-blur: 11px;
     position: relative;
     background: #000;
 }
@@ -1025,13 +1025,76 @@ body.page-song .site-footer {
 }
 
 /* =========================
+   REVIEWS – FIXED MEDIA PATTERN BACKGROUND
+   ========================= */
+body.notes-page {
+    --reviews-bg-grayscale: 0%;
+    --reviews-bg-darken: 75%;
+    --reviews-bg-opacity: 100%;
+    --reviews-bg-blur: 0px;
+    position: relative;
+    background: #000;
+}
+
+/* FIXED BACKGROUND LAYER */
+body.notes-page .reviews-page-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/img/pattern_media.png");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(var(--reviews-bg-grayscale))
+        brightness(calc(100% - var(--reviews-bg-darken)))
+        blur(var(--reviews-bg-blur));
+    opacity: var(--reviews-bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* CONTENT ABOVE BACKGROUND */
+body.notes-page > .m-header,
+body.notes-page > .m-menu,
+body.notes-page > .hero,
+body.notes-page > .notes-wrapper,
+body.notes-page > .notes-sticky-player {
+    position: relative;
+    z-index: 1;
+}
+
+/* IMPORTANT:
+   old background_notes.jpg layer is no longer used */
+body.notes-page .notes-bg {
+    display: none !important;
+}
+
+/* Let the pattern continue behind desktop header + reviews */
+body.notes-page .hero,
+body.notes-page .notes-wrapper {
+    background: transparent !important;
+}
+
+/* Sticky player must stay fixed */
+body.notes-page > .notes-sticky-player {
+    position: fixed;
+}
+
+/* Footer keeps its own gray background */
+body.notes-page .site-footer {
+    position: relative;
+    z-index: 2;
+}
+
+/* =========================
    UPCOMING PAGE – DYNAMIC COVER BACKGROUND
    ========================= */
 body.upcoming-page {
     --upcoming-bg-grayscale: 0%;
     --upcoming-bg-darken: 85%;
     --upcoming-bg-opacity: 100%;
-    --upcoming-bg-blur: 0px;
+    --upcoming-bg-blur: 11px;
     position: relative;
     background: #000;
 }

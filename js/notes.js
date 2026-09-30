@@ -20,15 +20,19 @@ const stickyShell = document.getElementById("notesStickyShell");
 const stickyEmbed = document.getElementById("notesStickyEmbed");
 const stickyPlaceholder = document.getElementById("notesStickyPlaceholder");
 
+
 function formatDate(dateString) {
   return String(dateString || "").replace(/-/g, ".");
 }
 
+
 function normalizeHex(value, fallback) {
   const raw = String(value || "").trim().replace(/^#/, "");
   const isValid = /^[0-9a-fA-F]{6}$/.test(raw);
+
   return `#${isValid ? raw : fallback}`;
 }
+
 
 function extractSpotifyTrackId(songlink) {
   if (!songlink) return null;
@@ -36,34 +40,47 @@ function extractSpotifyTrackId(songlink) {
   const raw = String(songlink).trim();
 
   const uriMatch = raw.match(/^spotify:track:([a-zA-Z0-9]+)$/);
-  if (uriMatch) return uriMatch[1];
+
+  if (uriMatch) {
+    return uriMatch[1];
+  }
 
   const urlMatch = raw.match(/spotify\.com\/track\/([a-zA-Z0-9]+)/i);
-  if (urlMatch) return urlMatch[1];
+
+  if (urlMatch) {
+    return urlMatch[1];
+  }
 
   return null;
 }
 
+
 function getSpotifyEmbedUrl(songlink) {
   const trackId = extractSpotifyTrackId(songlink);
+
   if (!trackId) return null;
+
   return `https://open.spotify.com/embed/track/${trackId}`;
 }
 
+
 function createTrackButton(note, index) {
   const button = document.createElement("button");
+
   button.type = "button";
   button.className = "note-track-btn";
   button.dataset.noteIndex = String(index);
   button.setAttribute("aria-pressed", "false");
 
   const icon = document.createElement("img");
+
   icon.className = "note-track-btn-icon";
   icon.src = DEFAULT_HEADPHONE_ICON;
   icon.alt = "";
   icon.setAttribute("aria-hidden", "true");
 
   const label = document.createElement("span");
+
   label.className = "note-track-btn-label";
   label.textContent = `PLAY - ${note.songname || "Untitled"}`;
 
@@ -77,8 +94,10 @@ function createTrackButton(note, index) {
   return button;
 }
 
+
 function createNoteEl(note, index) {
   const el = document.createElement("article");
+
   el.className = "note-entry";
   el.dataset.noteIndex = String(index);
 
@@ -92,6 +111,7 @@ function createNoteEl(note, index) {
   head.className = "note-head";
 
   const dateEl = document.createElement("div");
+
   dateEl.className = "note-date";
   dateEl.textContent = formatDate(note.notesDate);
 
@@ -103,8 +123,12 @@ function createNoteEl(note, index) {
   }
 
   const textEl = document.createElement("div");
+
   textEl.className = "note-text";
-  textEl.innerHTML = (note.notespost || "").replace(/<br\s*\/?>/gi, "<br>");
+  textEl.innerHTML = (note.notespost || "").replace(
+    /<br\s*\/?>/gi,
+    "<br>"
+  );
 
   el.appendChild(head);
   el.appendChild(textEl);
@@ -112,11 +136,13 @@ function createNoteEl(note, index) {
   return el;
 }
 
+
 function updateButtonVisual(button, note, isActive) {
   if (!button || !note) return;
 
   const label = button.querySelector(".note-track-btn-label");
   const icon = button.querySelector(".note-track-btn-icon");
+
   if (!label || !icon) return;
 
   if (isActive) {
@@ -130,6 +156,7 @@ function updateButtonVisual(button, note, isActive) {
     button.setAttribute("aria-pressed", "true");
 
     icon.src = ACTIVE_HEADPHONE_ICON;
+
     label.textContent = `STOP - ${note.songname || "Untitled"}`;
   } else {
     button.classList.remove("is-active");
@@ -139,9 +166,11 @@ function updateButtonVisual(button, note, isActive) {
     button.setAttribute("aria-pressed", "false");
 
     icon.src = DEFAULT_HEADPHONE_ICON;
+
     label.textContent = `PLAY - ${note.songname || "Untitled"}`;
   }
 }
+
 
 function syncAllButtonStates() {
   const buttons = notesApp.querySelectorAll(".note-track-btn");
@@ -150,9 +179,11 @@ function syncAllButtonStates() {
     const noteIndex = Number(button.dataset.noteIndex);
     const note = allNotes[noteIndex];
     const isActive = noteIndex === activeTrackIndex;
+
     updateButtonVisual(button, note, isActive);
   });
 }
+
 
 function showPlaceholder() {
   if (!stickyPlaceholder || !stickyEmbed) return;
@@ -164,6 +195,7 @@ function showPlaceholder() {
   stickyEmbed.style.display = "none";
   stickyEmbed.innerHTML = "";
 }
+
 
 function showEmbed(embedUrl) {
   if (!stickyPlaceholder || !stickyEmbed) return;
@@ -187,13 +219,16 @@ function showEmbed(embedUrl) {
   stickyEmbed.style.display = "block";
 }
 
+
 function renderStickyPlaceholder() {
   if (!stickyShell) return;
 
   stickyShell.classList.add("is-placeholder");
   stickyShell.classList.remove("is-embed-active");
+
   showPlaceholder();
 }
+
 
 function renderStickyEmbed(note) {
   if (!stickyShell) return;
@@ -212,47 +247,70 @@ function renderStickyEmbed(note) {
   showEmbed(embedUrl);
 }
 
+
 function handleTrackButtonClick(index) {
   const note = allNotes[index];
+
   if (!note || !note.songlink) return;
 
   if (activeTrackIndex === index) {
     activeTrackIndex = null;
+
     syncAllButtonStates();
     renderStickyPlaceholder();
+
     return;
   }
 
   activeTrackIndex = index;
+
   syncAllButtonStates();
   renderStickyEmbed(note);
 }
 
-function renderNotes({ onlyAppendNew = false, slowAnimateNew = false } = {}) {
+
+function renderNotes({
+  onlyAppendNew = false,
+  slowAnimateNew = false
+} = {}) {
+
   if (!notesApp) return;
 
   if (!onlyAppendNew) {
     notesApp.innerHTML = "";
+
     const slice = allNotes.slice(0, visibleCount);
 
     slice.forEach((note, index) => {
-      notesApp.appendChild(createNoteEl(note, index));
+      notesApp.appendChild(
+        createNoteEl(note, index)
+      );
     });
 
     syncAllButtonStates();
+
     return;
   }
 
-  const alreadyRendered = notesApp.querySelectorAll(".note-entry").length;
-  const slice = allNotes.slice(alreadyRendered, visibleCount);
+  const alreadyRendered =
+    notesApp.querySelectorAll(".note-entry").length;
+
+  const slice =
+    allNotes.slice(alreadyRendered, visibleCount);
 
   slice.forEach((note, localIndex) => {
     const globalIndex = alreadyRendered + localIndex;
-    const el = createNoteEl(note, globalIndex);
+
+    const el = createNoteEl(
+      note,
+      globalIndex
+    );
 
     if (slowAnimateNew) {
       el.classList.add("is-new");
-      el.style.animationDelay = `${localIndex * 120}ms`;
+
+      el.style.animationDelay =
+        `${localIndex * 120}ms`;
     }
 
     notesApp.appendChild(el);
@@ -261,36 +319,68 @@ function renderNotes({ onlyAppendNew = false, slowAnimateNew = false } = {}) {
   syncAllButtonStates();
 }
 
+
 async function initNotes() {
-  const res = await fetch(DATA_URL, { cache: "no-store" });
+  const res = await fetch(
+    DATA_URL,
+    {
+      cache: "no-store"
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to load ${DATA_URL}: ${res.status}`
+    );
+  }
+
   allNotes = await res.json();
 
-  allNotes.sort((a, b) => new Date(b.notesDate) - new Date(a.notesDate));
+  if (!Array.isArray(allNotes)) {
+    allNotes = [];
+  }
 
-  visibleCount = Math.min(INITIAL_COUNT, allNotes.length);
-  renderNotes();
-  renderStickyPlaceholder();
-
-if (!loadMoreBtn) return;
-
-loadMoreBtn.style.display = visibleCount >= allNotes.length ? "none" : "";
-
-loadMoreBtn.addEventListener("click", () => {
-  const prev = visibleCount;
+  allNotes.sort(
+    (a, b) =>
+      new Date(b.notesDate) -
+      new Date(a.notesDate)
+  );
 
   visibleCount = Math.min(
-    visibleCount + LOAD_MORE_COUNT,
+    INITIAL_COUNT,
     allNotes.length
   );
 
-  if (visibleCount === prev) return;
+  renderNotes();
+  renderStickyPlaceholder();
 
-  renderNotes({ onlyAppendNew: true, slowAnimateNew: true });
+  if (!loadMoreBtn) return;
 
-  if (visibleCount >= allNotes.length) {
-    loadMoreBtn.style.display = "none";
-  }
-});
+  loadMoreBtn.style.display =
+    visibleCount >= allNotes.length
+      ? "none"
+      : "";
+
+  loadMoreBtn.addEventListener("click", () => {
+    const prev = visibleCount;
+
+    visibleCount = Math.min(
+      visibleCount + LOAD_MORE_COUNT,
+      allNotes.length
+    );
+
+    if (visibleCount === prev) return;
+
+    renderNotes({
+      onlyAppendNew: true,
+      slowAnimateNew: true
+    });
+
+    if (visibleCount >= allNotes.length) {
+      loadMoreBtn.style.display = "none";
+    }
+  });
 }
+
 
 initNotes().catch(console.error);
