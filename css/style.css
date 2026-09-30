@@ -4037,7 +4037,7 @@ body.media-page #mobile-scale-root {
 }
 
 body.media-page .hero {
-    background: #000;
+    background: transparent !important;
 }
 
 body.media-page .hero .nav-right a {
