@@ -7745,3 +7745,150 @@ color: rgba(255,255,255,0.90);
         background: #000 !important;
     }
 }
+
+/* =========================================================
+   WEBSHOP – MEDIA DESIGN MATCH
+   DESKTOP + MOBILE
+   ========================================================= */
+body.page-webshop {
+    /* =========================
+       ADJUSTABLE CONTROLS
+       ========================= */
+    /* card szürke hátterének átlátszósága */
+    --ws-card-bg-opacity: 0.65;
+
+    /* Media-style rounding */
+    --ws-card-radius-media: 15px;
+    --ws-preview-radius-media: 15px;
+
+    /* Media-style buttons */
+    --ws-media-btn-bg: #2b2b2b;
+    --ws-media-btn-hover: #383838;
+    --ws-media-btn-radius: 10px;
+}
+
+/* =========================
+   PRODUCT CARD
+   ========================= */
+body.page-webshop .ws-card {
+    background: rgba(31, 31, 31, var(--ws-card-bg-opacity)) !important;
+    border-radius: var(--ws-card-radius-media) !important;
+    overflow: hidden;
+}
+
+/* =========================
+   PRODUCT PREVIEW
+   ========================= */
+body.page-webshop .ws-preview {
+    border-radius: var(--ws-preview-radius-media);
+    overflow: hidden;
+}
+
+body.page-webshop .ws-preview img {
+    border-radius: var(--ws-preview-radius-media) !important;
+}
+
+/* =========================
+   ADD TO CART
+   MEDIA-STYLE BUTTON
+   ========================= */
+body.page-webshop .ws-btn {
+    background: var(--ws-media-btn-bg) !important;
+    color: #ffffff !important;
+    border: none;
+    border-radius: var(--ws-media-btn-radius) !important;
+    padding: 7px 16px;
+    height: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "IM Fell English", serif;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 180ms ease,
+        opacity 180ms ease;
+}
+
+body.page-webshop .ws-btn:hover {
+    background: var(--ws-media-btn-hover) !important;
+}
+
+/* =========================
+   LOAD MORE SHEET MUSIC
+   1:1 MEDIA LOAD MORE STYLE
+   ========================= */
+body.page-webshop a.btn-listen.load-more {
+    background: rgba(59, 59, 59, 0.5) !important;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 10px !important;
+    font-family: "Barlow", sans-serif;
+    font-weight: 400;
+    transition: background 180ms ease,
+        opacity 180ms ease;
+}
+
+body.page-webshop a.btn-listen.load-more:hover {
+    background: rgba(68, 68, 68, 1) !important;
+}
+
+/* =========================
+   MOBILE – MUSIC
+   REMOVE EMPTY SPACE AROUND MODULE
+   ========================= */
+@media (max-width: 768px) {
+    body.page-music .music-page {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    body.page-music .music-inner {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+}
+
+/* =========================
+   MOBILE – MUSIC BOTTOM HERO
+   ========================= */
+/* Desktopon soha ne jelenjen meg */
+.music-mobile-bottom-hero {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    /* ÁLLÍTHATÓ MAGASSÁG */
+    body.page-music {
+        --music-mobile-bottom-hero-h: 200px;
+    }
+
+    /* továbbra se legyen fekete spacer az app körül */
+    body.page-music .music-page {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    body.page-music .music-inner {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* APP UTÁNI MÁSODIK HERO */
+    body.page-music .music-mobile-bottom-hero {
+        display: block;
+        width: 100%;
+        height: var(--music-mobile-bottom-hero-h);
+        background-image: url("/img/hero_music_mobile2.jpg");
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        margin: 0;
+        padding: 0;
+    }
+}
