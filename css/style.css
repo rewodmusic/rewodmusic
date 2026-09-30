@@ -45,7 +45,7 @@ html {
     html.js body.page-home .releases,
     html.js body.page-home .playlists {
         opacity: 0;
-        transition: opacity 3800ms ease;
+        transition: opacity 1650ms ease;
         will-change: opacity;
     }
 
@@ -214,6 +214,49 @@ body.page-music {
 .releases-inner {
     max-width: var(--releases-max);
     margin: 0 auto;
+}
+
+/* =========================
+   HOME – RELEASES DYNAMIC BACKGROUND
+   ========================= */
+body.page-home .releases {
+    --releases-bg-grayscale: 0%;
+    --releases-bg-opacity: 100%;
+    --releases-bg-blur: 0px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+/* CURRENT LATEST RELEASE COVER */
+body.page-home .releases-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(var(--releases-bg-grayscale))
+        blur(var(--releases-bg-blur));
+    opacity: var(--releases-bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* REAL 80% BLACK OVERLAY */
+body.page-home .releases-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.80);
+    pointer-events: none;
+}
+
+/* RELEASE CONTENT ABOVE BACKGROUND */
+body.page-home .releases-inner {
+    position: relative;
+    z-index: 1;
 }
 
 .release-title {
@@ -540,6 +583,122 @@ body.page-music {
     padding: 26px 26px;
 }
 
+/* =========================
+   LATEST PAGE – DYNAMIC COVER BACKGROUND
+   ========================= */
+body.page-latest {
+    --latest-bg-grayscale: 0%;
+    --latest-bg-darken: 85%;
+    --latest-bg-opacity: 100%;
+    --latest-bg-blur: 0px;
+    position: relative;
+    background: #000;
+}
+
+/* FIXED BACKGROUND – JS tölti bele a latest cover képét */
+body.page-latest .latest-page-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(var(--latest-bg-grayscale))
+        blur(var(--latest-bg-blur));
+    opacity: var(--latest-bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* valódi állítható fekete overlay */
+body.page-latest .latest-page-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / var(--latest-bg-darken));
+    pointer-events: none;
+}
+
+/* minden tartalom a háttér fölött */
+body.page-latest > .m-header,
+body.page-latest > .m-menu,
+body.page-latest > #mobile-scale-root {
+    position: relative;
+    z-index: 1;
+}
+
+/* desktop header + latest section átlátszó */
+body.page-latest .hero,
+body.page-latest .latest-release {
+    background: transparent !important;
+}
+
+/* footer marad a saját szürke hátterén */
+body.page-latest .site-footer {
+    position: relative;
+    z-index: 2;
+}
+
+/* =========================
+   SONG PAGE – DYNAMIC COVER BACKGROUND
+   ========================= */
+body.page-song {
+    --song-bg-grayscale: 0%;
+    --song-bg-darken: 85%;
+    --song-bg-opacity: 100%;
+    --song-bg-blur: 0px;
+    position: relative;
+    background: #000;
+}
+
+/* FIXED BACKGROUND – JS tölti bele az aktuális song cover képét */
+body.page-song .song-page-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(var(--song-bg-grayscale))
+        blur(var(--song-bg-blur));
+    opacity: var(--song-bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* valódi állítható fekete overlay */
+body.page-song .song-page-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / var(--song-bg-darken));
+    pointer-events: none;
+}
+
+/* minden tartalom a háttér fölött */
+body.page-song > .m-header,
+body.page-song > .m-menu,
+body.page-song > #mobile-scale-root {
+    position: relative;
+    z-index: 1;
+}
+
+/* desktop header + song linktree + alsó releases/playlists átlátszó */
+body.page-song .hero,
+body.page-song .latest-release,
+body.page-song .releases,
+body.page-song .playlists {
+    background: transparent !important;
+}
+
+/* footer marad a saját szürke hátterén */
+body.page-song .site-footer {
+    position: relative;
+    z-index: 2;
+}
+
 /* ROW */
 .service-row {
     display: grid;
@@ -863,6 +1022,65 @@ body.page-music {
 .note-entry.is-new {
     animation-duration: 1.6s;
     animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* =========================
+   UPCOMING PAGE – DYNAMIC COVER BACKGROUND
+   ========================= */
+body.upcoming-page {
+    --upcoming-bg-grayscale: 0%;
+    --upcoming-bg-darken: 85%;
+    --upcoming-bg-opacity: 100%;
+    --upcoming-bg-blur: 0px;
+    position: relative;
+    background: #000;
+}
+
+/* FIXED BACKGROUND – JS tölti bele az upcoming cover képét */
+body.upcoming-page .upcoming-page-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(var(--upcoming-bg-grayscale))
+        blur(var(--upcoming-bg-blur));
+    opacity: var(--upcoming-bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* valódi állítható fekete overlay */
+body.upcoming-page .upcoming-page-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / var(--upcoming-bg-darken));
+    pointer-events: none;
+}
+
+/* minden tartalom a háttér fölött */
+body.upcoming-page > .m-header,
+body.upcoming-page > .m-menu,
+body.upcoming-page > .hero,
+body.upcoming-page > .upcoming-wrap {
+    position: relative;
+    z-index: 1;
+}
+
+/* az Upcoming fő területe engedje át a hátteret */
+body.upcoming-page .hero,
+body.upcoming-page .upcoming-wrap,
+body.upcoming-page .upcoming-inner {
+    background: transparent !important;
+}
+
+/* footer marad a saját szürke hátterén */
+body.upcoming-page .site-footer {
+    position: relative;
+    z-index: 2;
 }
 
 /* =========================
@@ -7443,6 +7661,41 @@ color: rgba(255,255,255,0.90);
         height: 100%;
         top: 0;
         left: 0;
+    }
+}
+
+/* =========================
+   MOBILE – LIVE + MUSIC
+   PURE BLACK BACKGROUND
+   ========================= */
+@media (max-width: 768px) {
+    /* LIVE */
+    body.page-live {
+        background: #000 !important;
+    }
+
+    body.page-live .live-page-bg {
+        display: none !important;
+    }
+
+    body.page-live .live-page,
+    body.page-live .live-inner,
+    body.page-live .live-app {
+        background: #000 !important;
+    }
+
+    /* MUSIC */
+    body.page-music {
+        background: #000 !important;
+    }
+
+    body.page-music .music-page-bg {
+        display: none !important;
+    }
+
+    body.page-music .music-page,
+    body.page-music .music-inner {
+        background: #000 !important;
     }
 }.hero,body.media-page.media-wrap,body.media-page.media-grid,background
 }

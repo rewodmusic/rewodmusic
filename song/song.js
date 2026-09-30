@@ -2,6 +2,7 @@
    SONG PAGE – dynamic by ?id=
    + HOME blocks (latest/upcoming) SAFE
    + PROFILE IMAGE on top (always)
+   + DYNAMIC FULL PAGE COVER BACKGROUND
    ========================= */
 
 const CONFIG = {
@@ -9,7 +10,7 @@ const CONFIG = {
   kofiUrl: "https://ko-fi.com/rewodmusic",
   signatureUrl: "/img/signature.png",
 
-  // ✅ cover images by rule
+  // cover images by rule
   covers: {
     latest: "/img/latest.jpg",
     original: "/img/profile_original.jpg",
@@ -18,18 +19,59 @@ const CONFIG = {
     default: "/img/profile.jpg"
   },
 
-  // ✅ NEW: newsletter folder for release images (originals + feats)
+  // newsletter folder for release images (originals + feats)
   newsletterDir: "/newsletter",
   newsletterExt: ".jpg"
 };
 
-function safeText(s) { return (s ?? "").toString(); }
-function hasText(s) { return safeText(s).trim().length > 0; }
+function safeText(s) {
+  return (s ?? "").toString();
+}
 
-/** erős normalizálás id-k összehasonlításához (kötőjel/space/ékezet mindegy) */
+function hasText(s) {
+  return safeText(s).trim().length > 0;
+}
+
+/* =========================
+   DYNAMIC SONG BACKGROUND
+   ========================= */
+
+function syncSongBackground() {
+  const cover = document.getElementById("latestCover");
+  const bg = document.getElementById("songPageBg");
+
+  if (!cover || !bg) return;
+
+  function updateBackground() {
+    const src = cover.currentSrc || cover.src;
+
+    if (!src) return;
+
+    bg.style.backgroundImage = `url("${src}")`;
+  }
+
+  // ha a kép már betöltődött
+  if (cover.complete && cover.src) {
+    updateBackground();
+  }
+
+  // normál betöltéskor
+  cover.addEventListener("load", updateBackground);
+
+  // ha JS később megváltoztatja a src-t
+  const observer = new MutationObserver(updateBackground);
+
+  observer.observe(cover, {
+    attributes: true,
+    attributeFilter: ["src"]
+  });
+}
+
+/** erős normalizálás id-k összehasonlításához */
 function normId(s) {
   return safeText(s)
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "");
 }
@@ -49,28 +91,44 @@ function pick(row, keys, fallback = "") {
   for (const k of keys) {
     if (hasText(row?.[k])) return safeText(row[k]).trim();
   }
+
   return fallback;
 }
 
-/* ✅ detect originals (exact rule you asked) */
+/* detect originals */
 function isOriginalComposition(row) {
-  const a = pick(row, ["newmusicartist", "artist"], "").toLowerCase().trim();
+  const a = pick(
+    row,
+    ["newmusicartist", "artist"],
+    ""
+  ).toLowerCase().trim();
+
   return a === "original composition";
 }
 
-/** id = "artist-title" (for display / link building)
- * ✅ RULE:
+/**
+ * id = "artist-title"
+ *
+ * RULE:
  * - if original composition -> ONLY "title"
  */
 function buildRowId(row) {
-  const title  = pick(row, ["title", "newmusictitle", "musictitle"]);
+  const title = pick(
+    row,
+    ["title", "newmusictitle", "musictitle"]
+  );
 
   if (isOriginalComposition(row)) {
     return `${slugify(title)}`.replace(/^-+|-+$/g, "");
   }
 
-  const artist = pick(row, ["artist", "newmusicartist", "musicartist"]);
-  return `${slugify(artist)}-${slugify(title)}`.replace(/^-+|-+$/g, "");
+  const artist = pick(
+    row,
+    ["artist", "newmusicartist", "musicartist"]
+  );
+
+  return `${slugify(artist)}-${slugify(title)}`
+    .replace(/^-+|-+$/g, "");
 }
 
 function getQueryId() {
@@ -80,6 +138,7 @@ function getQueryId() {
 
 function setBtn(btn, url) {
   if (!btn) return;
+
   const u = safeText(url).trim();
 
   if (u && u !== "#") {
@@ -101,106 +160,208 @@ function buildTitle(row) {
   const tape = pick(row, ["tape"], "").toLowerCase();
 
   if (tape === "x") {
-    const a = pick(row, ["artist", "newmusicartist"], "REWOD");
+    const a = pick(
+      row,
+      ["artist", "newmusicartist"],
+      "REWOD"
+    );
+
     return `${a} - ${t}`;
   }
+
   if (f) return `REWOD ft. ${f} - ${t}`;
+
   return `REWOD - ${t}`;
 }
 
-/* --- TAPE UI --- */
+/* =========================
+   TAPE UI
+   ========================= */
+
 function setTapeMode(isTape) {
-  const root = document.querySelector(".latest-release") || document.body;
+  const root =
+    document.querySelector(".latest-release") ||
+    document.body;
+
   root.classList.toggle("is-tape", !!isTape);
 
-  const rowSpotify = document.querySelector(".latest-release .service-row.spotify");
-  const rowApple   = document.querySelector(".latest-release .service-row.apple");
-  const rowMMS     = document.querySelector(".latest-release .service-row.mms");
+  const rowSpotify =
+    document.querySelector(
+      ".latest-release .service-row.spotify"
+    );
 
-  [rowSpotify, rowApple, rowMMS].forEach(el => { if (el) el.style.display = ""; });
+  const rowApple =
+    document.querySelector(
+      ".latest-release .service-row.apple"
+    );
+
+  const rowMMS =
+    document.querySelector(
+      ".latest-release .service-row.mms"
+    );
+
+  [rowSpotify, rowApple, rowMMS].forEach(el => {
+    if (el) el.style.display = "";
+  });
 
   if (isTape) {
     if (rowSpotify) rowSpotify.style.display = "none";
-    if (rowApple)   rowApple.style.display = "none";
-    if (rowMMS)     rowMMS.style.display = "none";
+    if (rowApple) rowApple.style.display = "none";
+    if (rowMMS) rowMMS.style.display = "none";
   }
 }
 
-/* --- DESCR block --- */
+/* =========================
+   DESCR BLOCK
+   ========================= */
+
 let _latestDescrNode = null;
 
 function setDescr(row) {
-  const services = document.getElementById("latestServices");
-  const wrap = document.getElementById("latestDescr");
-  const text = document.getElementById("latestDescrText");
+  const services =
+    document.getElementById("latestServices");
+
+  const wrap =
+    document.getElementById("latestDescr");
+
+  const text =
+    document.getElementById("latestDescrText");
+
   if (!services || !wrap || !text) return;
 
-  const d = pick(row, ["descr", "description"], "");
+  const d = pick(
+    row,
+    ["descr", "description"],
+    ""
+  );
 
   if (!d) {
     services.classList.remove("has-descr");
+
     wrap.hidden = true;
+
     if (wrap.parentElement) {
       _latestDescrNode = wrap;
       wrap.remove();
     }
+
     return;
   }
 
-  if (!wrap.parentElement) services.appendChild(_latestDescrNode || wrap);
+  if (!wrap.parentElement) {
+    services.appendChild(
+      _latestDescrNode || wrap
+    );
+  }
 
   services.classList.add("has-descr");
-  wrap.hidden = false;
-  text.textContent = `"${d}"\n- REWOD`;
 
-  let sig = document.getElementById("latestSignature");
+  wrap.hidden = false;
+
+  text.textContent =
+    `"${d}"\n- REWOD`;
+
+  let sig =
+    document.getElementById("latestSignature");
+
   if (!sig) {
     sig = document.createElement("img");
     sig.id = "latestSignature";
     sig.className = "latest-descr-signature";
     sig.alt = "REWOD signature";
+
     wrap.appendChild(sig);
   }
 
-  const sigUrl = pick(row, ["signatureUrl", "signatureurl"], CONFIG.signatureUrl);
+  const sigUrl = pick(
+    row,
+    ["signatureUrl", "signatureurl"],
+    CONFIG.signatureUrl
+  );
+
   sig.src = sigUrl;
   sig.loading = "lazy";
   sig.decoding = "async";
 }
 
-/* -------- HOME blocks (latest/upcoming) – SAFE -------- */
+/* =========================
+   HOME BLOCKS
+   ========================= */
 
 function utcMidnightMs(dateStr) {
   const s = safeText(dateStr).trim();
+
   if (!s) return null;
-  const normalized = s.replace(/_/g, "-");
-  const m = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  const normalized =
+    s.replace(/_/g, "-");
+
+  const m =
+    normalized.match(
+      /^(\d{4})-(\d{2})-(\d{2})$/
+    );
+
   if (!m) return null;
-  return Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 0, 0, 0);
+
+  return Date.UTC(
+    Number(m[1]),
+    Number(m[2]) - 1,
+    Number(m[3]),
+    0,
+    0,
+    0
+  );
 }
 
 function formatCountdownText(msLeft) {
   if (msLeft <= 0) return "Out now";
-  const totalSec = Math.floor(msLeft / 1000);
-  const days = Math.floor(totalSec / 86400);
-  const hours = Math.floor((totalSec % 86400) / 3600);
-  const minutes = Math.floor((totalSec % 3600) / 60);
-  const seconds = totalSec % 60;
-  return `${days} days ${hours} hours<br>${minutes} minutes ${seconds} seconds`;
+
+  const totalSec =
+    Math.floor(msLeft / 1000);
+
+  const days =
+    Math.floor(totalSec / 86400);
+
+  const hours =
+    Math.floor(
+      (totalSec % 86400) / 3600
+    );
+
+  const minutes =
+    Math.floor(
+      (totalSec % 3600) / 60
+    );
+
+  const seconds =
+    totalSec % 60;
+
+  return (
+    `${days} days ${hours} hours<br>` +
+    `${minutes} minutes ${seconds} seconds`
+  );
 }
 
-/* ✅ HOME ft-fix helpers (ONLY affects HOME blocks) */
 function artistContainsRewod(artistStr) {
-  return safeText(artistStr).toLowerCase().includes("rewod");
+  return safeText(artistStr)
+    .toLowerCase()
+    .includes("rewod");
 }
 
-function appendFeatIfNeeded(title, feat, artistStr) {
+function appendFeatIfNeeded(
+  title,
+  feat,
+  artistStr
+) {
   const t = safeText(title).trim();
   const f = safeText(feat).trim();
+
   if (!t) return "";
   if (!f) return t;
-  // if artist already mentions REWOD, do NOT add "ft. X" again on the title line
-  if (artistContainsRewod(artistStr)) return t;
+
+  if (artistContainsRewod(artistStr)) {
+    return t;
+  }
+
   return `${t} ft. ${f}`;
 }
 
@@ -212,183 +373,563 @@ function initHomeBlocks(rows) {
 
   if (!hasAny) return;
 
-  const latest = rows?.[0] || {};
+  const latest =
+    rows?.[0] || {};
 
-  // LATEST
-  const latestTitleEl = document.getElementById("homeLatestTitle");
-  const latestArtistEl = document.getElementById("homeLatestArtist");
+  /* ---------- LATEST ---------- */
 
-  const latestTitle = pick(latest, ["newmusictitle", "title"], "");
-  const latestArtist = pick(latest, ["newmusicartist", "artist"], "");
-  const latestFeat = pick(latest, ["feat"], "");
+  const latestTitleEl =
+    document.getElementById("homeLatestTitle");
 
-  if (latestTitleEl) latestTitleEl.textContent = appendFeatIfNeeded(latestTitle, latestFeat, latestArtist);
-  if (latestArtistEl) latestArtistEl.textContent = latestArtist;
+  const latestArtistEl =
+    document.getElementById("homeLatestArtist");
 
-  const latestCoverEl = document.getElementById("homeLatestCover");
-  const latestCoverUrl = pick(latest, ["coverUrl", "coverurl", "cover", "image", "img"], "");
-  if (latestCoverEl && latestCoverUrl) latestCoverEl.src = latestCoverUrl;
+  const latestTitle = pick(
+    latest,
+    ["newmusictitle", "title"],
+    ""
+  );
 
-  const latestBtn = document.getElementById("homeLatestListenBtn");
-  if (latestBtn) latestBtn.href = "/latest/";
+  const latestArtist = pick(
+    latest,
+    ["newmusicartist", "artist"],
+    ""
+  );
 
-  // UPCOMING
-  const comingTitleEl = document.getElementById("homeComingTitle");
-  const comingArtistEl = document.getElementById("homeComingArtist");
+  const latestFeat = pick(
+    latest,
+    ["feat"],
+    ""
+  );
 
-  const comingTitle = pick(latest, ["comingmusictitle"], "");
-  const comingArtist = pick(latest, ["comingmusicartist"], "");
-  const comingFeat = pick(latest, ["comingfeat"], "");
+  if (latestTitleEl) {
+    latestTitleEl.textContent =
+      appendFeatIfNeeded(
+        latestTitle,
+        latestFeat,
+        latestArtist
+      );
+  }
 
-  if (comingTitleEl) comingTitleEl.textContent = appendFeatIfNeeded(comingTitle, comingFeat, comingArtist);
-  if (comingArtistEl) comingArtistEl.textContent = comingArtist;
+  if (latestArtistEl) {
+    latestArtistEl.textContent =
+      latestArtist;
+  }
 
-  const comingCoverEl = document.getElementById("homeComingCover");
-  const comingCoverUrl = pick(latest, ["comingCoverUrl", "comingcoverurl"], "");
-  if (comingCoverEl && comingCoverUrl) comingCoverEl.src = comingCoverUrl;
+  const latestCoverEl =
+    document.getElementById(
+      "homeLatestCover"
+    );
 
-  const countdownEl = document.getElementById("homeComingCountdown");
+  const latestCoverUrl = pick(
+    latest,
+    [
+      "coverUrl",
+      "coverurl",
+      "cover",
+      "image",
+      "img"
+    ],
+    ""
+  );
+
+  if (
+    latestCoverEl &&
+    latestCoverUrl
+  ) {
+    latestCoverEl.src =
+      latestCoverUrl;
+  }
+
+  const latestBtn =
+    document.getElementById(
+      "homeLatestListenBtn"
+    );
+
+  if (latestBtn) {
+    latestBtn.href = "/latest/";
+  }
+
+  /* ---------- UPCOMING ---------- */
+
+  const comingTitleEl =
+    document.getElementById(
+      "homeComingTitle"
+    );
+
+  const comingArtistEl =
+    document.getElementById(
+      "homeComingArtist"
+    );
+
+  const comingTitle = pick(
+    latest,
+    ["comingmusictitle"],
+    ""
+  );
+
+  const comingArtist = pick(
+    latest,
+    ["comingmusicartist"],
+    ""
+  );
+
+  const comingFeat = pick(
+    latest,
+    ["comingfeat"],
+    ""
+  );
+
+  if (comingTitleEl) {
+    comingTitleEl.textContent =
+      appendFeatIfNeeded(
+        comingTitle,
+        comingFeat,
+        comingArtist
+      );
+  }
+
+  if (comingArtistEl) {
+    comingArtistEl.textContent =
+      comingArtist;
+  }
+
+  const comingCoverEl =
+    document.getElementById(
+      "homeComingCover"
+    );
+
+  const comingCoverUrl = pick(
+    latest,
+    [
+      "comingCoverUrl",
+      "comingcoverurl"
+    ],
+    ""
+  );
+
+  if (
+    comingCoverEl &&
+    comingCoverUrl
+  ) {
+    comingCoverEl.src =
+      comingCoverUrl;
+  }
+
+  const countdownEl =
+    document.getElementById(
+      "homeComingCountdown"
+    );
+
   if (!countdownEl) return;
 
-  const targetUtc = utcMidnightMs(pick(latest, ["comingmusicdate"], ""));
+  const targetUtc =
+    utcMidnightMs(
+      pick(
+        latest,
+        ["comingmusicdate"],
+        ""
+      )
+    );
+
   if (!targetUtc) {
     countdownEl.textContent = "--";
     return;
   }
 
   function tick() {
-    countdownEl.innerHTML = formatCountdownText(targetUtc - Date.now());
+    countdownEl.innerHTML =
+      formatCountdownText(
+        targetUtc - Date.now()
+      );
   }
+
   tick();
-  window.setInterval(tick, 1000);
+
+  window.setInterval(
+    tick,
+    1000
+  );
 }
 
-/* -------- ✅ dynamic cover rules (+ newsletter lookup for original/feat) -------- */
+/* =========================
+   DYNAMIC COVER RULES
+   ========================= */
 
-/** ✅ helper: try preferred src, fallback on error (404 etc.) */
-function setImgWithFallback(imgEl, preferredSrc, fallbackSrc) {
+function setImgWithFallback(
+  imgEl,
+  preferredSrc,
+  fallbackSrc
+) {
   imgEl.onerror = () => {
     imgEl.onerror = null;
     imgEl.src = fallbackSrc;
   };
+
   imgEl.src = preferredSrc;
 }
 
-function setDynamicCover(row, allRows) {
-  const coverEl = document.getElementById("latestCover");
+function setDynamicCover(
+  row,
+  allRows
+) {
+  const coverEl =
+    document.getElementById(
+      "latestCover"
+    );
+
   if (!coverEl) return;
 
-  // fallback always
-  let src = CONFIG.covers.default;
+  let src =
+    CONFIG.covers.default;
 
-  // "latest row" = first element in admin.json
-  const latestRow = allRows?.[0] || null;
+  const latestRow =
+    allRows?.[0] || null;
 
-  // compare current row to latest row robustly
-  const rowKey = normId(buildRowId(row));
-  const latestKey = latestRow ? normId(buildRowId(latestRow)) : "";
+  const rowKey =
+    normId(buildRowId(row));
 
-  const isLatestPage = !!latestRow && rowKey && latestKey && rowKey === latestKey;
+  const latestKey =
+    latestRow
+      ? normId(buildRowId(latestRow))
+      : "";
 
-  // 1) latest page => latest.jpg
+  const isLatestPage =
+    !!latestRow &&
+    rowKey &&
+    latestKey &&
+    rowKey === latestKey;
+
+  /* ---------- LATEST ---------- */
+
   if (isLatestPage) {
-    coverEl.src = CONFIG.covers.latest;
-    coverEl.alt = "REWOD cover";
+    coverEl.src =
+      CONFIG.covers.latest;
+
+    coverEl.alt =
+      "REWOD cover";
+
     return;
   }
 
-  // 2) non-latest rules
-  const tape = pick(row, ["tape"], "").toLowerCase();
-  const feat = pick(row, ["feat"], "").trim();
-  const artist = pick(row, ["newmusicartist", "artist"], "").toLowerCase().trim();
+  /* ---------- NON-LATEST ---------- */
 
-  // title slug used for /newsletter/{title}.jpg
-  const titleSlug = slugify(pick(row, ["newmusictitle", "title"]));
+  const tape = pick(
+    row,
+    ["tape"],
+    ""
+  ).toLowerCase();
+
+  const feat = pick(
+    row,
+    ["feat"],
+    ""
+  ).trim();
+
+  const artist = pick(
+    row,
+    ["newmusicartist", "artist"],
+    ""
+  ).toLowerCase().trim();
+
+  const titleSlug =
+    slugify(
+      pick(
+        row,
+        ["newmusictitle", "title"]
+      )
+    );
+
+  /* ---------- TAPE ---------- */
 
   if (tape === "x") {
-    // tape has no newsletter lookup
-    src = CONFIG.covers.tape;
+    src =
+      CONFIG.covers.tape;
+
     coverEl.src = src;
-    coverEl.alt = "REWOD cover";
+    coverEl.alt =
+      "REWOD cover";
+
     return;
   }
 
-  // ✅ NEW RULE:
-  // originals + feats try /newsletter/{title}.jpg first, then fallback to current method
-  const isOriginal = (artist === "original composition");
-  const isFeat = !!feat;
+  /* ---------- ORIGINAL / FEAT ---------- */
+
+  const isOriginal =
+    artist ===
+    "original composition";
+
+  const isFeat =
+    !!feat;
 
   if (isOriginal || isFeat) {
-    const preferred = `${CONFIG.newsletterDir}/${titleSlug}${CONFIG.newsletterExt}`;
-    const fallback = isOriginal ? CONFIG.covers.original : CONFIG.covers.feat;
+    const preferred =
+      `${CONFIG.newsletterDir}/` +
+      `${titleSlug}` +
+      `${CONFIG.newsletterExt}`;
 
-    setImgWithFallback(coverEl, preferred, fallback);
-    coverEl.alt = "REWOD cover";
+    const fallback =
+      isOriginal
+        ? CONFIG.covers.original
+        : CONFIG.covers.feat;
+
+    setImgWithFallback(
+      coverEl,
+      preferred,
+      fallback
+    );
+
+    coverEl.alt =
+      "REWOD cover";
+
     return;
   }
 
-  // default cover
-  coverEl.src = CONFIG.covers.default;
-  coverEl.alt = "REWOD cover";
+  /* ---------- DEFAULT ---------- */
+
+  coverEl.src =
+    CONFIG.covers.default;
+
+  coverEl.alt =
+    "REWOD cover";
 }
 
-/* -------- MAIN -------- */
+/* =========================
+   MAIN
+   ========================= */
 
 async function initSong() {
-  const res = await fetch(CONFIG.dataUrl, { cache: "no-store" });
-  const data = await res.json();
-  if (!Array.isArray(data) || data.length === 0) return;
+  const res =
+    await fetch(
+      CONFIG.dataUrl,
+      {
+        cache: "no-store"
+      }
+    );
 
-  // 0) HOME blocks
-  try { initHomeBlocks(data); } catch (e) { console.error("home blocks error:", e); }
+  const data =
+    await res.json();
 
-  // 1) pick row by ?id=
-  const wantedRaw = getQueryId();
-  const wanted = normId(wantedRaw);
+  if (
+    !Array.isArray(data) ||
+    data.length === 0
+  ) {
+    return;
+  }
+
+  /* HOME BLOCKS */
+
+  try {
+    initHomeBlocks(data);
+  } catch (e) {
+    console.error(
+      "home blocks error:",
+      e
+    );
+  }
+
+  /* PICK ROW BY ?id= */
+
+  const wantedRaw =
+    getQueryId();
+
+  const wanted =
+    normId(wantedRaw);
 
   let row = null;
 
   if (wanted) {
     row =
-      data.find(r => normId(r?.id) === wanted) ||
-      data.find(r => normId(r?.slug) === wanted) ||
-      data.find(r => normId(buildRowId(r)) === wanted) ||
+      data.find(
+        r =>
+          normId(r?.id) ===
+          wanted
+      ) ||
 
-      /* ✅ allow originals to be matched by title-only id */
-      data.find(r => isOriginalComposition(r) && normId(slugify(pick(r, ["newmusictitle","title"]))) === wanted) ||
+      data.find(
+        r =>
+          normId(r?.slug) ===
+          wanted
+      ) ||
 
-      data.find(r => normId(slugify(pick(r, ["newmusicartist","artist"])) + slugify(pick(r, ["newmusictitle","title"]))) === wanted);
+      data.find(
+        r =>
+          normId(
+            buildRowId(r)
+          ) === wanted
+      ) ||
+
+      data.find(
+        r =>
+          isOriginalComposition(r) &&
+          normId(
+            slugify(
+              pick(
+                r,
+                [
+                  "newmusictitle",
+                  "title"
+                ]
+              )
+            )
+          ) === wanted
+      ) ||
+
+      data.find(
+        r =>
+          normId(
+            slugify(
+              pick(
+                r,
+                [
+                  "newmusicartist",
+                  "artist"
+                ]
+              )
+            ) +
+            slugify(
+              pick(
+                r,
+                [
+                  "newmusictitle",
+                  "title"
+                ]
+              )
+            )
+          ) === wanted
+      );
   }
 
-  if (!row) row = data[0];
+  if (!row) {
+    row = data[0];
+  }
 
-  // ✅ dynamic cover rules (+ newsletter lookup)
-  setDynamicCover(row, data);
+  /* DYNAMIC COVER */
 
-  // 2) fill song content
-  const titleEl = document.getElementById("latestTitle");
-  const titleStr = buildTitle(row);
-  if (titleEl) titleEl.textContent = titleStr;
+  setDynamicCover(
+    row,
+    data
+  );
 
-  const isTape = pick(row, ["tape"], "").toLowerCase() === "x";
+  /* SONG CONTENT */
+
+  const titleEl =
+    document.getElementById(
+      "latestTitle"
+    );
+
+  const titleStr =
+    buildTitle(row);
+
+  if (titleEl) {
+    titleEl.textContent =
+      titleStr;
+  }
+
+  const isTape =
+    pick(
+      row,
+      ["tape"],
+      ""
+    ).toLowerCase() === "x";
+
   setTapeMode(isTape);
 
-  setBtn(document.getElementById("btnSpotify"), pick(row, ["spotifyurl", "spotifyUrl", "spotify"], ""));
-  setBtn(document.getElementById("btnApple"),   pick(row, ["appleurl", "appleUrl", "apple"], ""));
-  setBtn(document.getElementById("btnYouTube"), pick(row, ["youtubeurl", "youtubeUrl", "youtube"], ""));
-  setBtn(document.getElementById("btnMMS"),     pick(row, ["mymusicurl", "mymusicUrl", "sheeturl", "sheetUrl"], ""));
+  setBtn(
+    document.getElementById(
+      "btnSpotify"
+    ),
+    pick(
+      row,
+      [
+        "spotifyurl",
+        "spotifyUrl",
+        "spotify"
+      ],
+      ""
+    )
+  );
 
-  const kofiBtn = document.getElementById("btnKofi");
+  setBtn(
+    document.getElementById(
+      "btnApple"
+    ),
+    pick(
+      row,
+      [
+        "appleurl",
+        "appleUrl",
+        "apple"
+      ],
+      ""
+    )
+  );
+
+  setBtn(
+    document.getElementById(
+      "btnYouTube"
+    ),
+    pick(
+      row,
+      [
+        "youtubeurl",
+        "youtubeUrl",
+        "youtube"
+      ],
+      ""
+    )
+  );
+
+  setBtn(
+    document.getElementById(
+      "btnMMS"
+    ),
+    pick(
+      row,
+      [
+        "mymusicurl",
+        "mymusicUrl",
+        "sheeturl",
+        "sheetUrl"
+      ],
+      ""
+    )
+  );
+
+  const kofiBtn =
+    document.getElementById(
+      "btnKofi"
+    );
+
   if (kofiBtn) {
-    kofiBtn.href = CONFIG.kofiUrl;
-    kofiBtn.target = "_blank";
-    kofiBtn.rel = "noopener";
+    kofiBtn.href =
+      CONFIG.kofiUrl;
+
+    kofiBtn.target =
+      "_blank";
+
+    kofiBtn.rel =
+      "noopener";
   }
 
   setDescr(row);
 
-  // browser tab title
-  document.title = titleStr;
+  /* BROWSER TAB TITLE */
+
+  document.title =
+    titleStr;
 }
 
-initSong().catch(console.error);
+/*
+ * FONTOS:
+ * előbb bekötjük a cover figyelését,
+ * utána indul az initSong().
+ *
+ * Így bármilyen cover kerül a #latestCover-re,
+ * ugyanaz lesz az oldal háttere is.
+ */
+syncSongBackground();
+
+initSong().catch(
+  console.error
+);

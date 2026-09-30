@@ -7,11 +7,13 @@ function safeText(v) {
 function buildArtistLine(a1, a2) {
   const A = safeText(a1);
   const B = safeText(a2);
+
   if (A && B) return `${A}, ${B}`;
+
   return A || "";
 }
 
-/* ✅ NEW: if artist line already mentions REWOD, don't add "ft. X" on title */
+/* If artist line already mentions REWOD, don't add "ft. X" on title */
 function artistContainsRewod(artistStr) {
   return safeText(artistStr).toLowerCase().includes("rewod");
 }
@@ -19,9 +21,14 @@ function artistContainsRewod(artistStr) {
 function buildTitleWithFeat(title, feat, artistStr = "") {
   const t = safeText(title);
   const f = safeText(feat);
+
   if (!t) return "";
   if (!f) return t;
-  if (artistContainsRewod(artistStr)) return t; // ✅ prevent double ft
+
+  if (artistContainsRewod(artistStr)) {
+    return t;
+  }
+
   return `${t} ft. ${f}`;
 }
 
@@ -31,10 +38,12 @@ function buildTitleWithFeat(title, feat, artistStr = "") {
  */
 function utcMidnightMs(dateStr) {
   const s = safeText(dateStr);
+
   if (!s) return null;
 
   const normalized = s.replace(/_/g, "-");
   const m = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
   if (!m) return null;
 
   const y = Number(m[1]);
@@ -45,13 +54,18 @@ function utcMidnightMs(dateStr) {
 }
 
 /**
- * ✅ SIMPLE TEXT (no HTML)
- * Example: "42 days 19 hours 10 minutes 41 seconds"
+ * SIMPLE TEXT
+ * Example:
+ * 42 days 19 hours
+ * 10 minutes 41 seconds
  */
 function formatCountdownText(msLeft) {
-  if (msLeft <= 0) return "Out now";
+  if (msLeft <= 0) {
+    return "Out now";
+  }
 
   const totalSec = Math.floor(msLeft / 1000);
+
   const days = Math.floor(totalSec / 86400);
   const hours = Math.floor((totalSec % 86400) / 3600);
   const minutes = Math.floor((totalSec % 3600) / 60);
@@ -63,57 +77,167 @@ function formatCountdownText(msLeft) {
   );
 }
 
+/* =========================
+   RELEASES DYNAMIC BACKGROUND
+   ========================= */
+
+function syncReleasesBackground() {
+  const cover = document.getElementById("latestCover");
+  const bg = document.getElementById("releasesBg");
+
+  if (!cover || !bg) return;
+
+  function updateBackground() {
+    const src = cover.currentSrc || cover.src;
+
+    if (!src) return;
+
+    bg.style.backgroundImage = `url("${src}")`;
+  }
+
+  /* Set immediately */
+  updateBackground();
+
+  /* Set again when actual image finishes loading */
+  cover.addEventListener("load", updateBackground);
+
+  /*
+   * If another script changes latestCover.src later,
+   * automatically update the Releases background.
+   */
+  const observer = new MutationObserver(updateBackground);
+
+  observer.observe(cover, {
+    attributes: true,
+    attributeFilter: ["src"]
+  });
+}
+
+/* =========================
+   MAIN INIT
+   ========================= */
+
 async function init() {
-  const res = await fetch(DATA_URL, { cache: "no-store" });
+  const res = await fetch(DATA_URL, {
+    cache: "no-store"
+  });
+
   const rows = await res.json();
 
-  // ✅ ALWAYS FIRST ROW
-  const data = Array.isArray(rows) ? (rows[0] || {}) : (rows || {});
+  /* ALWAYS FIRST ROW */
+  const data = Array.isArray(rows)
+    ? (rows[0] || {})
+    : (rows || {});
 
-  // LATEST
-  const latestArtist = buildArtistLine(data.newmusicartist, data.newmusicartist2);
-  const latestTitle = buildTitleWithFeat(data.newmusictitle, data.feat, latestArtist);
+  /* =========================
+     LATEST
+     ========================= */
 
-  const latestTitleEl = document.getElementById("latestTitle");
-  const latestArtistEl = document.getElementById("latestArtist");
+  const latestArtist = buildArtistLine(
+    data.newmusicartist,
+    data.newmusicartist2
+  );
 
-  if (latestTitleEl) latestTitleEl.textContent = latestTitle || "";
-  if (latestArtistEl) latestArtistEl.textContent = latestArtist || "";
+  const latestTitle = buildTitleWithFeat(
+    data.newmusictitle,
+    data.feat,
+    latestArtist
+  );
 
-  const latestListenBtn = document.getElementById("latestListenBtn");
+  const latestTitleEl =
+    document.getElementById("latestTitle");
+
+  const latestArtistEl =
+    document.getElementById("latestArtist");
+
+  if (latestTitleEl) {
+    latestTitleEl.textContent = latestTitle || "";
+  }
+
+  if (latestArtistEl) {
+    latestArtistEl.textContent = latestArtist || "";
+  }
+
+  const latestListenBtn =
+    document.getElementById("latestListenBtn");
+
   if (latestListenBtn) {
     latestListenBtn.href = "latest/";
     latestListenBtn.style.opacity = "";
     latestListenBtn.style.pointerEvents = "";
   }
 
-  // UPCOMING
-  const comingArtist = safeText(data.comingmusicartist);
-  const comingTitle = buildTitleWithFeat(data.comingmusictitle, data.comingfeat, comingArtist);
+  /* =========================
+     UPCOMING
+     ========================= */
 
-  const comingTitleEl = document.getElementById("comingTitle");
-  const comingArtistEl = document.getElementById("comingArtist");
-  const countdownEl = document.getElementById("comingCountdown");
+  const comingArtist =
+    safeText(data.comingmusicartist);
 
-  if (comingTitleEl) comingTitleEl.textContent = comingTitle || "";
-  if (comingArtistEl) comingArtistEl.textContent = comingArtist || "";
+  const comingTitle =
+    buildTitleWithFeat(
+      data.comingmusictitle,
+      data.comingfeat,
+      comingArtist
+    );
 
-  // COUNTDOWN
-  if (!countdownEl) return;
+  const comingTitleEl =
+    document.getElementById("comingTitle");
 
-  const targetUtc = utcMidnightMs(data.comingmusicdate);
-  if (!targetUtc) {
-    countdownEl.textContent = "--";
-    return;
+  const comingArtistEl =
+    document.getElementById("comingArtist");
+
+  const countdownEl =
+    document.getElementById("comingCountdown");
+
+  if (comingTitleEl) {
+    comingTitleEl.textContent = comingTitle || "";
   }
 
-  function tick() {
-    const msLeft = targetUtc - Date.now();
-    countdownEl.innerHTML = formatCountdownText(msLeft);
+  if (comingArtistEl) {
+    comingArtistEl.textContent = comingArtist || "";
   }
 
-  tick();
-  window.setInterval(tick, 1000);
+  /* =========================
+     COUNTDOWN
+     ========================= */
+
+  if (countdownEl) {
+    const targetUtc =
+      utcMidnightMs(data.comingmusicdate);
+
+    if (!targetUtc) {
+      countdownEl.textContent = "--";
+    } else {
+      function tick() {
+        const msLeft =
+          targetUtc - Date.now();
+
+        countdownEl.innerHTML =
+          formatCountdownText(msLeft);
+      }
+
+      tick();
+
+      window.setInterval(
+        tick,
+        1000
+      );
+    }
+  }
 }
 
+/* =========================
+   START
+   ========================= */
+
+/*
+ * Start background synchronization immediately.
+ * This also watches for future src changes.
+ */
+syncReleasesBackground();
+
+/*
+ * Load JSON-driven homepage data.
+ */
 init().catch(console.error);
