@@ -7892,3 +7892,33 @@ body.page-webshop a.btn-listen.load-more:hover {
         padding: 0;
     }
 }
+
+/* =========================
+   UPCOMING – SUBSCRIBE
+   SAME AS WEBSHOP LOAD MORE
+   DESKTOP + MOBILE
+   ========================= */
+body.upcoming-page .upcoming-newsletter .btn-listen {
+    background: rgba(68, 68, 68, 0.4) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+}
+
+body.upcoming-page .upcoming-newsletter .btn-listen:hover {
+    background: rgba(68, 68, 68, 0.75) !important;
+}
+
+/* =========================
+   MEDIA MOBILE MENU
+   1px SEAM FIX
+   ========================= */
+@media (max-width: 768px) {
+    body.media-page #mMenu {
+        top: calc(var(--m-header-h) - 1px) !important;
+    }
+
+    body.media-page #mMenu .m-menu-inner {
+        height: calc(100vh - var(--m-header-h) + 1px) !important;
+    }
+}
