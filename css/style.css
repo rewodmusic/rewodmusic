@@ -7664,3 +7664,21 @@ color: rgba(255,255,255,0.90);
     }
 }
 
+/* =========================
+   MOBILE – MUSIC
+   PURE BLACK BACKGROUND
+   ========================= */
+@media (max-width: 768px) {
+    body.page-music {
+        background: #000 !important;
+    }
+
+    body.page-music .music-page-bg {
+        display: none !important;
+    }
+
+    body.page-music .music-page,
+    body.page-music .music-inner {
+        background: #000 !important;
+    }
+}
