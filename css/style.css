@@ -3788,109 +3788,120 @@ body.upcoming-page .site-footer {
 }
 
 /* =========================
-   innen rossz
-
-/* =========================
-   MEDIA PAGE – SINGLE SOURCE OF TRUTH
+   MEDIA PAGE – ISOLATED DARK MODE
+   Everything in this block is scoped to body.media-page.
    ========================= */
-.media-page {
-    background: #fff;
-}
-
-.media-page .hero {
-    background: transparent;
-}
-
-.media-page .hero .nav-right a {
-    color: #000;
-}
-
-.media-page .hero .nav-right a:hover {
-    color: rgba(0,0,0,0.55);
-}
-
-/* wrapper */
-.media-wrap {
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 32px 18px 90px;
-}
-
-/* blocks */
-.media-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-}
-
-.media-title-img {
-    width: min(200px, 92vw);
-    height: auto;
-    display: block;
-}
-
-.media-updated {
-    font-family: "Fraunces",serif;
-    font-weight: 400;
-    font-size: 12px;
-    color: rgba(0,0,0,0.45);
-    margin-top: -19px;
-}
-
-/* canonical preview size */
-.media-preview {
-    width: min(300px, 92vw);
-    border-radius: 18px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.05);
-}
-
-.media-preview-photo img,
-.media-preview-video video {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* +2 content (NEVER duplicate the first; JS already slice(1,3)) */
-.media-more-grid {
-    width: min(300px, 92vw);
-    display: grid;
-    gap: 14px;
-    margin-top: 10px;
-}
-
-.media-more-card {
-    width: 100%;
-    border-radius: 18px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.05);
-}
-
-.media-more-card img,
-.media-more-card video {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* buttons */
-:root {
+body.media-page {
+    --media-card-w: 300px;
+    --media-gap-x: 154px;
+    --media-gap-y: 70px;
     --media-btn-font: 13px;
     --media-btn-pad-y: 9px;
     --media-btn-pad-x: 22px;
     --media-btn-radius: 999px;
-    --media-btn-bg: rgba(0,0,0,0.08);
-    --media-btn-txt: #000;
-    --media-btn-mt: 6px;
+    --media-btn-bg: rgba(255,255,255,0.10);
+    --media-btn-bg-hover: rgba(255,255,255,0.17);
+    --media-btn-txt: #fff;
+    --audio-box: 30px;
+    --audio-icon: 16px;
+    --audio-x: 10px;
+    --audio-y: 10px;
+    --audio-bg: rgba(255,255,255,0.78);
+    background: #000;
+    color: #fff;
+    overflow-x: hidden;
 }
 
-.media-load-btn,
-.media-cta-btn {
-    margin-top: var(--media-btn-mt);
+body.media-page #mobile-scale-root {
+    background: #000;
+    overflow-x: clip;
+    max-width: 100%;
+}
+
+body.media-page .hero {
+    background: #000;
+}
+
+body.media-page .hero .nav-right a {
+    color: #fff;
+}
+
+body.media-page .hero .nav-right a:hover {
+    color: rgba(255,255,255,0.55);
+}
+
+/* Backstage-style page reveal. The JS waits for media.json + file discovery. */
+html.js body.media-page #mobile-scale-root {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
+html.js body.media-page.media-ready #mobile-scale-root {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 420ms ease, transform 520ms ease;
+}
+
+body.media-page .media-wrap {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 22px 18px 90px;
+}
+
+body.media-page .media-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 72px;
+    justify-items: center;
+    align-items: start;
+}
+
+body.media-page .media-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    margin: 0;
+    width: 100%;
+    max-width: var(--media-card-w);
+}
+
+body.media-page .media-title-img {
+    width: min(200px, 92vw);
+    height: auto;
+    display: block;
+    filter: invert(1);
+}
+
+body.media-page .media-updated {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    margin-top: -19px;
+    text-align: center;
+}
+
+body.media-page .media-preview {
+    width: min(var(--media-card-w), 92vw);
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.05);
+    position: relative;
+}
+
+body.media-page .media-preview img,
+body.media-page .media-preview video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+body.media-page .media-load-btn,
+body.media-page .media-cta-btn {
+    margin-top: -13px;
     font-family: "Barlow", sans-serif;
     font-weight: 500;
     font-size: var(--media-btn-font);
@@ -3903,119 +3914,58 @@ body.upcoming-page .site-footer {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    white-space: nowrap;
+    transition: background 180ms ease;
 }
 
-.media-load-btn:hover,
-.media-cta-btn:hover {
-    background: rgba(0,0,0,0.12);
+body.media-page .media-load-btn:hover,
+body.media-page .media-cta-btn:hover {
+    background: var(--media-btn-bg-hover);
 }
 
-/* CTA alapból rejtve (JS kapcsolja on/off) */
-.media-cta-btn {
+body.media-page .media-cta-btn {
     display: none;
+    opacity: 0;
+    transition: opacity 520ms cubic-bezier(.22,.61,.36,1), background 180ms ease;
 }
 
-/* =========================
-   DESKTOP GRID AREAS + ACTIVE ROW SWITCH
-   ========================= */
-@media (min-width: 769px){
-    .media-wrap {
-        display: grid;
-        grid-template-columns: 300px 300px;
-        column-gap: 120px;
-
-        /* <<< ITT tudod csökkenteni a PHOTO–ART távolságot */
-        row-gap: 70px;
-        justify-content: center;
-        align-items: start;
-        grid-template-areas: "photo art"
-      "short short";
-    }
-
-    #photoBlock {
-        grid-area: photo;
-    }
-
-    #artBlock {
-        grid-area: art;
-    }
-
-    #shortBlock {
-        grid-area: short;
-    }
-
-    /* ACTIVE: PHOTO nyitva felül, ART+SHORT alul */
-    .media-wrap.is-active-photo {
-        grid-template-areas: "photo photo"
-      "art short";
-        column-gap: 80px;
-    }
-
-    /* ACTIVE: ART nyitva felül */
-    .media-wrap.is-active-art {
-        grid-template-areas: "art art"
-      "photo short";
-        column-gap: 80px;
-    }
-
-    /* ACTIVE: SHORT nyitva felül */
-    .media-wrap.is-active-short {
-        grid-template-areas: "short short"
-      "photo art";
-        column-gap: 120px;
-    }
-
-    /* desktop +2: két oszlop, 300px szélességgel */
-    .media-more-grid {
-        width: auto;
-        grid-template-columns: 300px 300px;
-        justify-content: center;
-    }
+body.media-page .media-cta-btn.is-visible {
+    opacity: 1;
 }
 
-/* =========================
-   MOBILE
-   - csak “lenyílik”, nincs animált átrendezés
-   - nagyobb szekció gap
-   ========================= */
-@media (max-width: 768px){
-    .media-wrap {
-        padding: 20px 16px 40px;
-    }
-
-    .media-block {
-        margin: 16px 0 72px;
-    }
-
-    /* szekciók közti nagy gap */
-    .media-more-grid {
-        grid-template-columns: 1fr;
-    }
+body.media-page .media-expanded-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    justify-content: center;
+    align-items: start;
+    margin-top: 6px;
 }
 
-/* =========================
-   SHORT AUDIO OVERLAY
-   ========================= */
-:root {
-    --audio-box-size: 30px;
-    --audio-icon-size: 16px;
-    --audio-box-opacity: 0.70;
-    --audio-x: 10px;
-    --audio-y: 10px;
-}
-
-.media-short-wrap {
+body.media-page .media-cell {
+    width: min(var(--media-card-w), 92vw);
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.05);
     position: relative;
 }
 
-.audio-toggle {
+body.media-page .media-cell img,
+body.media-page .media-cell video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+body.media-page .audio-toggle {
     position: absolute;
     top: var(--audio-y);
     right: var(--audio-x);
-    width: var(--audio-box-size);
-    height: var(--audio-box-size);
+    width: var(--audio-box);
+    height: var(--audio-box);
     border-radius: 12px;
-    background: rgba(255,255,255,var(--audio-box-opacity));
+    background: var(--audio-bg);
     border: 0;
     padding: 0;
     display: flex;
@@ -4024,253 +3974,157 @@ body.upcoming-page .site-footer {
     cursor: pointer;
 }
 
-.audio-toggle img {
-    width: var(--audio-icon-size);
-    height: var(--audio-icon-size);
+body.media-page .audio-toggle img {
+    width: var(--audio-icon);
+    height: var(--audio-icon);
     display: block;
 }
 
-/* base one-shot fade */
-.audio-toggle.is-fading {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 2.5s ease;
-}
-
-/* expanded short: persistent */
-.audio-toggle--persist {
-    transition: opacity .35s ease;
-}
-
-.audio-toggle--persist.is-flash-dim {
-    opacity: 0.45;
-    transition: opacity 2s ease;
-}
-
-/* DESKTOP: amikor egy view aktív, a 3 elem legyen 1 sorban */
-@media (min-width: 769px){
-    /* PHOTO nyitva */
-    .media-wrap.is-active-photo #photoPreview {
-        display: none;
-    }
-
-    .media-wrap.is-active-photo #photoMore {
-        grid-template-columns: repeat(3, 300px);
-        justify-content: center;
-    }
-
-    /* ART nyitva */
-    .media-wrap.is-active-art #artPreview {
-        display: none;
-    }
-
-    .media-wrap.is-active-art #artMore {
-        grid-template-columns: repeat(3, 300px);
-        justify-content: center;
-    }
-
-    /* SHORT nyitva (itt is 3 elem egy sorban) */
-    .media-wrap.is-active-short #shortPreview {
-        display: none;
-    }
-
-    .media-wrap.is-active-short #shortMore {
-        grid-template-columns: repeat(3, 300px);
-        justify-content: center;
-    }
-}
-
-/* === MEDIA expanded row: ALWAYS 1 row, centered === */
-.media-more-row {
-    display: grid;
-    grid-template-columns: repeat(2, min(300px, 92vw));
-
-    /* default: +2 elem */
-    gap: 18px;
-    justify-content: center;
-    width: 100%;
-}
-
-.media-more-card {
-    width: min(300px, 92vw);
-    border-radius: 18px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.05);
-    position: relative;
-}
-
-.media-more-card img,
-.media-more-card video {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* a +2 mindig 1 sorban desktopon */
-@media (min-width: 769px){
-    .media-more-row {
-        grid-template-columns: repeat(2, 300px);
-    }
-}
-
-/* MOBILE: egymás alatt */
-@media (max-width: 768px){
-    .media-more-row {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* MEDIA – desktop: whole section X offset */
-@media (min-width: 769px){
-    .media-wrap {
-        transform: translateX(265px);
-
-        /* + jobbra, - balra */
-    }
-}
-
-/* =========================================
-   MEDIA PAGE – WHITE ENTER + REFLOW FADE
-   DOES NOT TOUCH transform on .media-wrap
-   ========================================= */
-body.media-page {
-    background: #fff !important;
-    color: #000 !important;
-}
-
-/* 1) PAGE ENTER: ONLY opacity (no transform) */
-html.js body.media-page .media-wrap {
-    opacity: 0;
-    transition: opacity 1050ms ease;
-    will-change: opacity;
-}
-
-html.js body.media-page.media-ready .media-wrap {
-    opacity: 1;
-}
-
-/* 2) Fade reflow (LOAD MORE click) – itt is csak opacity */
-body.media-page .media-wrap.is-media-fading-out,
+/* Existing desktop switch/reflow animation – preserved. */
 body.media-page #mediaGrid.is-media-fading-out {
     opacity: 0;
     transition: opacity 520ms ease;
-
-    /* <<< EZZEL lassítod a fade-outot */
     will-change: opacity;
 }
 
-body.media-page .media-wrap.is-media-fading-in,
 body.media-page #mediaGrid.is-media-fading-in {
     opacity: 1;
     transition: opacity 1920ms cubic-bezier(.22,.61,.36,1);
     will-change: opacity;
 }
 
-/* CTA appear maradhat (ha akarsz, lehet only opacity-ra is) */
-body.media-page .media-cta-btn {
-    opacity: 0;
-    transition: opacity 520ms cubic-bezier(.22,.61,.36,1);
-}
-
-body.media-page .media-cta-btn.is-visible {
-    opacity: 1;
-}
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce){
-    body.media-page .media-wrap,
-    body.media-page .media-cta-btn {
-        transition: none !important;
-        opacity: 1 !important;
-    }
-}
-
-/* FORCE OVERRIDE – MEDIA updated text size (put this at the VERY END) */
-body.media-page .media-updated {
-    font-size: 11px !important;
-
-    /* мобил alap */
-}
-
-@media (min-width: 769px){
-    body.media-page .media-updated {
-        font-size: 11px !important;
-
-        /* desktop */
-    }
-}
-
-body.media-page .media-load-btn {
-    margin-top: -13px !important;
-
-    /* 0 / 2 / 4 */
-}
-
-/* =========================================
-   MEDIA – HEIGHT LOCK (prevents footer jump)
-   ========================================= */
 body.media-page .media-wrap.is-height-locked {
     overflow: visible;
-
-    /* ✅ ne vágja le az új tartalmat */
 }
 
-/* ha szeretnéd, hogy a fade se mozgasson semmit */
-body.media-page #mediaGrid.is-media-fading-out,
-body.media-page #mediaGrid.is-media-fading-in {
-    will-change: opacity;
-}
-
-@media (max-width: 768px){
-    body.media-page #mediaGrid.is-media-fading-out {
-        transition: opacity 0ms ease;
-
-        /* MOB_OUT */
+@media (min-width: 769px) {
+    body.media-page .media-grid {
+        grid-template-columns: var(--media-card-w) var(--media-card-w);
+        column-gap: var(--media-gap-x);
+        row-gap: var(--media-gap-y);
+        justify-content: center;
+        grid-template-areas: "photo art"
+            "short short";
     }
 
+    body.media-page #photoBlock {
+        grid-area: photo;
+    }
+
+    body.media-page #artBlock {
+        grid-area: art;
+    }
+
+    body.media-page #shortBlock {
+        grid-area: short;
+    }
+
+    body.media-page .media-grid[data-active="photo"] {
+        grid-template-areas: "photo photo"
+            "art short";
+    }
+
+    body.media-page .media-grid[data-active="art"] {
+        grid-template-areas: "art art"
+            "photo short";
+    }
+
+    body.media-page .media-grid[data-active="short"] {
+        grid-template-areas: "short short"
+            "photo art";
+    }
+
+    body.media-page .media-expanded-row {
+        grid-template-columns: repeat(3, var(--media-card-w));
+        gap: 18px;
+    }
+
+    body.media-page .media-block {
+        max-width: none;
+    }
+
+    body.media-page .media-cell {
+        width: var(--media-card-w);
+    }
+
+    /* Preserve the original desktop placement. */
+    body.media-page .media-wrap {
+        transform: translateX(265px);
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1399px) {
+    body.media-page .media-wrap {
+        transform: translateX(245px);
+    }
+}
+
+@media (max-width: 768px) {
+    body.media-page .media-wrap {
+        padding: 20px 16px 40px;
+        transform: none;
+    }
+
+    body.media-page .media-grid {
+        row-gap: 72px;
+    }
+
+    body.media-page .media-block {
+        margin: 16px 0 0;
+    }
+
+    /* Mobile switching stays instant, exactly as in the current JS. */
+    body.media-page #mediaGrid.is-media-fading-out,
     body.media-page #mediaGrid.is-media-fading-in {
-        transition: opacity 260ms cubic-bezier(.22,.61,.36,1);
-
-        /* MOB_IN */
+        transition: none !important;
     }
 }
 
-@media (max-width: 768px){
-    body.media-page .media-wrap,
+@media (prefers-reduced-motion: reduce) {
+    html.js body.media-page #mobile-scale-root,
     body.media-page #mediaGrid,
     body.media-page .media-cta-btn {
         transition: none !important;
-        animation: none !important;
     }
-}
 
-/* MEDIA – disable horizontal drag (maradhat, ha már ez oldotta meg) */
-html,
-body {
-    overflow-x: hidden;
-}
-
-/* MEDIA – responsive X offset */
-@media (max-width: 768px){
-    .media-wrap {
+    html.js body.media-page #mobile-scale-root {
         transform: none !important;
     }
 }
 
-/* tablet + kisebb desktop: 180px */
-@media (min-width: 769px) and (max-width: 1399px){
-    .media-wrap {
-        transform: translateX(245px) !important;
+/* =========================
+   MEDIA – DESKTOP POSITION FIX
+   ========================= */
+@media (min-width: 769px) {
+    body.media-page .media-grid {
+        transform: translateX(-260px);
     }
 }
 
-html,
-body,
-#mobile-scale-root {
-    overflow-x: clip !important;
+/* =========================
+   MEDIA – DARK AUDIO BUTTON
+   ========================= */
+body.media-page .audio-toggle {
+    background: rgba(20, 20, 20, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
 
-    /* erősebb, mint hidden */
-    max-width: 100% !important;
+body.media-page .audio-toggle img {
+    filter: invert(1);
+    opacity: 0.45;
+}
+
+body.media-page .audio-toggle:hover {
+    background: rgba(35, 35, 35, 0.94);
+}
+
+/* =========================
+   MEDIA – EXPANDED CTA GAP
+   ========================= */
+body.media-page .media-cta-btn {
+    margin-top: 0px;
 }
 
 @media (max-width: 768px){
