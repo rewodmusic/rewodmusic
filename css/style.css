@@ -4315,7 +4315,7 @@ body.media-page .media-wrap.is-height-locked {
    ========================= */
 @media (min-width: 769px) {
     body.media-page .media-grid {
-        transform: translateX(-260px);
+        transform: translateX(-268px);
     }
 }
 
