@@ -4350,7 +4350,7 @@ body.media-page .media-cta-btn {
    ========================= */
 body.media-page {
     --media-bg-grayscale: 0%;
-    --media-bg-darken: 80%;
+    --media-bg-darken: 75%;
     --media-bg-opacity: 100%;
     --media-bg-blur: 0px;
     position: relative;
@@ -4397,7 +4397,7 @@ body.media-page: transparent !important;
    ========================= */
 body.page-webshop {
     --webshop-bg-grayscale: 0%;
-    --webshop-bg-darken: 80%;
+    --webshop-bg-darken: 75%;
     --webshop-bg-opacity: 100%;
     --webshop-bg-blur: 0px;
     position: relative;
@@ -4411,8 +4411,8 @@ body.page-webshop .webshop-page-bg {
     width: 100%;
     height: 100%;
     background-image: linear-gradient(
-            rgba(0, 0, 0, 0.80),
-            rgba(0, 0, 0, 0.80)
+            rgba(0, 0, 0, 0.75),
+            rgba(0, 0, 0, 0.75)
         ),
         url("/img/pattern_webshop.png");
     background-position: center center;
@@ -4448,7 +4448,7 @@ body.page-webshop .webshop-grid {
    ========================= */
 body.page-live {
     --live-bg-grayscale: 0%;
-    --live-bg-darken: 80%;
+    --live-bg-darken: 75%;
     --live-bg-opacity: 100%;
     --live-bg-blur: 0px;
     position: relative;
@@ -4507,8 +4507,8 @@ body.page-music .music-page-bg {
     width: 100%;
     height: 100%;
     background-image: linear-gradient(
-            rgba(0, 0, 0, 0.80),
-            rgba(0, 0, 0, 0.80)
+            rgba(0, 0, 0, 0.75),
+            rgba(0, 0, 0, 0.75)
         ),
         url("/img/pattern_music.png");
     background-position: center center;
@@ -7664,38 +7664,3 @@ color: rgba(255,255,255,0.90);
     }
 }
 
-/* =========================
-   MOBILE – LIVE + MUSIC
-   PURE BLACK BACKGROUND
-   ========================= */
-@media (max-width: 768px) {
-    /* LIVE */
-    body.page-live {
-        background: #000 !important;
-    }
-
-    body.page-live .live-page-bg {
-        display: none !important;
-    }
-
-    body.page-live .live-page,
-    body.page-live .live-inner,
-    body.page-live .live-app {
-        background: #000 !important;
-    }
-
-    /* MUSIC */
-    body.page-music {
-        background: #000 !important;
-    }
-
-    body.page-music .music-page-bg {
-        display: none !important;
-    }
-
-    body.page-music .music-page,
-    body.page-music .music-inner {
-        background: #000 !important;
-    }
-}.hero,body.media-page.media-wrap,body.media-page.media-grid,background
-}
