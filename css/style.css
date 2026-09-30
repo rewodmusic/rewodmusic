@@ -4438,22 +4438,14 @@ body.media-page .media-page-bg {
     z-index: 0;
 }
 
-/* CONTENT ABOVE BACKGROUND */
-body.media-page #mobile-scale-root {
-    position: relative;
-    z-index: 1;
-}
-
 /* =========================
-   MEDIA – BACKGROUND LAYER FIX
+   MEDIA – CONTENT ABOVE BACKGROUND
    ========================= */
 body.media-page #mobile-scale-root {
     position: relative;
     z-index: 1;
-    background: transparent !important;
+    background: transparent;
 }
-
-body.media-page: transparent !important;
 
 /* =========================
    WEBSHOP – FIXED BACKGROUND
@@ -4634,18 +4626,16 @@ body.page-music .music-inner {
         transform: translateX(0);
     }
 
-    /* ✅ scroll lock: body FIXED (nem overflow hidden) */
-    body.menu-open {
-        position: fixed;
-        left: 0;
-        right: 0;
-        width: 100%;
-        touch-action: none;
-    }
+    @media (max-width: 768px) {
+        html.menu-open,
+        body.menu-open {
+            overflow: hidden !important;
+            overscroll-behavior: none;
+        }
 
-    /* opcionális, hogy ne “pattanjon” */
-    html.menu-open {
-        overflow: hidden;
+        body.menu-open {
+            touch-action: none;
+        }
     }
 }
 
@@ -7919,33 +7909,4 @@ body.upcoming-page .upcoming-newsletter button.btn-listen:hover {
     background-color: rgba(68, 68, 68, 1) !important;
 }
 
-/* =========================================================
-   MEDIA – MOBILE MENU 1PX SAFARI SEAM FIX
-   ========================================================= */
-@media (max-width: 768px) {
-    body.media-page .m-header {
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 11001 !important;
-    }
 
-    body.media-page #mMenu {
-        position: fixed !important;
-
-        /* * 2px overlap intentionally.
-         * Header is above menu, so this is invisible,
-         * but prevents Safari from exposing a subpixel seam. */
-        top: calc(var(--m-header-h) - 2px) !important;
-        bottom: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: #2b2b2b !important;
-    }
-
-    body.media-page #mMenu .m-menu-inner {
-        height: calc(100dvh - var(--m-header-h) + 2px) !important;
-        min-height: calc(100dvh - var(--m-header-h) + 2px) !important;
-        margin: 0 !important;
-        background: #2b2b2b !important;
-    }
-}
