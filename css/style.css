@@ -4127,6 +4127,199 @@ body.media-page .media-cta-btn {
     margin-top: 0px;
 }
 
+/* =========================
+   MEDIA – FIXED BACKGROUND
+   ========================= */
+body.media-page {
+    --media-bg-grayscale: 0%;
+    --media-bg-darken: 80%;
+    --media-bg-opacity: 100%;
+    --media-bg-blur: 0px;
+    position: relative;
+    background: #000;
+}
+
+/* FIXED BACKGROUND LAYER */
+body.media-page .media-page-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/img/pattern_media.png");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(var(--media-bg-grayscale))
+        brightness(calc(100% - var(--media-bg-darken)))
+        blur(var(--media-bg-blur));
+    opacity: var(--media-bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* CONTENT ABOVE BACKGROUND */
+body.media-page #mobile-scale-root {
+    position: relative;
+    z-index: 1;
+}
+
+/* =========================
+   MEDIA – BACKGROUND LAYER FIX
+   ========================= */
+body.media-page #mobile-scale-root {
+    position: relative;
+    z-index: 1;
+    background: transparent !important;
+}
+
+body.media-page: transparent !important;
+
+/* =========================
+   WEBSHOP – FIXED BACKGROUND
+   ========================= */
+body.page-webshop {
+    --webshop-bg-grayscale: 0%;
+    --webshop-bg-darken: 80%;
+    --webshop-bg-opacity: 100%;
+    --webshop-bg-blur: 0px;
+    position: relative;
+    background: #000;
+}
+
+/* FIXED PATTERN */
+body.page-webshop .webshop-page-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+            rgba(0, 0, 0, 0.80),
+            rgba(0, 0, 0, 0.80)
+        ),
+        url("/img/pattern_webshop.png");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(var(--webshop-bg-grayscale))
+        blur(var(--webshop-bg-blur));
+    opacity: var(--webshop-bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* CONTENT ABOVE BACKGROUND */
+body.page-webshop > .m-header,
+body.page-webshop > .m-menu,
+body.page-webshop > .hero,
+body.page-webshop > .webshop-page,
+body.page-webshop > .site-footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* HEADER + WEBSHOP CONTENT TRANSPARENT */
+body.page-webshop .hero,
+body.page-webshop .webshop-page,
+body.page-webshop .webshop-inner,
+body.page-webshop .webshop-grid {
+    background: transparent !important;
+}
+
+/* =========================
+   LIVE – FIXED BACKGROUND
+   ========================= */
+body.page-live {
+    --live-bg-grayscale: 0%;
+    --live-bg-darken: 80%;
+    --live-bg-opacity: 100%;
+    --live-bg-blur: 0px;
+    position: relative;
+    background: #000;
+}
+
+body.page-live .live-page-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/img/pattern_live.png");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(var(--live-bg-grayscale))
+        brightness(calc(100% - var(--live-bg-darken)))
+        blur(var(--live-bg-blur));
+    opacity: var(--live-bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
+
+body.page-live > .m-header,
+body.page-live > .m-hero-live,
+body.page-live > .m-menu,
+body.page-live > .hero,
+body.page-live > .live-page,
+body.page-live > .site-footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* A LIVE tartalom alatt pattern legyen */
+body.page-live .live-page,
+body.page-live .live-inner,
+body.page-live .live-app {
+    background: transparent !important;
+}
+
+/* =========================
+   MUSIC – FIXED BACKGROUND
+   ========================= */
+body.page-music {
+    --music-bg-grayscale: 0%;
+    --music-bg-opacity: 100%;
+    --music-bg-blur: 0px;
+    position: relative;
+    background: #000;
+}
+
+/* FIXED PATTERN */
+body.page-music .music-page-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+            rgba(0, 0, 0, 0.80),
+            rgba(0, 0, 0, 0.80)
+        ),
+        url("/img/pattern_music.png");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(var(--music-bg-grayscale))
+        blur(var(--music-bg-blur));
+    opacity: var(--music-bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* CONTENT ABOVE BACKGROUND */
+body.page-music > .m-header,
+body.page-music > .m-hero-music,
+body.page-music > .m-menu,
+body.page-music > .hero,
+body.page-music > .music-page,
+body.page-music > .site-footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* MUSIC CONTENT TRANSPARENT */
+body.page-music .music-page,
+body.page-music .music-inner {
+    background: transparent !important;
+}
+
 @media (max-width: 768px){
     /* header mindig a legfelül */
     .m-header {
@@ -7251,4 +7444,5 @@ color: rgba(255,255,255,0.90);
         top: 0;
         left: 0;
     }
+}.hero,body.media-page.media-wrap,body.media-page.media-grid,background
 }
