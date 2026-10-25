@@ -8113,14 +8113,14 @@ body.page-backstage .backstage-support-actions
     body.page-backstage {
         /* ===== ÁLLÍTHATÓ ÉRTÉKEK ===== */
         /* LATEST VLOG / SUPPORT REWOD címsor */
-        --bs-mobile-heading-size: 28px;
+        --bs-mobile-heading-size: 35px;
 
         /* YouTube lejátszó */
         --bs-mobile-vlog-width: 130%;
         --bs-mobile-vlog-radius: 10px;
 
         /* Utolsó kedvenc zene → SUPPORT REWOD */
-        --bs-mobile-support-top-gap: 100px;
+        --bs-mobile-support-top-gap: 105px;
 
         /* WATCH & SHARE → FOOTER */
         --bs-mobile-support-bottom-gap: -30px;
@@ -8196,7 +8196,7 @@ body.page-backstage .backstage-support-actions
 
         /* 3. Videó + LOAD MORE VLOGS gomb vízszintes eltolása */
         /* Negatív = balra | Pozitív = jobbra */
-        --bs-vlog-horizontal-shift: -30px;
+        --bs-vlog-horizontal-shift: -50px;
     }
 
     /* =====================================================
@@ -8220,5 +8220,16 @@ body.page-backstage .backstage-support-actions
     body.page-backstage .backstage-vlog-section > .backstage-vlog-button {
         position: relative;
         left: var(--bs-vlog-horizontal-shift) !important;
+    }
+}
+
+/* BACKSTAGE – MOBILE SUPPORT TITLE GAP */
+@media (max-width: 768px) {
+    body.page-backstage {
+        --bs-support-title-gap: 25px;
+    }
+
+    body.page-backstage .backstage-support-section > .backstage-heading {
+        margin-bottom: var(--bs-support-title-gap) !important;
     }
 }
