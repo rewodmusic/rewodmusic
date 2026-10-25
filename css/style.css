@@ -8105,3 +8105,120 @@ body.page-backstage .backstage-support-actions
         max-width: 100%;
     }
 }
+
+/* =========================================================
+   BACKSTAGE – MOBILE VLOG + SUPPORT FINE TUNING
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-backstage {
+        /* ===== ÁLLÍTHATÓ ÉRTÉKEK ===== */
+        /* LATEST VLOG / SUPPORT REWOD címsor */
+        --bs-mobile-heading-size: 28px;
+
+        /* YouTube lejátszó */
+        --bs-mobile-vlog-width: 130%;
+        --bs-mobile-vlog-radius: 10px;
+
+        /* Utolsó kedvenc zene → SUPPORT REWOD */
+        --bs-mobile-support-top-gap: 100px;
+
+        /* WATCH & SHARE → FOOTER */
+        --bs-mobile-support-bottom-gap: -30px;
+    }
+
+    /* =====================================================
+       1. LATEST VLOG + SUPPORT REWOD
+       Ne törjenek két sorba
+       ===================================================== */
+    body.page-backstage .backstage-vlog-section > .backstage-heading,
+    body.page-backstage .backstage-support-section > .backstage-heading {
+        width: max-content !important;
+        max-width: none !important;
+        white-space: nowrap !important;
+        font-size: var(--bs-mobile-heading-size) !important;
+        text-align: center;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* =====================================================
+       2. LATEST VLOG – NAGYOBB LEJÁTSZÓ
+       ===================================================== */
+    body.page-backstage .backstage-vlog-section {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
+
+    body.page-backstage .backstage-vlog-container {
+        width: var(--bs-mobile-vlog-width) !important;
+        max-width: none !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    body.page-backstage .backstage-vlog-video {
+        width: 100% !important;
+        aspect-ratio: 16 / 9 !important;
+        border-radius: var(--bs-mobile-vlog-radius) !important;
+    }
+
+    body.page-backstage .backstage-vlog-video iframe {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* =====================================================
+       3. FAV MUSIC → SUPPORT REWOD
+       ===================================================== */
+    body.page-backstage .backstage-support-section {
+        margin-top: var(--bs-mobile-support-top-gap) !important;
+    }
+
+    /* =====================================================
+       4. WATCH & SHARE → FOOTER
+       ===================================================== */
+    body.page-backstage .backstage-support-section {
+        margin-bottom: var(--bs-mobile-support-bottom-gap) !important;
+    }
+}
+
+/* =========================================================
+   BACKSTAGE – MOBILE VLOG POSITION CONTROLS
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-backstage {
+        /* ===== ÁLLÍTHATÓ ÉRTÉKEK ===== */
+        /* 1. Oldal teteje → LATEST VLOG felirat */
+        --bs-vlog-top-gap: 16px;
+
+        /* 2. LATEST VLOG felirat → videó */
+        --bs-vlog-title-video-gap: 25px;
+
+        /* 3. Videó + LOAD MORE VLOGS gomb vízszintes eltolása */
+        /* Negatív = balra | Pozitív = jobbra */
+        --bs-vlog-horizontal-shift: -30px;
+    }
+
+    /* =====================================================
+       1. LATEST VLOG – FELSŐ TÁVOLSÁG
+       ===================================================== */
+    body.page-backstage .backstage-vlog-section {
+        margin-top: var(--bs-vlog-top-gap) !important;
+    }
+
+    /* =====================================================
+       2. LATEST VLOG FELIRAT → VIDEÓ GAP
+       ===================================================== */
+    body.page-backstage .backstage-vlog-section > .backstage-heading {
+        margin-bottom: var(--bs-vlog-title-video-gap) !important;
+    }
+
+    /* =====================================================
+       3. VIDEÓ + GOMB EGYÜTTES ELTOLÁSA
+       ===================================================== */
+    body.page-backstage .backstage-vlog-container,
+    body.page-backstage .backstage-vlog-section > .backstage-vlog-button {
+        position: relative;
+        left: var(--bs-vlog-horizontal-shift) !important;
+    }
+}
