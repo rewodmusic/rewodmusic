@@ -9747,3 +9747,37 @@ body.page-home .playlists-inner {
         font-size: 15px;
     }
 }
+
+/* =========================================================
+   HOME – NEXT 7 DAYS TITLE
+   MATCH OFFICIAL PLAYLISTS EXACTLY (MOBILE)
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-home .home-schedule
+    > .backstage-schedule-section {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    body.page-home .home-schedule .backstage-heading {
+        /* SAME FONT AS OFFICIAL PLAYLISTS */
+        font-family: "Arial Black", Arial, Helvetica, sans-serif !important;
+        font-size: var(--m-pl-title-size, 37px) !important;
+        font-weight: 900 !important;
+
+        /* SAME TYPOGRAPHY */
+        letter-spacing: 0.02em !important;
+        line-height: 1.05 !important;
+
+        /* SAME POSITION */
+        margin-left: 0 !important;
+        margin-top: var(--m-pl-title-y, 0px) !important;
+
+        /* TITLE → CONTENT GAP */
+        margin-bottom: 42px !important;
+
+        /* TWO LINES */
+        max-width: 320px !important;
+        white-space: normal !important;
+    }
+}
