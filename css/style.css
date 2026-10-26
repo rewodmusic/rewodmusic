@@ -10946,4 +10946,23 @@ body.page-latest .service-box {
             transform: translateX(15px) !important;
         }
     }
+
+    /* =========================================
+   MOBILE – RELEASE TEXT POSITION + WRAPPING
+   ========================================= */
+    @media (max-width: 768px) {
+        body:is(.page-home, .page-song)    .releases .release-meta {
+            position: relative !important;
+
+            /* További 15px balra */
+            left: -45px !important;
+
+            /* Ne növeljük túl a szöveg területét */
+            width: auto !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+            overflow-wrap: anywhere !important;
+            word-break: normal !important;
+        }
+    }
 }
