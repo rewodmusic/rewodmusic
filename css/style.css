@@ -10312,3 +10312,576 @@ body.page-song.is-daily-release .service-row.apple {
         background: #393939;
     }
 }
+
+/* =========================================================
+   SONG + LATEST PAGE – MODERN SERVICE CARDS
+   DESKTOP + MOBILE
+   ========================================================= */
+/* SERVICE BOX */
+body.page-song .service-box,
+body.page-latest .service-box {
+    background: #242323;
+    border-radius: 24px;
+    padding: 18px;
+}
+
+/* INDIVIDUAL SERVICE CARDS */
+body.page-song .service-row,
+body.page-latest .service-row {
+    background: #303030;
+    border: none !important;
+    border-radius: 12px;
+    margin-bottom: 9px;
+    padding: 14px;
+    transition: background 0.2s ease,
+        transform 0.2s ease;
+}
+
+/* REMOVE OLD DIVIDERS */
+body.page-song .service-row::before,
+body.page-song .service-row::after,
+body.page-latest .service-row::before,
+body.page-latest .service-row::after {
+    content: none !important;
+    display: none !important;
+}
+
+body.page-song .service-row:not(:last-child),
+body.page-latest .service-row:not(:last-child) {
+    border-bottom: none !important;
+}
+
+/* LAST CARD */
+body.page-song .service-row:last-child,
+body.page-latest .service-row:last-child {
+    margin-bottom: 0;
+}
+
+/* SERVICE BUTTONS */
+body.page-song .service-btn,
+body.page-latest .service-btn {
+    transform: none;
+    border-radius: 9px;
+}
+
+/* HOVER – DESKTOP */
+@media (min-width: 769px) {
+    body.page-song .service-row:hover,
+    body.page-latest .service-row:hover {
+        background: #393939;
+    }
+}
+
+/* TOUCH – MOBILE */
+@media (max-width: 768px) {
+    body.page-song .service-row:active,
+    body.page-latest .service-row:active {
+        background: #393939;
+        transform: scale(0.99);
+    }
+}
+
+/* =========================================================
+   SONG + LATEST – CARD SPACING REFINEMENT
+   DESKTOP + MOBILE
+   ========================================================= */
+/* =========================================================
+   DESKTOP – BUTTONS CLOSER TO RIGHT EDGE
+   ========================================================= */
+@media (min-width: 769px) {
+    body.page-song .service-row,
+    body.page-latest .service-row {
+        padding-right: 7px !important;
+    }
+}
+
+/* =========================================================
+   MOBILE – MORE SPACE AROUND SERVICE CARDS
+   ========================================================= */
+@media (max-width: 768px) {
+    /* MORE SPACE BETWEEN CARDS AND OUTER BOX */
+    body.page-song .service-box,
+    body.page-latest .service-box {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+    }
+
+    /* SLIGHTLY SMALLER CARD PADDING */
+    body.page-song .service-row,
+    body.page-latest .service-row {
+        padding: 12px 14px !important;
+    }
+}
+
+/* =========================================================
+   SONG + LATEST – SMALLER MOBILE SERVICE LOGOS
+   ========================================================= */
+@media (max-width: 768px) {
+    /* SERVICE LOGOS */
+    body.page-song .service-row img,
+    body.page-latest .service-row img {
+        max-width: 80% !important;
+        max-height: 30px !important;
+        width: auto !important;
+        height: auto !important;
+        object-fit: contain;
+    }
+
+    /* KEEP BUTTONS FROM SHRINKING */
+    body.page-song .service-btn,
+    body.page-latest .service-btn {
+        flex-shrink: 0;
+    }
+}
+
+/* =========================================================
+   REWOD – HOME + SONG MODERN SECTIONS
+   Append at the VERY END of css/style.css
+   Hero, header, backgrounds, JS and service cards untouched.
+   ========================================================= */
+/* RELEASES: two separate glass cards, no divider */
+body:is(.page-home,.page-song) .releases-inner {
+    width: min(920px, calc(100% - 40px));
+    max-width: 920px;
+    display: grid;
+    gap: 16px;
+}
+
+body:is(.page-home,.page-song) .releases .release-block {
+    min-width: 0;
+    padding: 26px 30px;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 20px;
+    background: rgba(30,30,30,.73);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 38px rgba(0,0,0,.15);
+}
+
+body:is(.page-home,.page-song) .releases .release-sep {
+    display: none !important;
+}
+
+body:is(.page-home,.page-song) .releases .release-title {
+    transform: none !important;
+    margin: 0 0 18px;
+    font-size: 21px;
+    line-height: 1.12;
+}
+
+body:is(.page-home,.page-song) .releases .release-row {
+    transform: none !important;
+    display: grid !important;
+    grid-template-columns: 82px minmax(0,1fr) auto !important;
+    gap: 20px !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+body:is(.page-home,.page-song) .releases .release-cover {
+    width: 82px !important;
+    height: 82px !important;
+    border-radius: 12px !important;
+    object-fit: cover;
+}
+
+body:is(.page-home,.page-song) .releases .release-meta {
+    min-width: 0;
+}
+
+body:is(.page-home,.page-song) .releases .release-sub {
+    font-size: 17px;
+    opacity: .72;
+}
+
+body:is(.page-home,.page-song) .releases .release-song {
+    font-size: 24px;
+    line-height: 1.2;
+}
+
+body:is(.page-home,.page-song) .releases .btn-listen,
+body:is(.page-home,.page-song) .releases .countdown-pill {
+    transform: none !important;
+    border-radius: 11px !important;
+    background: #414141 !important;
+    box-shadow: none;
+}
+
+body:is(.page-home,.page-song) .releases .btn-listen {
+    width: 150px !important;
+    min-height: 42px !important;
+    height: auto !important;
+    padding: 10px 18px !important;
+    transition: background .2s ease, transform .2s ease;
+}
+
+body:is(.page-home,.page-song) .releases .btn-listen:hover {
+    background: #575757 !important;
+    transform: translateY(-2px) !important;
+}
+
+body:is(.page-home,.page-song) .releases .countdown-pill {
+    width: 230px !important;
+    min-height: 52px !important;
+    padding: 10px 16px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px;
+}
+
+/* PLAYLISTS: two glass rows; preserve original HTML and data-pl links */
+body:is(.page-home,.page-song) .playlists-inner {
+    width: min(980px, calc(100% - 40px));
+    max-width: 980px;
+    margin-inline: auto;
+}
+
+body:is(.page-home,.page-song) .playlists-grid {
+    position: relative;
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 150px 150px !important;
+    grid-template-rows: 72px 72px !important;
+    column-gap: 14px !important;
+    row-gap: 14px !important;
+    padding: 0 !important;
+    isolation: isolate;
+}
+
+body:is(.page-home,.page-song) .playlists-grid::before,
+body:is(.page-home,.page-song) .playlists-grid::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 72px;
+    border-radius: 17px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(30,30,30,.78);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: -1;
+}
+
+body:is(.page-home,.page-song) .playlists-grid::before {
+    top: 0;
+}
+
+body:is(.page-home,.page-song) .playlists-grid::after {
+    top: 86px;
+}
+
+body:is(.page-home,.page-song) .playlists-grid > .pl-col {
+    display: contents !important;
+    transform: none !important;
+}
+
+body:is(.page-home,.page-song) .playlists-grid .pl-label,
+body:is(.page-home,.page-song) .playlists-grid .btn-listen {
+    transform: none !important;
+    margin: 0 !important;
+    align-self: center !important;
+    min-width: 0;
+}
+
+body:is(.page-home,.page-song) .playlists-grid .pl-label {
+    padding-left: 26px !important;
+    font-size: 21px;
+    height: auto !important;
+}
+
+body:is(.page-home,.page-song) .playlists-grid .pl-label:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+body:is(.page-home,.page-song) .playlists-grid .pl-label:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+body:is(.page-home,.page-song) .playlists-grid .pl-spotify .btn-listen:nth-child(1) {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+body:is(.page-home,.page-song) .playlists-grid .pl-spotify .btn-listen:nth-child(2) {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+body:is(.page-home,.page-song) .playlists-grid .pl-youtube .btn-listen:nth-child(1) {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+body:is(.page-home,.page-song) .playlists-grid .pl-youtube .btn-listen:nth-child(2) {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+body:is(.page-home,.page-song) .playlists-grid .btn-listen {
+    display: inline-flex !important;
+    width: 136px !important;
+    height: 38px !important;
+    padding: 0 8px !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    letter-spacing: .12em !important;
+    justify-self: center !important;
+    background: #414141 !important;
+    transition: background .2s ease !important;
+}
+
+body:is(.page-home,.page-song) .playlists-grid .btn-listen:hover {
+    background: #595959 !important;
+}
+
+@media (max-width: 768px) {
+    body:is(.page-home,.page-song) .releases-inner {
+        width: calc(100% - 28px) !important;
+        gap: 12px !important;
+    }
+
+    body:is(.page-home,.page-song) .releases .release-block {
+        padding: 20px 16px !important;
+        border-radius: 17px !important;
+    }
+
+    body:is(.page-home,.page-song) .releases .release-title {
+        font-size: 19px !important;
+        margin-bottom: 16px !important;
+    }
+
+    body:is(.page-home,.page-song) .releases .release-row {
+        grid-template-columns: 68px minmax(0,1fr) !important;
+        gap: 12px !important;
+    }
+
+    body:is(.page-home,.page-song) .releases .release-cover {
+        width: 68px !important;
+        height: 68px !important;
+    }
+
+    body:is(.page-home,.page-song) .releases .release-sub {
+        font-size: 14px !important;
+    }
+
+    body:is(.page-home,.page-song) .releases .release-song {
+        font-size: 19px !important;
+    }
+
+    body:is(.page-home,.page-song) .releases .btn-listen,
+    body:is(.page-home,.page-song) .releases .countdown-pill {
+        grid-column: 1 / -1 !important;
+        justify-self: stretch !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 4px 0 0 !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-inner {
+        width: calc(100% - 28px) !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid {
+        width: 100% !important;
+        grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+        grid-template-rows: 46px 42px 46px 42px !important;
+        gap: 0 10px !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid::before,
+    body:is(.page-home,.page-song) .playlists-grid::after {
+        height: 98px !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid::before {
+        top: 0;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid::after {
+        top: 112px;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid .pl-label:nth-child(1) {
+        grid-column: 1 / -1 !important;
+        grid-row: 1 !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid .pl-label:nth-child(2) {
+        grid-column: 1 / -1 !important;
+        grid-row: 3 !important;
+        margin-top: 14px !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid .pl-spotify .btn-listen:nth-child(1) {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid .pl-youtube .btn-listen:nth-child(1) {
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid .pl-spotify .btn-listen:nth-child(2) {
+        grid-column: 1 !important;
+        grid-row: 4 !important;
+        margin-top: 14px !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid .pl-youtube .btn-listen:nth-child(2) {
+        grid-column: 2 !important;
+        grid-row: 4 !important;
+        margin-top: 14px !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid .pl-label {
+        padding-left: 18px !important;
+        font-size: 18px !important;
+    }
+
+    body:is(.page-home,.page-song) .playlists-grid .btn-listen {
+        width: calc(100% - 18px) !important;
+        max-width: 180px !important;
+        height: 32px !important;
+        font-size: 12px !important;
+    }
+}
+
+/* =========================================================
+   REWOD – GLASS LINKTREE CONTAINER
+   SONG + LATEST RELEASE
+   DESKTOP + MOBILE
+   ========================================================= */
+body.page-song .service-box,
+body.page-latest .service-box {
+    /* SEMI-TRANSPARENT DARK BACKGROUND */
+    background: rgba(28, 28, 28, 0.68) !important;
+
+    /* GLASS EFFECT */
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+
+    /* SUBTLE BORDER */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    /* SOFT SHADOW */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.035);
+
+    /* KEEP EXISTING SHAPE */
+    border-radius: 24px;
+}
+
+/* =========================================================
+   MOBILE – SLIGHTLY STRONGER BACKGROUND
+   FOR BETTER READABILITY
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-song .service-box,
+    body.page-latest .service-box {
+        background: rgba(28, 28, 28, 0.76) !important;
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+    }
+}
+
+/* =========================================================
+   REWOD – MOBILE RELEASE LAYOUT REFINEMENT
+   HOME + SONG
+   ========================================================= */
+@media (max-width: 768px) {
+    /* RELEASE ROW – 3 COLUMNS */
+    body:is(.page-home, .page-song) .releases .release-row {
+        display: grid !important;
+        grid-template-columns: 100px minmax(0, 1fr) auto !important;
+        grid-template-rows: auto auto !important;
+        column-gap: 14px !important;
+        row-gap: 10px !important;
+        align-items: center !important;
+    }
+
+    /* BIGGER COVER ART */
+    body:is(.page-home, .page-song) .releases .release-cover {
+        width: 100px !important;
+        height: 100px !important;
+        grid-column: 1 !important;
+        grid-row: 1 / 3 !important;
+        border-radius: 12px !important;
+        object-fit: cover;
+    }
+
+    /* ARTIST + SONG TITLE */
+    body:is(.page-home, .page-song) .releases .release-meta {
+        grid-column: 2 / 4 !important;
+        grid-row: 1 !important;
+        min-width: 0;
+    }
+
+    /* LISTEN BUTTON + COUNTDOWN */
+    body:is(.page-home, .page-song) .releases .btn-listen,
+    body:is(.page-home, .page-song) .releases .countdown-pill {
+        grid-column: 2 / 4 !important;
+        grid-row: 2 !important;
+        justify-self: stretch !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+    }
+
+    /* COMPACT LISTEN BUTTON */
+    body:is(.page-home, .page-song) .releases .btn-listen {
+        min-height: 40px !important;
+        padding: 10px 14px !important;
+    }
+
+    /* COMPACT COUNTDOWN */
+    body:is(.page-home, .page-song) .releases .countdown-pill {
+        min-height: 44px !important;
+        padding: 7px 10px !important;
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+    }
+}
+
+/* =========================================================
+   REWOD – MOBILE RELEASE BUTTON ALIGNMENT
+   HOME + SONG
+   ========================================================= */
+@media (max-width: 768px) {
+    /* LISTEN + COUNTDOWN */
+    body:is(.page-home, .page-song) .releases .btn-listen,
+    body:is(.page-home, .page-song) .releases .countdown-pill {
+        /* RIGHT ALIGNMENT */
+        justify-self: end !important;
+
+        /* SMALLER WIDTH */
+        width: 78% !important;
+        max-width: 260px !important;
+
+        /* KEEP IN RIGHT COLUMN */
+        grid-column: 2 / 4 !important;
+        grid-row: 2 !important;
+        margin-left: auto !important;
+        margin-right: 0 !important;
+        box-sizing: border-box;
+    }
+}
+
+/* =========================================================
+   REWOD – ORIGINALS MOBILE POSITION FIX
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-home .playlists .pl-labels .pl-label:nth-child(2),
+    body.page-song .playlists .pl-labels .pl-label:nth-child(2),
+    body.page-home .playlists .pl-spotify .btn-listen:nth-child(2),
+    body.page-song .playlists .pl-spotify .btn-listen:nth-child(2),
+    body.page-home .playlists .pl-youtube .btn-listen:nth-child(2),
+    body.page-song .playlists .pl-youtube .btn-listen:nth-child(2) {
+        transform: translateY(20px) !important;
+    }
+}
