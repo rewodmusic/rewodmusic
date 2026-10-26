@@ -10223,3 +10223,92 @@ body.page-song.is-daily-release .service-row.spotify,
 body.page-song.is-daily-release .service-row.apple {
     display: none !important;
 }
+
+/* =========================================================
+   MUSIC PAGE – MODERN MOBILE SERVICE CARDS
+   ONLY MOBILE – DESKTOP UNCHANGED
+   ========================================================= */
+@media (max-width: 768px) {
+    /* SERVICES CONTAINER */
+    body.page-music .music-services-inner {
+        padding: 14px 12px 18px;
+    }
+
+    /* INDIVIDUAL SERVICE CARDS */
+    body.page-music .music-service-row {
+        background: #303030;
+        border: none !important;
+        border-radius: 12px;
+        margin-bottom: 9px;
+        padding: 13px 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        transition: background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    /* REMOVE OLD HORIZONTAL DIVIDERS */
+    body.page-music .music-service-row::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    /* REMOVE EXTRA SPACE AFTER LAST CARD */
+    body.page-music .music-service-row:last-child {
+        margin-bottom: 0;
+    }
+
+    /* BUTTONS */
+    body.page-music .music-service-btn {
+        border-radius: 9px;
+    }
+
+    /* TOUCH FEEDBACK */
+    body.page-music .music-service-row:active {
+        background: #393939;
+        transform: scale(0.99);
+    }
+}
+
+/* =========================================================
+   MUSIC PAGE – MODERN DESKTOP SERVICE CARDS
+   SAME DESIGN AS MOBILE
+   ========================================================= */
+@media (min-width: 769px) {
+    /* SERVICES CONTAINER */
+    body.page-music .music-services-inner {
+        padding: 14px 12px 18px;
+    }
+
+    /* INDIVIDUAL SERVICE CARDS */
+    body.page-music .music-service-row {
+        background: #303030;
+        border: none !important;
+        border-radius: 12px;
+        margin-bottom: 9px;
+        padding: 13px 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        transition: background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    /* REMOVE OLD HORIZONTAL DIVIDERS */
+    body.page-music .music-service-row::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    /* REMOVE EXTRA SPACE AFTER LAST CARD */
+    body.page-music .music-service-row:last-child {
+        margin-bottom: 0;
+    }
+
+    /* BUTTONS */
+    body.page-music .music-service-btn {
+        border-radius: 9px;
+    }
+
+    /* MOUSE HOVER */
+    body.page-music .music-service-row:hover {
+        background: #393939;
+    }
+}
