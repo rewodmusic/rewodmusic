@@ -8196,7 +8196,7 @@ body.page-backstage .backstage-support-actions
 
         /* 3. Videó + LOAD MORE VLOGS gomb vízszintes eltolása */
         /* Negatív = balra | Pozitív = jobbra */
-        --bs-vlog-horizontal-shift: -50px;
+        --bs-vlog-horizontal-shift: -40px;
     }
 
     /* =====================================================
@@ -8256,5 +8256,17 @@ body.page-backstage .backstage-support-actions
     body.page-backstage .backstage-support-section > .backstage-heading {
         font-size: var(--bs-support-heading-size) !important;
         white-space: nowrap !important;
+    }
+}
+
+/* BACKSTAGE – MOBILE SUPPORT TEXT WIDTH */
+@media (max-width: 768px) {
+    body.page-backstage {
+        --bs-support-text-width: 140%;
+    }
+
+    body.page-backstage .backstage-support-text {
+        width: var(--bs-support-text-width) !important;
+        max-width: none !important;
     }
 }
