@@ -9877,4 +9877,30 @@ body.page-home .playlists-inner {
     }
 }
 
+/* =========================================================
+   HOME – UNIFIED MOBILE HEADINGS
+   OFFICIAL PLAYLISTS + NEXT 7 DAYS
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-home .playlists-title,
+    body.page-home .home-schedule .backstage-heading {
+        font-family: "Arial Black", Arial, Helvetica, sans-serif !important;
+        font-weight: 900 !important;
+        font-synthesis: weight !important;
+        -webkit-text-stroke: 0 !important;
+        text-shadow: none !important;
+        letter-spacing: 0.02em !important;
+    }
 
+    body.page-home .playlists-title::before,
+    body.page-home .playlists-title::after,
+    body.page-home .home-schedule .backstage-heading::before,
+    body.page-home .home-schedule .backstage-heading::after {
+        font-family: inherit !important;
+        font-weight: inherit !important;
+        font-synthesis: inherit !important;
+        -webkit-text-stroke: 0 !important;
+        text-shadow: none !important;
+        letter-spacing: inherit !important;
+    }
+}
