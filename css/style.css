@@ -8922,7 +8922,7 @@ body.page-webshop .webshop-page {
         --ws-mobile-top-gap: 25px;
 
         /* Introduction text width */
-        --ws-mobile-intro-width: 290px;
+        --ws-mobile-intro-width: 310px;
 
         /* Extra height for SIMPLE VER. cards */
         --ws-mobile-daily-extra-height: 30px;
@@ -9022,5 +9022,138 @@ body.page-webshop .webshop-page {
 @media (max-width: 768px) {
     body.page-webshop #wsSearchInput {
         font-size: 16px !important;
+    }
+}
+
+/* =========================================================
+   MUSIC PAGE – MOBILE LAYOUT
+
+   Webshop-style vertical layout
+   Desktop remains unchanged
+   ========================================================= */
+@media (max-width: 768px) {
+    /* =====================================
+       ADJUSTABLE SETTINGS
+       ===================================== */
+    body.page-music {
+        /* Space between hero and introduction */
+        --music-mobile-top-gap: 25px;
+
+        /* Introduction text width */
+        --music-mobile-intro-width: 310px;
+
+        /* Space between controls and catalogue */
+        --music-mobile-catalogue-gap: 45px;
+
+        /* Catalogue width */
+        --music-mobile-catalogue-width: 100%;
+    }
+
+    /* =====================================
+       MAIN LAYOUT
+       ===================================== */
+    body.page-music .music-page {
+        padding-top: var(--music-mobile-top-gap);
+    }
+
+    body.page-music .music-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        max-width: 100%;
+        padding: 0 18px;
+        box-sizing: border-box;
+    }
+
+    /* =====================================
+       INTRODUCTION + CONTROLS
+       ===================================== */
+    body.page-music .music-discovery {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body.page-music .music-discovery-intro {
+        width: 100%;
+        max-width: var(--music-mobile-intro-width);
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+
+    body.page-music .music-discovery-controls {
+        width: min(100%, 310px);
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    body.page-music .music-discovery-search {
+        width: min(100%, 380px);
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+
+        /* Prevent iPhone Safari auto zoom */
+        font-size: 16px !important;
+    }
+
+    /* =====================================
+       MUSIC CATALOGUE
+       ===================================== */
+    body.page-music .music-box {
+        width: var(--music-mobile-catalogue-width);
+        max-width: 100%;
+        flex: none;
+        margin-top: var(--music-mobile-catalogue-gap);
+        box-sizing: border-box;
+    }
+
+    /* =====================================
+       CATEGORY LABELS
+       ===================================== */
+    body.page-music .music-cat {
+        min-height: 44px;
+        height: auto;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        gap: 12px;
+    }
+
+    body.page-music .music-cat-label {
+        min-width: 0;
+        font-size: 16px;
+        line-height: 1.3;
+        overflow-wrap: break-word;
+    }
+
+    body.page-music .music-cat-arrow {
+        flex-shrink: 0;
+    }
+}
+
+/* =========================================================
+   WEBSHOP – MOBILE FILTER ALIGNMENT
+   Match Music page switch layout
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-webshop .ws-filter-panel {
+        width: min(100%, 290px);
+        max-width: 310px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    body.page-webshop .ws-switch-row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 22px;
     }
 }
