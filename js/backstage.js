@@ -1669,11 +1669,11 @@ function musicReleasesForSchedule(
     }
 
     return [
-        {
-            dateTime,
-            type: `UPCOMING RELEASE: ${title}`
-        }
-    ];
+    {
+        dateTime,
+        type: "music release"
+    }
+];
 }
 
 
