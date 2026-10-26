@@ -8284,3 +8284,74 @@ body.page-backstage .backstage-support-actions
         margin-right: 0 !important;
     }
 }
+
+/* =========================================================
+   BACKSTAGE – SUPPORT BUTTON ICONS
+   ========================================================= */
+body.page-backstage {
+    /* IKONOK MÉRETE */
+    --bs-support-icon-size: 19px;
+
+    /* IKON ÉS SZÖVEG KÖZÖTTI TÁVOLSÁG */
+    --bs-support-icon-gap: 12px;
+
+    /* IKONOK FÜGGŐLEGES ELTOLÁSA */
+    --bs-support-icon-y: 0px;
+}
+
+/* Gombok */
+body.page-backstage .backstage-support-actions .backstage-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--bs-support-icon-gap);
+}
+
+/* Ikonok közös beállítása */
+body.page-backstage .backstage-support-actions .backstage-action-button::before {
+    content: "";
+    display: inline-block;
+    width: var(--bs-support-icon-size);
+    height: var(--bs-support-icon-size);
+    flex-shrink: 0;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: translateY(var(--bs-support-icon-y));
+}
+
+/* KO-FI */
+body.page-backstage .backstage-support-actions .backstage-action-button:nth-child(1)::before {
+    background-image: url("/socialbars/kofi.svg");
+}
+
+/* SHEET MUSIC */
+body.page-backstage .backstage-support-actions .backstage-action-button:nth-child(2)::before {
+    background-image: url("/socialbars/mms.png");
+}
+
+/* YOUTUBE */
+body.page-backstage .backstage-support-actions .backstage-action-button:nth-child(3)::before {
+    background-image: url("/socialbars/youtube.svg");
+}
+
+/* BACKSTAGE – SUPPORT ICONS FIX */
+/* KO-FI */
+body.page-backstage .backstage-support-actions
+.backstage-action-button:nth-child(1)::before {
+    background-image: url("/socialbars/kofi.svg") !important;
+    filter: brightness(0) invert(1) !important;
+    -webkit-mask: none !important;
+    mask: none !important;
+    background-color: transparent !important;
+}
+
+/* YOUTUBE */
+body.page-backstage .backstage-support-actions
+.backstage-action-button:nth-child(3)::before {
+    background-image: url("/socialbars/youtube.svg") !important;
+    filter: brightness(0) invert(1) !important;
+    -webkit-mask: none !important;
+    mask: none !important;
+    background-color: transparent !important;
+}
