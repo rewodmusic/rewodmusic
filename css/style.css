@@ -8240,7 +8240,7 @@ body.page-backstage .backstage-support-actions
 @media (max-width: 768px) {
     body.page-backstage {
         /* LATEST VLOG – CURRENT FAV MUSIC mérete */
-        --bs-vlog-heading-size: 35px;
+        --bs-vlog-heading-size: 34px;
 
         /* SUPPORT REWOD – NEXT LIVESTREAM mérete */
         --bs-support-heading-size: 27px;
