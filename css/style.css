@@ -8902,3 +8902,125 @@ body.page-webshop .webshop-page {
     appearance: auto;
     cursor: pointer;
 }
+
+/* =========================================================
+   REWOD WEBSHOP – MOBILE FINAL FIXES
+
+   1. SIMPLE VER. spacing
+   2. Adjustable top gap
+   3. Adjustable introduction width
+   4. Prevent iPhone Safari search zoom
+
+   DESKTOP UNCHANGED
+   ========================================================= */
+@media (max-width: 768px) {
+    /* =====================================
+       ADJUSTABLE SETTINGS
+       ===================================== */
+    body.page-webshop {
+        /* Header -> introduction spacing */
+        --ws-mobile-top-gap: 25px;
+
+        /* Introduction text width */
+        --ws-mobile-intro-width: 290px;
+
+        /* Extra height for SIMPLE VER. cards */
+        --ws-mobile-daily-extra-height: 30px;
+
+        /* Move daily card content downward */
+        --ws-mobile-daily-content-offset: 30px;
+    }
+
+    /* =====================================
+       1. SIMPLE VER. CARD HEIGHT
+       ===================================== */
+    /* Only daily cards become taller.
+       Regular cards remain unchanged. */
+    body.page-webshop .ws-card--daily {
+        height: calc(
+            var(--m-ws-card-h) +
+            var(--ws-mobile-daily-extra-height)
+        ) !important;
+    }
+
+    /* =====================================
+       2. SIMPLE VER. CONTENT POSITION
+       ===================================== */
+    /* Move title, artist and preview down.
+
+       ADDED DATE stays in its original
+       top-right position.
+
+       Bottom price/button stays anchored
+       to the bottom of the taller card. */
+    body.page-webshop .ws-card--daily .ws-text {
+        position: relative;
+        top: var(--ws-mobile-daily-content-offset);
+    }
+
+    body.page-webshop .ws-card--daily .ws-preview {
+        position: relative;
+        top: var(--ws-mobile-daily-content-offset);
+    }
+
+    /* =====================================
+       3. TOP GAP CONTROL
+       ===================================== */
+    body.page-webshop .webshop-page {
+        padding-top: var(--ws-mobile-top-gap) !important;
+    }
+
+    /* =====================================
+       4. INTRODUCTION WIDTH
+       ===================================== */
+    body.page-webshop .ws-introduction {
+        width: min(
+            var(--ws-mobile-intro-width),
+            calc(100% - 32px)
+        ) !important;
+        max-width: none !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* =====================================
+       5. PREVENT IPHONE SAFARI AUTO ZOOM
+       ===================================== */
+    body.page-webshop #wsSearchInput {
+        font-size: 16px !important;
+    }
+}
+
+/* =========================================
+   WEBSHOP – DESKTOP CARD ADJUSTMENT
+   ========================================= */
+@media (min-width: 769px) {
+    /* Every card gets 5px extra height */
+    body.page-webshop .ws-card {
+        height: calc(var(--ws-card-height, 430px) + 5px);
+    }
+
+    /* Move title and artist down by 5px */
+    body.page-webshop .ws-card .ws-text {
+        position: relative;
+        top: 5px;
+    }
+
+    /* Move sheet music preview down by 5px */
+    body.page-webshop .ws-card .ws-preview {
+        position: relative;
+        top: 5px;
+    }
+
+    /* ADDED DATE stays in its original position */
+    body.page-webshop .ws-card .ws-added {
+        top: 16px;
+    }
+}
+
+/* WEBSHOP – Prevent iPhone Safari auto zoom */
+@media (max-width: 768px) {
+    body.page-webshop #wsSearchInput {
+        font-size: 16px !important;
+    }
+}
