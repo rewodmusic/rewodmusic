@@ -1187,3 +1187,79 @@ init().catch(
     observer.observe(section);
 
 })();
+
+/* =========================================================
+   HOME – PLAYLISTS PARALLAX
+   DESKTOP + MOBILE
+   ========================================================= */
+
+(function initPlaylistsParallax() {
+
+    const section = document.querySelector(
+        "body.page-home .playlists"
+    );
+
+    if (!section) return;
+
+    const SPEED = 0.18;
+
+    let ticking = false;
+
+    function updateParallax() {
+
+        const rect = section.getBoundingClientRect();
+
+        const viewportHeight = window.innerHeight;
+
+        /* Only update when section is near viewport */
+
+        if (
+            rect.bottom < -200 ||
+            rect.top > viewportHeight + 200
+        ) {
+            ticking = false;
+            return;
+        }
+
+        const sectionCenter =
+            rect.top + rect.height / 2;
+
+        const viewportCenter =
+            viewportHeight / 2;
+
+        const offset =
+            (viewportCenter - sectionCenter) * SPEED;
+
+        section.style.setProperty(
+            "--playlists-parallax-y",
+            `${offset}px`
+        );
+
+        ticking = false;
+
+    }
+
+    function requestUpdate() {
+
+        if (ticking) return;
+
+        ticking = true;
+
+        requestAnimationFrame(updateParallax);
+
+    }
+
+    window.addEventListener(
+        "scroll",
+        requestUpdate,
+        { passive: true }
+    );
+
+    window.addEventListener(
+        "resize",
+        requestUpdate
+    );
+
+    requestUpdate();
+
+})();

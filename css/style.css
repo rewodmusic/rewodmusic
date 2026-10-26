@@ -9643,3 +9643,107 @@ body.page-home .playlists {
         transition: none !important;
     }
 }
+
+/* =========================================================
+   HOME – PLAYLISTS TRUE PARALLAX
+   ========================================================= */
+body.page-home .playlists {
+    --playlists-bg-darkness: 0.45;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #000;
+    background-image: none !important;
+}
+
+/* MOVING BACKGROUND */
+body.page-home .playlists::before {
+    content: "";
+    position: absolute;
+    inset: -25% 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: linear-gradient(
+            rgba(0, 0, 0, var(--playlists-bg-darkness)),
+            rgba(0, 0, 0, var(--playlists-bg-darkness))
+        ),
+        url("/img/pattern_live.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: translate3d(
+        0,
+        var(--playlists-parallax-y, 0px),
+        0
+    );
+    will-change: transform;
+}
+
+/* KEEP CONTENT ABOVE BACKGROUND */
+body.page-home .playlists-inner {
+    position: relative;
+    z-index: 1;
+}
+
+/* =========================================================
+   HOME – NEXT 7 DAYS MOBILE FIX
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-home .home-schedule {
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+        overflow: hidden;
+    }
+
+    body.page-home .home-schedule > .backstage-schedule-section {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 40px;
+        padding-right: 40px;
+        box-sizing: border-box;
+    }
+
+    /* TITLE */
+    body.page-home .home-schedule .backstage-heading {
+        font-family: "Inter Tight", sans-serif !important;
+        font-size: 34px !important;
+        font-weight: 800 !important;
+        line-height: 0.95 !important;
+        letter-spacing: 0 !important;
+        white-space: normal !important;
+        max-width: 280px;
+        margin-bottom: 42px;
+    }
+
+    /* SCHEDULE TABLE */
+    body.page-home .home-schedule .backstage-schedule {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+
+    body.page-home .home-schedule .backstage-schedule-row {
+        grid-template-columns: 1fr 0.7fr 1.6fr !important;
+        padding-left: 20px;
+        padding-right: 12px;
+        column-gap: 0;
+    }
+
+    /* DATE */
+    body.page-home .home-schedule .backstage-schedule-date {
+        font-size: 12px;
+    }
+
+    /* TIME */
+    body.page-home .home-schedule .backstage-schedule-time {
+        font-size: 12px;
+    }
+
+    /* EVENT */
+    body.page-home .home-schedule .backstage-schedule-type {
+        font-size: 15px;
+    }
+}
