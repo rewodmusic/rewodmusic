@@ -9781,3 +9781,49 @@ body.page-home .playlists-inner {
         white-space: normal !important;
     }
 }
+
+/* =========================================================
+   HOME SCHEDULE – EXACT PLAYLISTS TITLE TYPOGRAPHY
+   MOBILE ONLY
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-home .home-schedule .backstage-heading {
+        font-family: "Arial Black", Arial, Helvetica, sans-serif !important;
+        font-size: var(--m-pl-title-size, 37px) !important;
+        font-weight: 900 !important;
+        font-style: normal !important;
+        font-synthesis: none !important;
+        letter-spacing: 0.02em !important;
+        line-height: 1.05 !important;
+        text-transform: none !important;
+        text-shadow: none !important;
+        -webkit-text-stroke: 0 !important;
+
+        /* Az eredeti pozíció marad */
+        margin-left: 0 !important;
+    }
+}
+
+/* =========================================================
+   HOMEPAGE – NEXT 7 DAYS TABLE WIDTH (MOBILE)
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-home .home-schedule .backstage-schedule {
+        width: calc(100% - 30px) !important;
+        max-width: calc(100% - 30px) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+/* =========================================================
+   BACKSTAGE – NEXT 7 DAYS TABLE WIDTH (MOBILE)
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-backstage .backstage-schedule {
+        width: calc(100% - 30px) !important;
+        max-width: calc(100% - 30px) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
