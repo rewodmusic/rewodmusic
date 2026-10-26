@@ -10885,3 +10885,65 @@ body.page-latest .service-box {
         transform: translateY(20px) !important;
     }
 }
+
+/* =========================================================
+   REWOD – MOBILE GLASS CARD POSITION FIX
+   HOME + SONG
+   ========================================================= */
+@media (max-width: 768px) {
+    /* =========================================
+       1. RELEASE TITLES – 30PX LEFT
+       KEEP TEXT WRAPPING INSIDE THE CARD
+       ========================================= */
+    body:is(.page-home, .page-song) .releases .release-meta {
+        position: relative !important;
+        left: -30px !important;
+        width: calc(100% + 30px) !important;
+        max-width: calc(100% + 30px) !important;
+        min-width: 0 !important;
+        overflow-wrap: break-word !important;
+        word-break: normal !important;
+    }
+
+    /* =========================================================
+   REWOD – MOBILE GLASS CARD POSITION
+   HOME + SONG
+   ========================================================= */
+    @media (max-width: 768px) {
+        /* LATEST + UPCOMING – COMPLETE GLASS CARDS */
+        /* COVERS + ORIGINALS – COMPLETE GLASS CARDS */
+        body:is(.page-home, .page-song) .playlists .pl-card {
+            transform: translateX(15px) !important;
+        }
+    }
+
+    /* =========================================
+   REWOD – FINAL MOBILE GLASS POSITION FIX
+   HOME + SONG
+   ========================================= */
+    @media (max-width: 768px) {
+        /* 1. LATEST + UPCOMING
+       TELJES ÜVEGKÁRTYA 15PX JOBBRA */
+        body:is(.page-home, .page-song)    .releases .release-block {
+            transform: translateX(15px) !important;
+        }
+
+        /* 2. ELŐADÓ + DALCÍM
+       30PX BALLRA, SORTÖRÉS MEGTARTVA */
+        body:is(.page-home, .page-song)    .releases .release-meta {
+            position: relative !important;
+            left: -30px !important;
+            width: calc(100% + 30px) !important;
+            min-width: 0 !important;
+            overflow-wrap: break-word !important;
+            word-break: normal !important;
+        }
+
+        /* 3. COVERS + ORIGINALS
+       TELJES PLAYLIST ÜVEGKÁRTYÁK
+       15PX JOBBRA */
+        body:is(.page-home, .page-song)    .playlists .playlists-grid {
+            transform: translateX(15px) !important;
+        }
+    }
+}
