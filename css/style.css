@@ -9914,3 +9914,202 @@ body.page-home .playlists-inner {
         transform: translateX(-5px) !important;
     }
 }
+
+/* =========================================================
+   SONG PAGE – MATCH HOMEPAGE PLAYLISTS + NEXT 7 DAYS
+   ========================================================= */
+/* =========================================================
+   NEXT 7 DAYS SCHEDULE – DESKTOP
+   ========================================================= */
+body.page-song .home-schedule {
+    --schedule-gap-top-desktop: 90px;
+    --schedule-gap-bottom-desktop: 60px;
+    --schedule-gap-top-mobile: 60px;
+    --schedule-gap-bottom-mobile: 75px;
+    --bs-max: 920px;
+    --bs-pad-x: 60px;
+    --bs-heading-size: 36px;
+    --bs-heading-gap: 42px;
+    background: #000;
+    padding: var(--schedule-gap-top-desktop)
+        var(--bs-pad-x)
+        var(--schedule-gap-bottom-desktop);
+    width: 100%;
+}
+
+body.page-song .home-schedule > .backstage-schedule-section {
+    max-width: calc(var(--bs-max) - 2 * var(--bs-pad-x));
+    margin: 0 auto;
+}
+
+/* =========================================================
+   NEXT 7 DAYS – BACKGROUND
+   SAME AS HOMEPAGE
+   ========================================================= */
+body.page-song .home-schedule {
+    --schedule-bg-darkness: 0.35;
+    background-image: linear-gradient(
+            rgba(0, 0, 0, var(--schedule-bg-darkness)),
+            rgba(0, 0, 0, var(--schedule-bg-darkness))
+        ),
+        url("/img/7days.jpg");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* =========================================================
+   NEXT 7 DAYS – MOBILE
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-song .home-schedule {
+        width: 100%;
+        padding-top: var(--schedule-gap-top-mobile);
+        padding-bottom: var(--schedule-gap-bottom-mobile);
+        padding-left: 0;
+        padding-right: 0;
+        overflow: hidden;
+        --bs-heading-size: 25px;
+        background-position: center center;
+    }
+
+    body.page-song .home-schedule > .backstage-schedule-section {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        box-sizing: border-box;
+    }
+
+    /* SCHEDULE ROWS */
+    body.page-song .home-schedule .backstage-schedule-row {
+        grid-template-columns: 1fr 0.7fr 1.6fr !important;
+        padding-left: 20px;
+        padding-right: 12px;
+        column-gap: 0;
+    }
+
+    /* DATE */
+    body.page-song .home-schedule .backstage-schedule-date {
+        font-size: 12px;
+    }
+
+    /* TIME */
+    body.page-song .home-schedule .backstage-schedule-time {
+        font-size: 12px;
+    }
+
+    /* EVENT */
+    body.page-song .home-schedule .backstage-schedule-type {
+        font-size: 15px;
+    }
+}
+
+/* =========================================================
+   NEXT 7 DAYS – MOBILE TABLE WIDTH
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-song .home-schedule .backstage-schedule {
+        width: calc(100% - 30px) !important;
+        max-width: calc(100% - 30px) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+/* =========================================================
+   NEXT 7 DAYS – MOBILE TITLE
+   SAME TYPOGRAPHY AS OFFICIAL PLAYLISTS
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-song .home-schedule .backstage-heading {
+        font-family: "Arial Black",
+            Arial,
+            Helvetica,
+            sans-serif !important;
+        font-weight: 900 !important;
+        font-synthesis: weight !important;
+        font-size: 0 !important;
+        line-height: 0 !important;
+        letter-spacing: 0.02em !important;
+        text-align: left !important;
+        text-transform: none !important;
+        margin-left: 0 !important;
+        margin-top: var(--m-pl-title-y, 0px) !important;
+        margin-bottom: 42px !important;
+        padding: 0 !important;
+        max-width: none !important;
+        -webkit-text-stroke: 0 !important;
+        text-shadow: none !important;
+    }
+
+    /* FIRST LINE */
+    body.page-song .home-schedule .backstage-heading::before {
+        content: "NEXT 7 DAYS";
+        display: block;
+        font-family: inherit !important;
+        font-size: var(--m-pl-title-size, 37px) !important;
+        font-weight: 900 !important;
+        letter-spacing: 0.02em !important;
+        line-height: 1.05 !important;
+        color: #fff !important;
+    }
+
+    /* SECOND LINE */
+    body.page-song .home-schedule .backstage-heading::after {
+        content: "SCHEDULE";
+        display: block;
+        font-family: inherit !important;
+        font-size: var(--m-pl-title-size, 37px) !important;
+        font-weight: 900 !important;
+        letter-spacing: 0.02em !important;
+        line-height: 1.05 !important;
+        color: #fff !important;
+        margin-top: var(--m-pl-title-line-gap, 2px) !important;
+    }
+}
+
+/* =========================================================
+   SONG – UNIFIED MOBILE HEADING TYPOGRAPHY
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-song .playlists-title,
+    body.page-song .home-schedule .backstage-heading {
+        font-family: "Arial Black",
+            Arial,
+            Helvetica,
+            sans-serif !important;
+        font-weight: 900 !important;
+        font-synthesis: weight !important;
+        -webkit-text-stroke: 0 !important;
+        text-shadow: none !important;
+        letter-spacing: 0.02em !important;
+    }
+
+    body.page-song .playlists-title::before,
+    body.page-song .playlists-title::after,
+    body.page-song .home-schedule .backstage-heading::before,
+    body.page-song .home-schedule .backstage-heading::after {
+        font-family: inherit !important;
+        font-weight: inherit !important;
+        font-synthesis: inherit !important;
+        -webkit-text-stroke: 0 !important;
+        text-shadow: none !important;
+        letter-spacing: inherit !important;
+    }
+}
+
+/* =========================================================
+   SONG – OFFICIAL PLAYLISTS
+   KEEP EXISTING BLURRED SONG BACKGROUND
+   NO PATTERN / NO PARALLAX
+   ========================================================= */
+body.page-song .playlists {
+    background: transparent !important;
+}
+
+body.page-song .playlists::before {
+    content: none !important;
+}
