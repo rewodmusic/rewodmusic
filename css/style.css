@@ -10214,3 +10214,12 @@ body.page-song .playlists::before {
         color: rgba(255, 255, 255, 0.94);
     }
 }
+
+/* =========================================================
+   DAILY RELEASE – HIDE SPOTIFY + APPLE MUSIC
+   DESKTOP + MOBILE
+   ========================================================= */
+body.page-song.is-daily-release .service-row.spotify,
+body.page-song.is-daily-release .service-row.apple {
+    display: none !important;
+}

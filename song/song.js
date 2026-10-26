@@ -1782,29 +1782,15 @@ const isTape =
 setTapeMode(isTape);
 
 
-/* =========================
-   DAILY MODE
-   ========================= */
+/* =========================================================
+   DAILY MODE – HIDE STREAMING SERVICES
+   DESKTOP + MOBILE
+   ========================================================= */
 
-if (isDaily(row)) {
-
-  const spotifyRow = document.querySelector(
-    ".latest-release .service-row.spotify"
-  );
-
-  const appleRow = document.querySelector(
-    ".latest-release .service-row.apple"
-  );
-
-  if (spotifyRow) {
-    spotifyRow.style.display = "none";
-  }
-
-  if (appleRow) {
-    appleRow.style.display = "none";
-  }
-
-}
+document.body.classList.toggle(
+  "is-daily-release",
+  isDaily(row)
+);
 
 
   /* =========================
