@@ -1768,18 +1768,43 @@ async function initSong() {
   }
 
 
-  /* =========================
-     TAPE MODE
-     ========================= */
+/* =========================
+   TAPE MODE
+   ========================= */
 
-  const isTape =
-    pick(
-      row,
-      ["tape"],
-      ""
-    ).toLowerCase() === "x";
+const isTape =
+  pick(
+    row,
+    ["tape"],
+    ""
+  ).toLowerCase() === "x";
 
-  setTapeMode(isTape);
+setTapeMode(isTape);
+
+
+/* =========================
+   DAILY MODE
+   ========================= */
+
+if (isDaily(row)) {
+
+  const spotifyRow = document.querySelector(
+    ".latest-release .service-row.spotify"
+  );
+
+  const appleRow = document.querySelector(
+    ".latest-release .service-row.apple"
+  );
+
+  if (spotifyRow) {
+    spotifyRow.style.display = "none";
+  }
+
+  if (appleRow) {
+    appleRow.style.display = "none";
+  }
+
+}
 
 
   /* =========================
