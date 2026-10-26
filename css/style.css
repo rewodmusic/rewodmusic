@@ -9433,3 +9433,13 @@ body.page-music {
         margin-top: var(--music-empty-gap-mobile) !important;
     }
 }
+
+/* =========================================
+   MUSIC MOBILE – PREVENT SAFARI AUTO ZOOM
+   SAME AS WEBSHOP
+   ========================================= */
+@media (max-width: 768px) {
+    body.page-music #musicSearch {
+        font-size: 16px !important;
+    }
+}
