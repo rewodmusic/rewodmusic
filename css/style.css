@@ -8240,7 +8240,7 @@ body.page-backstage .backstage-support-actions
 @media (max-width: 768px) {
     body.page-backstage {
         /* LATEST VLOG – CURRENT FAV MUSIC mérete */
-        --bs-vlog-heading-size: 38px;
+        --bs-vlog-heading-size: 35px;
 
         /* SUPPORT REWOD – NEXT LIVESTREAM mérete */
         --bs-support-heading-size: 27px;
@@ -8269,7 +8269,7 @@ body.page-backstage .backstage-support-actions
 
         /* Vízszintes eltolás */
         /* Negatív = balra | Pozitív = jobbra */
-        --bs-support-text-shift: 50px;
+        --bs-support-text-shift: 47px;
     }
 
     body.page-backstage .backstage-support-text {
