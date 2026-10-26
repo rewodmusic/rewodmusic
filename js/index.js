@@ -1,24 +1,35 @@
 /* =========================================================
    REWOD HOMEPAGE – RELEASES
 
-   + LATEST NON-DAILY RELEASE
-   + UPCOMING FROM LATEST NON-DAILY RELEASE
-   + LIVE COUNTDOWN
-   + DYNAMIC RELEASES BACKGROUND
+   DATA SOURCES:
+   /data/database.json
+   /data/schedule.json
+   /backstage/backstage-edit-data/releasetime.json
 
-   Daily Sheet Music entries are completely ignored.
+   FEATURES:
+   - Latest NON-DAILY release from database.json
+   - Upcoming music release from schedule.json
+   - Music releases only (title + artist)
+   - Custom release hour support
+   - Live countdown
+   - Dynamic releases background
+   - Budapest timezone (CET / CEST)
 
-   RELEASE TIME:
-   Loaded dynamically from releasetime.json.
+   Daily Sheet Music entries are ignored
+   when selecting the Latest release.
 
-   All release times are interpreted
-   in Europe/Budapest timezone.
-
-   Automatically handles CET / CEST.
+   Photo, video promo, review and vlog
+   events are ignored when selecting Upcoming.
    ========================================================= */
 
 
-const DATA_URL = "data/admin.json";
+/* =========================================================
+   CONFIGURATION
+   ========================================================= */
+
+const DATA_URL = "/data/database.json";
+
+const SCHEDULE_URL = "/data/schedule.json";
 
 const RELEASE_TIME_URL =
   "/backstage/backstage-edit-data/releasetime.json";
@@ -30,11 +41,18 @@ const RELEASE_TIMEZONE = "Europe/Budapest";
    HELPERS
    ========================================================= */
 
-function safeText(v) {
-  return (v ?? "").toString().trim();
+function safeText(value) {
+  return (value ?? "").toString().trim();
 }
 
+
+function hasText(value) {
+  return safeText(value).length > 0;
+}
+
+
 function buildArtistLine(a1, a2) {
+
   const A = safeText(a1);
   const B = safeText(a2);
 
@@ -43,6 +61,7 @@ function buildArtistLine(a1, a2) {
   }
 
   return A || "";
+
 }
 
 
@@ -50,16 +69,12 @@ function buildArtistLine(a1, a2) {
    DAILY CHECK
    ========================================================= */
 
-/*
- * "daily": "x"  -> Daily Sheet Music
- * "daily": ""   -> Regular music release
- * Missing daily -> Regular music release
- */
-
 function isDaily(row) {
+
   return (
     safeText(row?.daily).toLowerCase() === "x"
   );
+
 }
 
 
@@ -69,6 +84,7 @@ function isDaily(row) {
 
 /*
  * Expected:
+ *
  * YYYY_MM_DD
  *
  * Example:
@@ -76,6 +92,7 @@ function isDaily(row) {
  */
 
 function parseReleaseDate(value) {
+
   const text = safeText(value);
 
   const match = text.match(
@@ -105,6 +122,7 @@ function parseReleaseDate(value) {
   }
 
   return date;
+
 }
 
 
@@ -119,7 +137,7 @@ function pickLatestRelease(rows) {
   }
 
 
-  /* STEP 1: Ignore Daily entries */
+  /* Ignore Daily entries */
 
   const regularRows = rows.filter(
     row => row && !isDaily(row)
@@ -130,7 +148,7 @@ function pickLatestRelease(rows) {
   }
 
 
-  /* STEP 2: Sort newest first */
+  /* Sort newest first */
 
   regularRows.sort((a, b) => {
 
@@ -155,8 +173,6 @@ function pickLatestRelease(rows) {
   });
 
 
-  /* STEP 3: Return latest regular release */
-
   return regularRows[0];
 
 }
@@ -167,21 +183,25 @@ function pickLatestRelease(rows) {
    ========================================================= */
 
 /*
- * If artist line already mentions REWOD,
+ * If the artist line already mentions REWOD,
  * don't add "ft. X" to the title.
  */
 
 function artistContainsRewod(artistStr) {
+
   return safeText(artistStr)
     .toLowerCase()
     .includes("rewod");
+
 }
+
 
 function buildTitleWithFeat(
   title,
   feat,
   artistStr = ""
 ) {
+
   const t = safeText(title);
   const f = safeText(feat);
 
@@ -198,6 +218,7 @@ function buildTitleWithFeat(
   }
 
   return `${t} ft. ${f}`;
+
 }
 
 
@@ -210,7 +231,7 @@ function buildTitleWithFeat(
  *
  * /backstage/backstage-edit-data/releasetime.json
  *
- * Expected JSON:
+ * Expected:
  *
  * [
  *   {
@@ -218,15 +239,7 @@ function buildTitleWithFeat(
  *   }
  * ]
  *
- * The time is ALWAYS Budapest local time.
- *
- * Examples:
- *
- * 12:00 -> 12:00 Budapest
- * 13:00 -> 13:00 Budapest
- * 18:30 -> 18:30 Budapest
- *
- * No hardcoded release hour is used.
+ * The time is always Budapest local time.
  */
 
 function parseReleaseTime(value) {
@@ -245,6 +258,7 @@ function parseReleaseTime(value) {
     hour: Number(match[1]),
     minute: Number(match[2])
   };
+
 }
 
 
@@ -258,10 +272,13 @@ async function loadReleaseTime() {
   );
 
   if (!response.ok) {
+
     throw new Error(
       `Failed to load ${RELEASE_TIME_URL}: ${response.status}`
     );
+
   }
+
 
   const data = await response.json();
 
@@ -269,22 +286,28 @@ async function loadReleaseTime() {
     !Array.isArray(data) ||
     !data.length
   ) {
+
     throw new Error(
       "releasetime.json must contain a non-empty array."
     );
+
   }
+
 
   const releaseTime = parseReleaseTime(
     data[0]?.releasetime
   );
 
   if (!releaseTime) {
+
     throw new Error(
       "Invalid releasetime.json value. Expected HH:MM (00:00–23:59)."
     );
+
   }
 
   return releaseTime;
+
 }
 
 
@@ -293,26 +316,10 @@ async function loadReleaseTime() {
    ========================================================= */
 
 /*
- * Converts a Budapest wall-clock date/time
+ * Converts Budapest local date/time
  * into an absolute JavaScript timestamp.
  *
- * Handles CET / CEST automatically.
- *
- * Example:
- *
- * JSON release date:
- * 2026_11_05
- *
- * releasetime.json:
- * 13:00
- *
- * Means:
- *
- * November 5, 2026
- * 13:00 in Budapest
- *
- * NOT UTC time.
- * NOT visitor-local time.
+ * Automatically handles CET / CEST.
  */
 
 const budapestFormatter = new Intl.DateTimeFormat(
@@ -338,13 +345,18 @@ function getBudapestParts(date) {
   const values = {};
 
   parts.forEach(part => {
+
     if (part.type !== "literal") {
+
       values[part.type] =
         Number(part.value);
+
     }
+
   });
 
   return values;
+
 }
 
 
@@ -368,14 +380,13 @@ function getBudapestOffsetMs(date) {
     ) * 1000;
 
   return asUTC - timestampWithoutMs;
+
 }
 
 
-/*
- * Validate that the calculated instant
- * really corresponds to the requested
- * Budapest calendar date and time.
- */
+/* =========================================================
+   VALIDATE BUDAPEST TIME
+   ========================================================= */
 
 function matchesBudapestTime(
   date,
@@ -394,6 +405,7 @@ function matchesBudapestTime(
     parts.hour === hour &&
     parts.minute === minute
   );
+
 }
 
 
@@ -407,11 +419,13 @@ function matchesBudapestTime(
  * YYYY_MM_DD
  * YYYY-MM-DD
  *
- * The target hour and minute come
- * exclusively from releasetime.json.
+ * The target hour comes from:
  *
- * Returns an absolute Unix timestamp
- * in milliseconds.
+ * 1. schedule.json -> hour
+ * 2. releasetime.json -> releasetime
+ *
+ * All times are interpreted as
+ * Europe/Budapest local time.
  */
 
 function budapestReleaseMs(
@@ -439,6 +453,7 @@ function budapestReleaseMs(
     return null;
   }
 
+
   const normalized =
     text.replace(/-/g, "_");
 
@@ -450,9 +465,11 @@ function budapestReleaseMs(
     return null;
   }
 
+
   const year = Number(match[1]);
   const month = Number(match[2]);
   const day = Number(match[3]);
+
 
   const validationDate = new Date(
     Date.UTC(year, month - 1, day)
@@ -466,6 +483,7 @@ function budapestReleaseMs(
     return null;
   }
 
+
   const target = {
     year,
     month,
@@ -473,9 +491,7 @@ function budapestReleaseMs(
   };
 
 
-  /*
-   * Initial UTC guess.
-   */
+  /* Initial UTC guess */
 
   const utcGuess = Date.UTC(
     year,
@@ -488,9 +504,7 @@ function budapestReleaseMs(
   );
 
 
-  /*
-   * Determine Budapest UTC offsets.
-   */
+  /* Determine Budapest UTC offsets */
 
   const firstOffset =
     getBudapestOffsetMs(
@@ -509,14 +523,13 @@ function budapestReleaseMs(
   /*
    * Check multiple possible offsets.
    *
-   * This handles CET / CEST changes.
+   * Handles CET / CEST changes.
    *
-   * If a local time is ambiguous during
-   * the autumn DST transition, the earlier
-   * matching instant is selected.
+   * Ambiguous autumn times:
+   * earlier matching instant is selected.
    *
-   * Nonexistent local times during the
-   * spring transition are rejected.
+   * Nonexistent spring times:
+   * rejected.
    */
 
   const offsets = [
@@ -557,6 +570,97 @@ function budapestReleaseMs(
   }
 
   return candidates[0].getTime();
+
+}
+
+
+/* =========================================================
+   NEXT MUSIC RELEASE – SCHEDULE.JSON
+   ========================================================= */
+
+/*
+ * A music release must have:
+ *
+ * title: non-empty
+ * artist: non-empty
+ *
+ * Other schedule events are ignored.
+ *
+ * The nearest future music release
+ * is selected.
+ */
+
+function pickNextMusicRelease(rows, releaseTime) {
+
+  if (!Array.isArray(rows)) {
+    return null;
+  }
+
+  const now = Date.now();
+
+
+  const upcoming = rows
+
+    /* Only actual music releases */
+
+    .filter(row =>
+      row &&
+      hasText(row.title) &&
+      hasText(row.artist)
+    )
+
+    /* Calculate release timestamps */
+
+    .map(row => {
+
+      const customTime = hasText(row.hour)
+        ? parseReleaseTime(row.hour)
+        : null;
+
+      const time =
+        customTime || releaseTime;
+
+      if (!time) {
+        return null;
+      }
+
+
+      const timestamp =
+        budapestReleaseMs(
+          row.date,
+          time
+        );
+
+
+      if (
+        timestamp === null ||
+        timestamp <= now
+      ) {
+        return null;
+      }
+
+
+      return {
+        row,
+        timestamp
+      };
+
+    })
+
+    .filter(Boolean)
+
+    /* Earliest upcoming release first */
+
+    .sort(
+      (a, b) =>
+        a.timestamp - b.timestamp
+    );
+
+
+  return upcoming.length
+    ? upcoming[0]
+    : null;
+
 }
 
 
@@ -599,6 +703,7 @@ function formatCountdownText(msLeft) {
     `${days} days ${hours} hours<br>` +
     `${minutes} minutes ${seconds} seconds`
   );
+
 }
 
 
@@ -623,7 +728,8 @@ function syncReleasesBackground() {
 
   function updateBackground() {
 
-    const src = cover.currentSrc || cover.src;
+    const src =
+      cover.currentSrc || cover.src;
 
     if (!src) {
       return;
@@ -663,156 +769,234 @@ function syncReleasesBackground() {
 
 
 /* =========================================================
-   MAIN INIT
+   MAIN INITIALIZATION
    ========================================================= */
 
 async function init() {
 
-  /* =========================
-     LOAD ADMIN JSON + RELEASE TIME
-     ========================= */
+  /* =========================================================
+     LOAD DATABASE + SCHEDULE + RELEASE TIME
+     ========================================================= */
 
-  /*
-   * Both files are loaded before the
-   * countdown target is calculated.
-   *
-   * This ensures that the release time
-   * always comes from releasetime.json.
-   */
+  const [
+    databaseResult,
+    scheduleResult,
+    releaseTimeResult
+  ] = await Promise.allSettled([
 
-  const [adminResponse, releaseTimeResult] =
-    await Promise.allSettled([
-      fetch(
-        DATA_URL,
-        {
-          cache: "no-store"
-        }
-      ),
-      loadReleaseTime()
-    ]);
+    fetch(
+      DATA_URL,
+      {
+        cache: "no-store"
+      }
+    ),
+
+    fetch(
+      SCHEDULE_URL,
+      {
+        cache: "no-store"
+      }
+    ),
+
+    loadReleaseTime()
+
+  ]);
+
+
+  /* =========================================================
+     DATABASE.JSON
+     ========================================================= */
+
+  if (
+    databaseResult.status !== "fulfilled"
+  ) {
+    throw databaseResult.reason;
+  }
+
+
+  const databaseResponse =
+    databaseResult.value;
+
+
+  if (!databaseResponse.ok) {
+
+    throw new Error(
+      `Failed to load ${DATA_URL}: ${databaseResponse.status}`
+    );
+
+  }
+
+
+  const databaseRows =
+    await databaseResponse.json();
+
+
+  /* =========================================================
+     SCHEDULE.JSON
+     ========================================================= */
+
+  let scheduleRows = [];
 
 
   if (
-    adminResponse.status !== "fulfilled"
+    scheduleResult.status === "fulfilled"
   ) {
-    throw adminResponse.reason;
-  }
 
-  const res = adminResponse.value;
+    const scheduleResponse =
+      scheduleResult.value;
 
-  if (!res.ok) {
-    throw new Error(
-      `Failed to load ${DATA_URL}: ${res.status}`
+
+    if (scheduleResponse.ok) {
+
+      try {
+
+        const scheduleData =
+          await scheduleResponse.json();
+
+        if (Array.isArray(scheduleData)) {
+          scheduleRows = scheduleData;
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Homepage: Invalid schedule.json:",
+          error
+        );
+
+      }
+
+    } else {
+
+      console.error(
+        "Homepage: Could not load schedule:",
+        scheduleResponse.status
+      );
+
+    }
+
+  } else {
+
+    console.error(
+      "Homepage: Could not load schedule:",
+      scheduleResult.reason
     );
+
   }
 
-  const rows = await res.json();
 
-
-  /*
-   * Release time is optional for
-   * displaying release titles and covers,
-   * but mandatory for the countdown.
-   */
+  /* =========================================================
+     RELEASE TIME
+     ========================================================= */
 
   let releaseTime = null;
+
 
   if (
     releaseTimeResult.status === "fulfilled"
   ) {
-    releaseTime = releaseTimeResult.value;
+
+    releaseTime =
+      releaseTimeResult.value;
+
   } else {
+
     console.error(
       "Homepage: Could not load release time:",
       releaseTimeResult.reason
     );
+
   }
 
 
-  /* =========================
-     SELECT LATEST NON-DAILY
-     ========================= */
+  /* =========================================================
+     LATEST RELEASE – DATABASE.JSON
+     ========================================================= */
 
-  const data = pickLatestRelease(rows);
+  const latest =
+    pickLatestRelease(
+      databaseRows
+    );
 
-  if (!data) {
+
+  if (latest) {
+
+    const latestArtist =
+      buildArtistLine(
+        latest.newmusicartist,
+        latest.newmusicartist2
+      );
+
+    const latestTitle =
+      buildTitleWithFeat(
+        latest.newmusictitle,
+        latest.feat,
+        latestArtist
+      );
+
+
+    /* LATEST TITLE */
+
+    const latestTitleEl =
+      document.getElementById(
+        "latestTitle"
+      );
+
+    if (latestTitleEl) {
+
+      latestTitleEl.textContent =
+        latestTitle || "";
+
+    }
+
+
+    /* LATEST ARTIST */
+
+    const latestArtistEl =
+      document.getElementById(
+        "latestArtist"
+      );
+
+    if (latestArtistEl) {
+
+      latestArtistEl.textContent =
+        latestArtist || "";
+
+    }
+
+
+    /* LATEST LISTEN BUTTON */
+
+    const latestListenBtn =
+      document.getElementById(
+        "latestListenBtn"
+      );
+
+    if (latestListenBtn) {
+
+      latestListenBtn.href =
+        "latest/";
+
+      latestListenBtn.style.opacity =
+        "";
+
+      latestListenBtn.style.pointerEvents =
+        "";
+
+    }
+
+  } else {
+
     console.warn(
       "Homepage: No non-daily releases found."
     );
-    return;
+
   }
 
 
-  /* =========================
-     LATEST RELEASE
-     ========================= */
-
-  const latestArtist = buildArtistLine(
-    data.newmusicartist,
-    data.newmusicartist2
-  );
-
-  const latestTitle = buildTitleWithFeat(
-    data.newmusictitle,
-    data.feat,
-    latestArtist
-  );
-
-  const latestTitleEl =
-    document.getElementById(
-      "latestTitle"
-    );
-
-  const latestArtistEl =
-    document.getElementById(
-      "latestArtist"
-    );
-
-  if (latestTitleEl) {
-    latestTitleEl.textContent =
-      latestTitle || "";
-  }
-
-  if (latestArtistEl) {
-    latestArtistEl.textContent =
-      latestArtist || "";
-  }
-
-
-  /* =========================
-     LATEST LISTEN BUTTON
-     ========================= */
-
-  const latestListenBtn =
-    document.getElementById(
-      "latestListenBtn"
-    );
-
-  if (latestListenBtn) {
-    latestListenBtn.href = "latest/";
-    latestListenBtn.style.opacity = "";
-    latestListenBtn.style.pointerEvents = "";
-  }
-
-
-  /* =========================
-     UPCOMING RELEASE
-     ========================= */
-
-  /*
-   * Upcoming information comes from
-   * the SAME latest non-daily release.
-   */
-
-  const comingArtist = safeText(
-    data.comingmusicartist
-  );
-
-  const comingTitle = buildTitleWithFeat(
-    data.comingmusictitle,
-    data.comingfeat,
-    comingArtist
-  );
+  /* =========================================================
+     UPCOMING RELEASE – SCHEDULE.JSON
+     ========================================================= */
 
   const comingTitleEl =
     document.getElementById(
@@ -829,64 +1013,109 @@ async function init() {
       "comingCountdown"
     );
 
+
+  const nextRelease =
+    pickNextMusicRelease(
+      scheduleRows,
+      releaseTime
+    );
+
+
+  /* =========================================================
+     NO UPCOMING RELEASE
+     ========================================================= */
+
+  if (!nextRelease) {
+
+    if (comingTitleEl) {
+      comingTitleEl.textContent = "—";
+    }
+
+    if (comingArtistEl) {
+      comingArtistEl.textContent = "—";
+    }
+
+    if (countdownEl) {
+      countdownEl.textContent = "--";
+    }
+
+    return;
+
+  }
+
+
+  /* =========================================================
+     UPCOMING RELEASE DATA
+     ========================================================= */
+
+  const coming =
+    nextRelease.row;
+
+
+  const comingArtist =
+    safeText(
+      coming.artist
+    );
+
+
+  const comingTitle =
+    buildTitleWithFeat(
+      coming.title,
+      coming.feat,
+      comingArtist
+    );
+
+
+  /* UPCOMING TITLE */
+
   if (comingTitleEl) {
+
     comingTitleEl.textContent =
       comingTitle || "";
+
   }
+
+
+  /* UPCOMING ARTIST */
 
   if (comingArtistEl) {
+
     comingArtistEl.textContent =
       comingArtist || "";
+
   }
 
 
-  /* =========================
-     UPCOMING COUNTDOWN
-     ========================= */
+  /* =========================================================
+     LIVE COUNTDOWN
+     ========================================================= */
 
   if (countdownEl) {
 
-    /*
-     * Date:
-     * admin.json -> comingmusicdate
-     *
-     * Time:
-     * releasetime.json -> releasetime
-     *
-     * Timezone:
-     * Europe/Budapest
-     */
-
     const targetTimestamp =
-      budapestReleaseMs(
-        data.comingmusicdate,
-        releaseTime
-      );
+      nextRelease.timestamp;
 
-    if (targetTimestamp === null) {
 
-      countdownEl.textContent = "--";
+    function tick() {
 
-    } else {
+      const msLeft =
+        targetTimestamp - Date.now();
 
-      function tick() {
-
-        const msLeft =
-          targetTimestamp - Date.now();
-
-        countdownEl.innerHTML =
-          formatCountdownText(msLeft);
-
-      }
-
-      tick();
-
-      window.setInterval(
-        tick,
-        1000
-      );
+      countdownEl.innerHTML =
+        formatCountdownText(
+          msLeft
+        );
 
     }
+
+
+    tick();
+
+
+    window.setInterval(
+      tick,
+      1000
+    );
 
   }
 
@@ -900,7 +1129,7 @@ async function init() {
 /*
  * Start background synchronization immediately.
  *
- * This watches #latestCover for image changes.
+ * Watches #latestCover for image changes.
  */
 
 syncReleasesBackground();
@@ -913,3 +1142,48 @@ syncReleasesBackground();
 init().catch(
   console.error
 );
+
+
+/* =========================================================
+   HOME – NEXT 7 DAYS SCROLL REVEAL
+   ========================================================= */
+
+(function initHomeScheduleReveal() {
+
+    const section = document.querySelector(
+        "body.page-home .home-schedule"
+    );
+
+    if (!section) return;
+
+    /* Reveal immediately if IntersectionObserver is unavailable */
+
+    if (!("IntersectionObserver" in window)) {
+        section.classList.add("is-in");
+        return;
+    }
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+
+            entries.forEach(entry => {
+
+                if (entry.isIntersecting) {
+
+                    entry.target.classList.add("is-in");
+
+                    observer.unobserve(entry.target);
+
+                }
+
+            });
+
+        },
+        {
+            threshold: 0.12
+        }
+    );
+
+    observer.observe(section);
+
+})();

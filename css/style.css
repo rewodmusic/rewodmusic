@@ -222,7 +222,7 @@ body.page-music {
 body.page-home .releases {
     --releases-bg-grayscale: 0%;
     --releases-bg-opacity: 100%;
-    --releases-bg-blur: 11px;
+    --releases-bg-blur: 1px;
     position: relative;
     isolation: isolate;
     overflow: hidden;
@@ -9527,5 +9527,119 @@ body.page-music .music-discovery-search::-webkit-search-cancel-button {
         margin-right: auto !important;
         transform: none !important;
         box-sizing: border-box !important;
+    }
+}
+
+/* =========================================================
+   HOME – NEXT 7 DAYS SCHEDULE (four spacing controls)
+   Uses the ORIGINAL backstage classes and rules above.
+   ========================================================= */
+body.page-home .home-schedule {
+    --schedule-gap-top-desktop: 90px;
+    --schedule-gap-bottom-desktop: 60px;
+    --schedule-gap-top-mobile: 60px;
+    --schedule-gap-bottom-mobile: 75px;
+    --bs-max: 920px;
+    --bs-pad-x: 60px;
+    --bs-heading-size: 36px;
+    --bs-heading-gap: 42px;
+    background: #000;
+    padding: var(--schedule-gap-top-desktop) var(--bs-pad-x) var(--schedule-gap-bottom-desktop);
+    width: 100%;
+}
+
+body.page-home .home-schedule > .backstage-schedule-section {
+    max-width: calc(var(--bs-max) - 2 * var(--bs-pad-x));
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    body.page-home .home-schedule {
+        padding-top: var(--schedule-gap-top-mobile);
+        padding-bottom: var(--schedule-gap-bottom-mobile);
+        padding-left: 16px;
+        padding-right: 16px;
+        --bs-heading-size: 25px;
+    }
+
+    body.page-home .home-schedule > .backstage-schedule-section {
+        width: calc(100% + 32px) !important;
+        max-width: none;
+        margin-left: -16px !important;
+        margin-right: -16px !important;
+    }
+}
+
+/* =========================================================
+   HOME – NEXT 7 DAYS HERO BACKGROUND
+   ========================================================= */
+body.page-home .home-schedule {
+    /* BACKGROUND SETTINGS */
+    --schedule-bg-darkness: 0.35;
+    background-image: linear-gradient(
+            rgba(0, 0, 0, var(--schedule-bg-darkness)),
+            rgba(0, 0, 0, var(--schedule-bg-darkness))
+        ),
+        url("/img/7days.jpg");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    body.page-home .home-schedule {
+        background-position: center center;
+    }
+}
+
+/* =========================================================
+   HOME – OFFICIAL PLAYLISTS PARALLAX BACKGROUND
+   ========================================================= */
+body.page-home .playlists {
+    /* BACKGROUND SETTINGS */
+    --playlists-bg-darkness: 0.55;
+    background-image: linear-gradient(
+            rgba(0, 0, 0, var(--playlists-bg-darkness)),
+            rgba(0, 0, 0, var(--playlists-bg-darkness))
+        ),
+        url("/img/pattern_live.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    /* PARALLAX EFFECT */
+    background-attachment: fixed;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    body.page-home .playlists {
+        /* Mobile browsers handle fixed backgrounds inconsistently */
+        background-attachment: scroll;
+        background-position: center;
+    }
+}
+
+/* =========================================================
+   HOME – NEXT 7 DAYS SCROLL REVEAL
+   ========================================================= */
+@media (min-width: 769px) {
+    html.js body.page-home .home-schedule {
+        opacity: 0;
+        transition: opacity 1650ms ease;
+        will-change: opacity;
+    }
+
+    html.js body.page-home .home-schedule.is-in {
+        opacity: 1;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    html.js body.page-home .home-schedule {
+        opacity: 1 !important;
+        transition: none !important;
     }
 }

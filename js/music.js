@@ -12,7 +12,7 @@
 */
 
 const CONFIG = {
-  dataUrl: "/data/admin.json",
+  dataUrl: "/data/database.json",
   playIcon: "/img/playbutton.png",
   signatureImg: "/img/signature.png",
   serviceIcons: {

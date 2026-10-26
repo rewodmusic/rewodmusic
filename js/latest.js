@@ -11,7 +11,7 @@
    ========================================================= */
 
 const CONFIG = {
-  dataUrl: "/data/admin.json",
+  dataUrl: "/data/database.json",
   kofiUrl: "https://ko-fi.com/rewodmusic",
   signatureUrl: "/img/signature.png"
 };

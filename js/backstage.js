@@ -7,40 +7,49 @@
 
     const PATHS = {
         live: "/data/live.json",
-        admin: "/data/admin.json",
+        schedule: "/data/schedule.json",
+
+        vacation:
+            "/backstage/backstage-edit-data/vacation.json",
 
         releaseTime:
             "/backstage/backstage-edit-data/releasetime.json",
 
-        status: "/backstage/backstage-edit-data/status.json",
-        schedule: "/backstage/backstage-edit-data/schedule.json",
-        goal: "/backstage/backstage-edit-data/current-goal.json",
+        status:
+            "/backstage/backstage-edit-data/status.json",
 
-        anime: "/backstage/backstage-edit-data/0_anime.json",
-        series: "/backstage/backstage-edit-data/1_series.json",
-        music: "/backstage/backstage-edit-data/2_music.json",
+        goal:
+            "/backstage/backstage-edit-data/current-goal.json",
 
-        characterBase: "/backstage/backstage-edit-pics/char-preview/",
-        goalBase: "/backstage/backstage-edit-pics/current-goal/",
-        animeBase: "/backstage/backstage-edit-pics/0_anime/",
-        seriesBase: "/backstage/backstage-edit-pics/1_series/",
-        musicBase: "/backstage/backstage-edit-pics/2_music/"
+        anime:
+            "/backstage/backstage-edit-data/0_anime.json",
+
+        series:
+            "/backstage/backstage-edit-data/1_series.json",
+
+        music:
+            "/backstage/backstage-edit-data/2_music.json",
+
+        characterBase:
+            "/backstage/backstage-edit-pics/char-preview/",
+
+        goalBase:
+            "/backstage/backstage-edit-pics/current-goal/",
+
+        animeBase:
+            "/backstage/backstage-edit-pics/0_anime/",
+
+        seriesBase:
+            "/backstage/backstage-edit-pics/1_series/",
+
+        musicBase:
+            "/backstage/backstage-edit-pics/2_music/"
     };
 
-    /*
-        ALL JSON EVENT TIMES ARE ENTERED
-        IN BUDAPEST LOCAL TIME.
 
-        Visitors see the converted time
-        in their own device timezone.
-
-        MUSIC RELEASE TIMES:
-        Loaded from releasetime.json.
-
-        LIVESTREAM / MANUAL SCHEDULE TIMES:
-        Remain independently defined
-        in their original JSON files.
-    */
+    /* =========================================================
+       CONFIGURATION
+       ========================================================= */
 
     const SOURCE_TIMEZONE = "Europe/Budapest";
 
@@ -50,7 +59,7 @@
 
 
     /* =========================================================
-       PAGE REVEAL / FADE-IN
+       PAGE REVEAL
        ========================================================= */
 
     function revealBackstagePage() {
@@ -93,6 +102,16 @@
     }
 
 
+    function isMarked(value) {
+        return safeText(value).toLowerCase() === "x";
+    }
+
+
+    function pad2(number) {
+        return String(number).padStart(2, "0");
+    }
+
+
     function parseDateString(dateString) {
         const value = safeText(dateString);
 
@@ -126,17 +145,21 @@
     }
 
 
-    /*
-        Supported time examples:
+    function formatDateKey(year, month, day) {
+        return (
+            `${year}_${pad2(month)}_${pad2(day)}`
+        );
+    }
 
-        youtube, 1:00 pm
-        youtube, 1 pm
-        12:00 am
-        13:00
-        9:30 PM
 
-        All interpreted as Budapest time.
-    */
+    function isLivestream(item) {
+        return isMarked(item?.livestream);
+    }
+
+
+    /* =========================================================
+       TIME PARSING
+       ========================================================= */
 
     function extractTimeFromText(text) {
         if (!text) return null;
@@ -177,7 +200,6 @@
             };
         }
 
-
         const twentyFourHour = value.match(
             /\b([01]?\d|2[0-3]):([0-5]\d)\b/
         );
@@ -193,53 +215,9 @@
     }
 
 
-    function isLivestream(item) {
-        return safeText(
-            item?.livestream
-        ).toLowerCase() === "x";
-    }
-
-
-    function isDaily(item) {
-        return safeText(
-            item?.daily
-        ).toLowerCase() === "x";
-    }
-
-
-    function pad2(number) {
-        return String(number).padStart(2, "0");
-    }
-
-
     /* =========================================================
        CENTRAL RELEASE TIME
        ========================================================= */
-
-    /*
-        Source:
-
-        /backstage/backstage-edit-data/releasetime.json
-
-        Expected JSON:
-
-        [
-          {
-            "releasetime": "12:00"
-          }
-        ]
-
-        Examples:
-
-        12:00 -> Budapest 12:00
-        13:00 -> Budapest 13:00
-        18:30 -> Budapest 18:30
-
-        This setting affects ONLY music releases.
-
-        It does NOT affect livestreams
-        or manually scheduled events.
-    */
 
     function parseReleaseTime(value) {
         const text = safeText(value);
@@ -280,7 +258,7 @@
 
         if (!releaseTime) {
             throw new Error(
-                "Invalid releasetime.json value. Expected HH:MM (00:00–23:59)."
+                "Invalid releasetime.json value. Expected HH:MM."
             );
         }
 
@@ -292,22 +270,40 @@
        VISITOR LOCAL TIMEZONE
        ========================================================= */
 
-    /*
-        No timezone is specified in the
-        visitor-facing formatters.
+function formatScheduleDate(date) {
+    const now = new Date();
 
-        JavaScript therefore uses the visitor's
-        browser/device timezone automatically.
-    */
+    const eventDay = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+    );
 
-    function formatScheduleDate(date) {
-        return date.toLocaleDateString(
-            "en-US",
-            {
-                weekday: "long"
-            }
-        ).toUpperCase();
+    const today = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+    );
+
+    const difference = Math.round(
+        (eventDay - today) / 86400000
+    );
+
+    if (difference === 0) {
+        return "TODAY";
     }
+
+    if (difference === 1) {
+        return "TOMORROW";
+    }
+
+    return date.toLocaleDateString(
+        "en-US",
+        {
+            weekday: "long"
+        }
+    ).toUpperCase();
+}
 
 
     function formatScheduleTime(date) {
@@ -324,13 +320,6 @@
         .replace(/\s/g, "");
     }
 
-
-    /*
-        Full local date/time for schedule
-        tooltips.
-
-        This function remains unchanged.
-    */
 
     function formatFullLocalDateTime(date) {
         return date.toLocaleString(
@@ -349,10 +338,6 @@
     }
 
 
-    /* =========================================================
-       VISITOR TIMEZONE DETECTION
-       ========================================================= */
-
     function getVisitorTimezone() {
         try {
             return Intl.DateTimeFormat()
@@ -364,19 +349,6 @@
     }
 
 
-    /*
-        Extract the representative city name
-        from the visitor's IANA timezone.
-
-        Examples:
-
-        Europe/Budapest    -> Budapest
-        Europe/London      -> London
-        America/New_York   -> New York
-        Asia/Tokyo         -> Tokyo
-        Asia/Seoul         -> Seoul
-    */
-
     function getVisitorTimezoneCity() {
         const timezone = getVisitorTimezone();
 
@@ -387,18 +359,13 @@
             return "LOCAL TIME";
         }
 
-        const city = timezone
+        return timezone
             .split("/")
             .pop()
-            .replace(/_/g, " ");
-
-        return city.toUpperCase();
+            .replace(/_/g, " ")
+            .toUpperCase();
     }
 
-
-    /* =========================================================
-       LOCAL TIMEZONE LABELS
-       ========================================================= */
 
     function initTimezoneLabels() {
         const timezone = getVisitorTimezone();
@@ -421,116 +388,47 @@
 
 
     /* =========================================================
-       NEXT LIVESTREAM – LOCAL DATE / TIME / CITY
+       NEXT LIVESTREAM – LOCAL DATE / TIME
        ========================================================= */
 
-    /*
-        DISPLAY FORMAT:
+    function formatLivestreamLocalDateTime(date) {
+        if (
+            !(date instanceof Date) ||
+            Number.isNaN(date.getTime())
+        ) {
+            return "";
+        }
 
-        THURSDAY, NOVEMBER 5, 2026
-        AT 13:00 IN BUDAPEST
+        const datePart = date.toLocaleDateString(
+            "en-US",
+            {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        );
 
-        Features:
+        const timePart = date.toLocaleTimeString(
+            "en-GB",
+            {
+                hour: "2-digit",
+                minute: "2-digit",
+                hourCycle: "h23"
+            }
+        );
 
-        - Visitor's local date
-        - Visitor's local time
-        - 24-hour clock
-        - Representative timezone city
-        - Full uppercase
-        - No GMT / UTC suffix
-        - Automatic daylight saving handling
+        const city = getVisitorTimezoneCity();
 
-        The underlying livestream timestamp
-        is NOT modified.
-
-        Only its visual representation changes.
-    */
-
-/* =========================================================
-   NEXT LIVESTREAM – LOCAL DATE / TIME / TIMEZONE
-   ========================================================= */
-
-/*
-    DISPLAY FORMAT:
-
-    THURSDAY, NOVEMBER 5, 2026
-    AT 13:00 (BUDAPEST TIME)
-
-    Features:
-
-    - Visitor's local date
-    - Visitor's local time
-    - 24-hour clock
-    - Representative timezone city
-    - Timezone displayed in parentheses
-    - Full uppercase
-    - Automatic daylight saving handling
-
-    The underlying livestream timestamp
-    is NOT modified.
-
-    Only its visual representation changes.
-*/
-
-function formatLivestreamLocalDateTime(date) {
-
-    if (
-        !(date instanceof Date) ||
-        Number.isNaN(date.getTime())
-    ) {
-        return "";
+        return (
+            `${datePart} at ${timePart} (${city} TIME)`
+        ).toUpperCase();
     }
-
-    const datePart = date.toLocaleDateString(
-        "en-US",
-        {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-        }
-    );
-
-    const timePart = date.toLocaleTimeString(
-        "en-GB",
-        {
-            hour: "2-digit",
-            minute: "2-digit",
-            hourCycle: "h23"
-        }
-    );
-
-    const city = getVisitorTimezoneCity();
-
-    return (
-        `${datePart} at ${timePart} (${city} TIME)`
-    ).toUpperCase();
-
-}
 
 
     /* =========================================================
        BUDAPEST TIMEZONE HELPERS
        ========================================================= */
-
-    /*
-        Converts a Budapest wall-clock date/time
-        into an absolute JavaScript Date.
-
-        Handles CET / CEST automatically.
-
-        Example:
-
-        JSON:
-        2026_11_05
-        13:00
-
-        Means:
-        November 5, 2026
-        13:00 in Budapest
-
-        NOT 13:00 in the visitor's timezone.
-    */
 
     const budapestFormatter =
         new Intl.DateTimeFormat(
@@ -579,11 +477,6 @@ function formatLivestreamLocalDateTime(date) {
     }
 
 
-    /*
-        Returns the Budapest calendar components
-        of an absolute Date.
-    */
-
     function getBudapestParts(date) {
         const parts =
             budapestFormatter.formatToParts(date);
@@ -601,13 +494,16 @@ function formatLivestreamLocalDateTime(date) {
     }
 
 
-    /*
-        Verify that the resulting Date really
-        represents the requested Budapest time.
+    function getBudapestDateKey(date) {
+        const parts = getBudapestParts(date);
 
-        This also prevents nonexistent times
-        during the spring DST transition.
-    */
+        return formatDateKey(
+            parts.year,
+            parts.month,
+            parts.day
+        );
+    }
+
 
     function matchesBudapestTime(
         date,
@@ -615,8 +511,7 @@ function formatLivestreamLocalDateTime(date) {
         hour,
         minute
     ) {
-        const parts =
-            getBudapestParts(date);
+        const parts = getBudapestParts(date);
 
         return (
             parts.year === target.year &&
@@ -627,14 +522,6 @@ function formatLivestreamLocalDateTime(date) {
         );
     }
 
-
-    /*
-        Converts a Budapest local date/time
-        into an absolute JavaScript Date.
-
-        The hour and minute must be supplied
-        explicitly by the caller.
-    */
 
     function buildBudapestDateTime(
         dateString,
@@ -667,14 +554,6 @@ function formatLivestreamLocalDateTime(date) {
             0
         );
 
-        /*
-            Calculate both offsets.
-
-            Normally they are identical.
-            Around DST transitions they
-            can differ.
-        */
-
         const firstOffset =
             getTimezoneOffsetMs(
                 new Date(utcGuess)
@@ -688,31 +567,14 @@ function formatLivestreamLocalDateTime(date) {
                 new Date(firstTimestamp)
             );
 
-        /*
-            Try both possible candidates.
-
-            On the autumn DST transition,
-            an ambiguous local time can occur
-            twice. We choose the earlier
-            matching instant.
-        */
-
         const candidates = [
             new Date(
                 utcGuess - firstOffset
             ),
-
             new Date(
                 utcGuess - secondOffset
             )
         ];
-
-        /*
-            Also check nearby offsets.
-
-            This makes the conversion more
-            robust around DST boundaries.
-        */
 
         const nearbyOffsets = [
             getTimezoneOffsetMs(
@@ -720,7 +582,6 @@ function formatLivestreamLocalDateTime(date) {
                     utcGuess - 24 * 60 * 60 * 1000
                 )
             ),
-
             getTimezoneOffsetMs(
                 new Date(
                     utcGuess + 24 * 60 * 60 * 1000
@@ -748,18 +609,6 @@ function formatLivestreamLocalDateTime(date) {
         return valid[0] || null;
     }
 
-
-    /*
-        Parse a JSON date and time as Budapest
-        local time.
-
-        Used by:
-        - Livestreams
-        - Manual schedule
-
-        These events do NOT use
-        releasetime.json.
-    */
 
     function buildDateTime(
         dateString,
@@ -912,7 +761,6 @@ function formatLivestreamLocalDateTime(date) {
             return;
         }
 
-
         if (countdownTimer) {
             clearInterval(countdownTimer);
             countdownTimer = null;
@@ -942,10 +790,7 @@ function formatLivestreamLocalDateTime(date) {
                 }
 
                 if (countdownTimer) {
-                    clearInterval(
-                        countdownTimer
-                    );
-
+                    clearInterval(countdownTimer);
                     countdownTimer = null;
                 }
 
@@ -954,19 +799,6 @@ function formatLivestreamLocalDateTime(date) {
 
             countdown.hidden = false;
             empty.hidden = true;
-
-
-            /* =============================================
-               NEXT LIVESTREAM LOCAL DATE DISPLAY
-               ============================================= */
-
-            /*
-                Automatically converted to
-                the visitor's timezone.
-
-                This does not change the
-                countdown calculation.
-            */
 
             if (localTimeEl) {
                 localTimeEl.hidden = false;
@@ -998,11 +830,6 @@ function formatLivestreamLocalDateTime(date) {
                     "rgba(255, 255, 255, 0.75)";
             }
 
-
-            /* =============================================
-               COUNTDOWN CALCULATION
-               ============================================= */
-
             const now = new Date();
 
             const difference =
@@ -1014,25 +841,19 @@ function formatLivestreamLocalDateTime(date) {
             }
 
             const totalSeconds =
-                Math.floor(
-                    difference / 1000
-                );
+                Math.floor(difference / 1000);
 
             const days =
-                Math.floor(
-                    totalSeconds / 86400
-                );
+                Math.floor(totalSeconds / 86400);
 
             const hours =
                 Math.floor(
-                    (totalSeconds % 86400) /
-                    3600
+                    (totalSeconds % 86400) / 3600
                 );
 
             const minutes =
                 Math.floor(
-                    (totalSeconds % 3600) /
-                    60
+                    (totalSeconds % 3600) / 60
                 );
 
             const seconds =
@@ -1061,10 +882,7 @@ function formatLivestreamLocalDateTime(date) {
             )
         ) {
             countdownTimer =
-                setInterval(
-                    render,
-                    1000
-                );
+                setInterval(render, 1000);
         }
     }
 
@@ -1089,13 +907,11 @@ function formatLivestreamLocalDateTime(date) {
 
 
         function tryPlay() {
-            const playPromise =
-                video.play();
+            const playPromise = video.play();
 
             if (
                 playPromise &&
-                typeof playPromise.catch ===
-                    "function"
+                typeof playPromise.catch === "function"
             ) {
                 playPromise.catch(() => {});
             }
@@ -1203,9 +1019,7 @@ function formatLivestreamLocalDateTime(date) {
             return;
         }
 
-
         prepareCharacterVideo(video);
-
 
         buttons.forEach(button => {
             button.addEventListener(
@@ -1238,7 +1052,6 @@ function formatLivestreamLocalDateTime(date) {
                         return;
                     }
 
-
                     buttons.forEach(
                         otherButton => {
                             otherButton.classList.toggle(
@@ -1248,14 +1061,11 @@ function formatLivestreamLocalDateTime(date) {
                         }
                     );
 
-
                     video.classList.add(
                         "is-switching"
                     );
 
-
                     setTimeout(() => {
-
                         video.pause();
 
                         video.muted = true;
@@ -1277,12 +1087,10 @@ function formatLivestreamLocalDateTime(date) {
                             ""
                         );
 
-
                         video.src =
                             `${PATHS.characterBase}${race}.mp4`;
 
                         video.load();
-
 
                         const showNewVideo = () => {
                             const playPromise =
@@ -1306,7 +1114,6 @@ function formatLivestreamLocalDateTime(date) {
                                 }
                             );
                         };
-
 
                         if (
                             video.readyState >= 2
@@ -1362,12 +1169,9 @@ function formatLivestreamLocalDateTime(date) {
             return;
         }
 
-
         try {
             const data =
-                await fetchJSON(
-                    PATHS.goal
-                );
+                await fetchJSON(PATHS.goal);
 
             const goal =
                 Array.isArray(data)
@@ -1380,7 +1184,6 @@ function formatLivestreamLocalDateTime(date) {
                 );
             }
 
-
             const price =
                 Number(goal.price);
 
@@ -1389,7 +1192,6 @@ function formatLivestreamLocalDateTime(date) {
 
             let percentage = 0;
 
-
             if (
                 Number.isFinite(price) &&
                 price > 0 &&
@@ -1397,37 +1199,26 @@ function formatLivestreamLocalDateTime(date) {
             ) {
                 percentage =
                     Math.round(
-                        (balance / price) *
-                        100
+                        (balance / price) * 100
                     );
             }
-
 
             percentage =
                 Math.max(
                     0,
-                    Math.min(
-                        100,
-                        percentage
-                    )
+                    Math.min(100, percentage)
                 );
 
-
             nameEl.textContent =
-                goal.name ||
-                "Current goal";
+                goal.name || "Current goal";
 
             percentEl.textContent =
                 `${percentage}%`;
 
-
-            requestAnimationFrame(
-                () => {
-                    fillEl.style.width =
-                        `${percentage}%`;
-                }
-            );
-
+            requestAnimationFrame(() => {
+                fillEl.style.width =
+                    `${percentage}%`;
+            });
 
             if (imageEl) {
                 setFlexibleImage(
@@ -1464,12 +1255,9 @@ function formatLivestreamLocalDateTime(date) {
 
         if (!statusEl) return;
 
-
         try {
             const data =
-                await fetchJSON(
-                    PATHS.status
-                );
+                await fetchJSON(PATHS.status);
 
             const status =
                 Array.isArray(data)
@@ -1477,18 +1265,12 @@ function formatLivestreamLocalDateTime(date) {
                     : null;
 
             const online =
-                String(
-                    status?.online || ""
-                )
-                    .trim()
-                    .toLowerCase() === "x";
-
+                isMarked(status?.online);
 
             statusEl.textContent =
                 online
                     ? "ONLINE"
                     : "OFFLINE";
-
 
             statusEl.classList.toggle(
                 "is-online",
@@ -1518,35 +1300,388 @@ function formatLivestreamLocalDateTime(date) {
 
 
     /* =========================================================
-       SCHEDULE
+       SCHEDULE – EVENT DEFINITIONS
        ========================================================= */
 
-    function normaliseManualSchedule(
-        scheduleData
+    /*
+        Every schedule.json object may contain:
+
+        title
+        artist
+        feat
+        date
+        hour
+        photo
+        video promo
+        review
+        vlog
+
+        MUSIC RELEASE:
+
+        A valid title AND artist identify
+        a music release.
+
+        CONTENT FLAGS:
+
+        photo       -> photo release
+        video promo -> video promo
+        review      -> new music review
+        vlog        -> new vlog video
+
+        Multiple flags produce separate events.
+
+        Empty hour uses releasetime.json.
+
+        All dates and hours are Budapest-local.
+    */
+
+    const CONTENT_EVENT_TYPES = [
+        {
+            field: "photo",
+            label: "photo release"
+        },
+        {
+            field: "video promo",
+            label: "video promo"
+        },
+        {
+            field: "review",
+            label: "new music review"
+        },
+        {
+            field: "vlog",
+            label: "new vlog video"
+        }
+    ];
+
+
+    /* =========================================================
+       SCHEDULE – EVENT TIME
+       ========================================================= */
+
+    function getScheduledEventTime(
+        item,
+        releaseTime
+    ) {
+        const customHour =
+            safeText(item?.hour);
+
+        if (customHour) {
+            return (
+                parseReleaseTime(customHour) ||
+                extractTimeFromText(customHour)
+            );
+        }
+
+        return releaseTime;
+    }
+
+
+    /* =========================================================
+       SCHEDULE – MUSIC DETECTION
+       ========================================================= */
+
+    function isMusicRelease(item) {
+        return Boolean(
+            safeText(item?.title) &&
+            safeText(item?.artist)
+        );
+    }
+
+
+    /* =========================================================
+       SCHEDULE – EVENT PRIORITY
+       ========================================================= */
+
+    /*
+        Lower number = displayed first.
+
+        Music release and daily video
+        have the highest priority when
+        multiple events share a timestamp.
+
+        Livestreams remain independent.
+    */
+
+    function getEventPriority(type) {
+        if (
+            type === "music release" ||
+            type === "daily video"
+        ) {
+            return 0;
+        }
+
+        return 1;
+    }
+
+
+    /* =========================================================
+       SCHEDULE – NORMALISE CENTRAL EVENTS
+       ========================================================= */
+
+    function normaliseCentralSchedule(
+        scheduleData,
+        releaseTime
     ) {
         if (!Array.isArray(scheduleData)) {
             return [];
         }
 
-        return scheduleData
-            .map(item => {
-                const dateTime =
-                    buildDateTime(
-                        item.date,
-                        item.hour
-                    );
+        const events = [];
 
-                return {
+        scheduleData.forEach(item => {
+            if (!item) return;
+
+            const date =
+                safeText(item.date);
+
+            if (!parseDateString(date)) {
+                return;
+            }
+
+            const time =
+                getScheduledEventTime(
+                    item,
+                    releaseTime
+                );
+
+            if (!time) {
+                return;
+            }
+
+            const dateTime =
+                buildBudapestDateTime(
+                    date,
+                    time.hour,
+                    time.minute
+                );
+
+            if (!dateTime) {
+                return;
+            }
+
+            /*
+                MUSIC RELEASE
+            */
+
+            if (isMusicRelease(item)) {
+                events.push({
                     dateTime,
-                    type: item.type || ""
-                };
-            })
-            .filter(
-                item =>
-                    item.dateTime
+                    type: "music release",
+                    priority: 0
+                });
+            }
+
+            /*
+                PHOTO / PROMO / REVIEW / VLOG
+            */
+
+            CONTENT_EVENT_TYPES.forEach(
+                definition => {
+                    if (
+                        isMarked(
+                            item[definition.field]
+                        )
+                    ) {
+                        events.push({
+                            dateTime,
+                            type: definition.label,
+                            priority: 1
+                        });
+                    }
+                }
             );
+        });
+
+        return events;
     }
 
+
+    /* =========================================================
+       VACATION DAYS
+       ========================================================= */
+
+    /*
+        Expected vacation.json:
+
+        [
+          {
+            "vacationdate": "2026_12_20"
+          }
+        ]
+
+        Vacation dates are interpreted
+        as Budapest calendar dates.
+
+        A vacation day prevents the
+        automatic daily video.
+
+        Explicitly scheduled events
+        are not deleted.
+    */
+
+    function normaliseVacationDays(
+        vacationData
+    ) {
+        const dates = new Set();
+
+        if (!Array.isArray(vacationData)) {
+            return dates;
+        }
+
+        vacationData.forEach(item => {
+            const date =
+                safeText(item?.vacationdate);
+
+            if (parseDateString(date)) {
+                dates.add(date);
+            }
+        });
+
+        return dates;
+    }
+
+
+    /* =========================================================
+       DAILY VIDEO – AUTOMATIC GENERATION
+       ========================================================= */
+
+    /*
+        DAILY VIDEO RULES:
+
+        1. Generate one daily video for each
+           Budapest calendar day.
+
+        2. Skip days containing a scheduled
+           music release.
+
+        3. Skip vacation days.
+
+        4. Photo, promo, review and vlog
+           do NOT suppress daily videos.
+
+        5. Use releasetime.json.
+
+        6. Do not write generated events
+           back into schedule.json.
+
+        7. Generate dynamically for the
+           current seven-day window.
+    */
+
+    function generateDailyVideos(
+        scheduleData,
+        vacationData,
+        releaseTime,
+        now,
+        end
+    ) {
+        if (!releaseTime) {
+            return [];
+        }
+
+        const musicDates = new Set();
+
+        if (Array.isArray(scheduleData)) {
+            scheduleData.forEach(item => {
+                if (
+                    item &&
+                    isMusicRelease(item) &&
+                    parseDateString(item.date)
+                ) {
+                    musicDates.add(
+                        safeText(item.date)
+                    );
+                }
+            });
+        }
+
+        const vacationDates =
+            normaliseVacationDays(
+                vacationData
+            );
+
+        const events = [];
+
+        /*
+            Start from today's calendar date
+            in Budapest, not the visitor's
+            local calendar date.
+        */
+
+        const today =
+            getBudapestParts(now);
+
+        const calendarCursor = new Date(
+            Date.UTC(
+                today.year,
+                today.month - 1,
+                today.day
+            )
+        );
+
+        /*
+            Include enough calendar dates
+            to cover the full 168-hour window,
+            even across DST transitions.
+        */
+
+        for (
+            let offset = 0;
+            offset <= SCHEDULE_DAYS + 2;
+            offset++
+        ) {
+            const currentDate = new Date(
+                calendarCursor.getTime() +
+                offset * 86400000
+            );
+
+            const dateKey =
+                formatDateKey(
+                    currentDate.getUTCFullYear(),
+                    currentDate.getUTCMonth() + 1,
+                    currentDate.getUTCDate()
+                );
+
+            if (
+                musicDates.has(dateKey) ||
+                vacationDates.has(dateKey)
+            ) {
+                continue;
+            }
+
+            const dateTime =
+                buildBudapestDateTime(
+                    dateKey,
+                    releaseTime.hour,
+                    releaseTime.minute
+                );
+
+            if (!dateTime) {
+                continue;
+            }
+
+            if (
+                dateTime < now ||
+                dateTime > end
+            ) {
+                continue;
+            }
+
+            events.push({
+                dateTime,
+                type: "daily video",
+                priority: 0
+            });
+        }
+
+        return events;
+    }
+
+
+    /* =========================================================
+       LIVESTREAMS FOR SCHEDULE
+       ========================================================= */
 
     function livestreamsForSchedule(
         livestreams
@@ -1559,122 +1694,12 @@ function formatLivestreamLocalDateTime(date) {
                 type:
                     stream.raw.type ||
                     stream.raw.title ||
-                    "livestream"
+                    "livestream",
+
+                priority: 1
             })
         );
     }
-
-
-    /* =========================================================
-       MUSIC RELEASES – LATEST NON-DAILY
-       ========================================================= */
-
-    /*
-        Matches Latest / Upcoming pages:
-
-        1. Ignore daily: "x"
-        2. Sort by newmusicdate descending
-        3. Select latest regular release
-    */
-
-    function pickLatestRegularRelease(
-        adminData
-    ) {
-        if (!Array.isArray(adminData)) {
-            return null;
-        }
-
-        const regular = adminData
-            .filter(
-                item =>
-                    item &&
-                    !isDaily(item)
-            )
-            .filter(
-                item =>
-                    parseDateString(
-                        item.newmusicdate
-                    )
-            );
-
-        regular.sort((a, b) => {
-            const dateA =
-                safeText(a.newmusicdate);
-
-            const dateB =
-                safeText(b.newmusicdate);
-
-            return dateB.localeCompare(dateA);
-        });
-
-        return regular[0] || null;
-    }
-
-
-/* =========================================================
-   MUSIC RELEASES FOR SCHEDULE
-   ========================================================= */
-
-/*
-    ONLY UPCOMING RELEASES.
-
-    Source:
-    - Date: admin.json
-    - Time: releasetime.json
-
-    All release times are interpreted
-    in Europe/Budapest timezone.
-
-    Visitors see the converted time
-    in their own local timezone.
-
-    NEW RELEASE entries are intentionally
-    excluded from the schedule.
-*/
-
-function musicReleasesForSchedule(
-    adminData,
-    releaseTime
-) {
-    if (
-        !Array.isArray(adminData) ||
-        !releaseTime
-    ) {
-        return [];
-    }
-
-    const latest =
-        pickLatestRegularRelease(
-            adminData
-        );
-
-    if (!latest) {
-        return [];
-    }
-
-    const dateTime =
-        buildBudapestDateTime(
-            latest.comingmusicdate,
-            releaseTime.hour,
-            releaseTime.minute
-        );
-
-    const title =
-        safeText(
-            latest.comingmusictitle
-        );
-
-    if (!dateTime || !title) {
-        return [];
-    }
-
-    return [
-    {
-        dateTime,
-        type: "music release"
-    }
-];
-}
 
 
     /* =========================================================
@@ -1685,9 +1710,9 @@ function musicReleasesForSchedule(
 
 
     function renderSchedule(
-        manualSchedule,
+        scheduleData,
         livestreams,
-        musicReleases,
+        vacationData,
         releaseTime
     ) {
         const container =
@@ -1707,7 +1732,6 @@ function musicReleasesForSchedule(
             return;
         }
 
-
         const now = new Date();
 
         const end = new Date(
@@ -1720,33 +1744,83 @@ function musicReleasesForSchedule(
         );
 
 
-        const combined = [
-            ...normaliseManualSchedule(
-                manualSchedule
-            ),
+        /* =============================================
+           CENTRAL SCHEDULE EVENTS
+           ============================================= */
 
-            ...livestreamsForSchedule(
-                livestreams
-            ),
-
-            ...musicReleasesForSchedule(
-                musicReleases,
+        const scheduledEvents =
+            normaliseCentralSchedule(
+                scheduleData,
                 releaseTime
-            )
+            );
+
+
+        /* =============================================
+           AUTOMATIC DAILY VIDEOS
+           ============================================= */
+
+        const dailyVideos =
+            generateDailyVideos(
+                scheduleData,
+                vacationData,
+                releaseTime,
+                now,
+                end
+            );
+
+
+        /* =============================================
+           LIVESTREAM EVENTS
+           ============================================= */
+
+        const liveEvents =
+            livestreamsForSchedule(
+                livestreams
+            );
+
+
+        /* =============================================
+           COMBINE ALL EVENTS
+           ============================================= */
+
+        const combined = [
+            ...scheduledEvents,
+            ...dailyVideos,
+            ...liveEvents
         ];
 
 
+        /* =============================================
+           FILTER AND SORT
+           ============================================= */
+
         const upcoming = combined
             .filter(item => (
+                item.dateTime instanceof Date &&
+                !Number.isNaN(
+                    item.dateTime.getTime()
+                ) &&
                 item.dateTime >= now &&
                 item.dateTime <= end
             ))
-            .sort(
-                (a, b) =>
-                    a.dateTime -
-                    b.dateTime
-            );
+            .sort((a, b) => {
+                const timeDifference =
+                    a.dateTime - b.dateTime;
 
+                if (timeDifference !== 0) {
+                    return timeDifference;
+                }
+
+                return (
+                    getEventPriority(a.type) -
+                    getEventPriority(b.type)
+                );
+            });
+
+
+        /* =============================================
+           CLEAR PREVIOUS CONTENT
+           ============================================= */
 
         container.innerHTML = "";
 
@@ -1757,10 +1831,13 @@ function musicReleasesForSchedule(
             return;
         }
 
-
         container.hidden = false;
         empty.hidden = true;
 
+
+        /* =============================================
+           RENDER EVENTS
+           ============================================= */
 
         upcoming.forEach(item => {
             const row =
@@ -1772,6 +1849,8 @@ function musicReleasesForSchedule(
                 "backstage-schedule-row";
 
 
+            /* DATE */
+
             const date =
                 document.createElement(
                     "div"
@@ -1780,19 +1859,13 @@ function musicReleasesForSchedule(
             date.className =
                 "backstage-schedule-date";
 
-            /*
-                VISITOR LOCAL DAY.
-
-                Example:
-                Budapest Monday night
-                may be Tuesday in Seoul.
-            */
-
             date.textContent =
                 formatScheduleDate(
                     item.dateTime
                 );
 
+
+            /* TIME */
 
             const time =
                 document.createElement(
@@ -1802,15 +1875,13 @@ function musicReleasesForSchedule(
             time.className =
                 "backstage-schedule-time";
 
-            /*
-                VISITOR LOCAL TIME.
-            */
-
             time.textContent =
                 formatScheduleTime(
                     item.dateTime
                 );
 
+
+            /* EVENT TYPE */
 
             const type =
                 document.createElement(
@@ -1824,9 +1895,7 @@ function musicReleasesForSchedule(
                 item.type;
 
 
-            /*
-                Full date/time appears on hover.
-            */
+            /* TOOLTIP */
 
             row.title =
                 formatFullLocalDateTime(
@@ -1834,30 +1903,27 @@ function musicReleasesForSchedule(
                 );
 
 
+            /* APPEND */
+
             row.append(
                 date,
                 time,
                 type
             );
 
-            container.appendChild(
-                row
-            );
+            container.appendChild(row);
         });
     }
 
 
-    /*
-        Refresh the upcoming window every minute.
-
-        This removes events that have passed
-        without requiring a page reload.
-    */
+    /* =========================================================
+       SCHEDULE AUTO REFRESH
+       ========================================================= */
 
     function initScheduleRefresh(
-        manualSchedule,
+        scheduleData,
         livestreams,
-        musicReleases,
+        vacationData,
         releaseTime
     ) {
         if (scheduleRefreshTimer) {
@@ -1868,9 +1934,9 @@ function musicReleasesForSchedule(
 
         const render = () => {
             renderSchedule(
-                manualSchedule,
+                scheduleData,
                 livestreams,
-                musicReleases,
+                vacationData,
                 releaseTime
             );
         };
@@ -1903,7 +1969,6 @@ function musicReleasesForSchedule(
             return;
         }
 
-
         data.forEach(item => {
             const row =
                 document.createElement(
@@ -1912,21 +1977,16 @@ function musicReleasesForSchedule(
                         : "div"
                 );
 
-                row.className =
-                    "backstage-media-row";
-
+            row.className =
+                "backstage-media-row";
 
             if (item.link) {
                 let href =
                     safeText(item.link);
 
                 if (
-                    !href.startsWith(
-                        "http://"
-                    ) &&
-                    !href.startsWith(
-                        "https://"
-                    )
+                    !href.startsWith("http://") &&
+                    !href.startsWith("https://")
                 ) {
                     href =
                         `https://${href}`;
@@ -1937,7 +1997,6 @@ function musicReleasesForSchedule(
                 row.rel =
                     "noopener noreferrer";
             }
-
 
             const image =
                 document.createElement(
@@ -1953,13 +2012,11 @@ function musicReleasesForSchedule(
             image.loading =
                 "lazy";
 
-
             setFlexibleImage(
                 image,
                 basePath,
                 item.item
             );
-
 
             const text =
                 document.createElement(
@@ -1968,7 +2025,6 @@ function musicReleasesForSchedule(
 
             text.className =
                 "backstage-media-copy";
-
 
             const title =
                 document.createElement(
@@ -1981,7 +2037,6 @@ function musicReleasesForSchedule(
             title.textContent =
                 item.title || "";
 
-
             const subtitle =
                 document.createElement(
                     "div"
@@ -1990,12 +2045,10 @@ function musicReleasesForSchedule(
             subtitle.className =
                 "backstage-media-subtitle";
 
-
             subtitle.textContent =
                 type === "music"
                     ? (item.artist || "")
                     : (item.subtitle || "");
-
 
             text.append(
                 title,
@@ -2007,12 +2060,14 @@ function musicReleasesForSchedule(
                 text
             );
 
-            container.appendChild(
-                row
-            );
+            container.appendChild(row);
         });
     }
 
+
+    /* =========================================================
+       MEDIA LIST INITIALIZATION
+       ========================================================= */
 
     async function initMediaLists() {
         try {
@@ -2021,19 +2076,10 @@ function musicReleasesForSchedule(
                 series,
                 music
             ] = await Promise.all([
-                fetchJSON(
-                    PATHS.anime
-                ),
-
-                fetchJSON(
-                    PATHS.series
-                ),
-
-                fetchJSON(
-                    PATHS.music
-                )
+                fetchJSON(PATHS.anime),
+                fetchJSON(PATHS.series),
+                fetchJSON(PATHS.music)
             ]);
-
 
             renderMediaList({
                 container:
@@ -2042,12 +2088,12 @@ function musicReleasesForSchedule(
                     ),
 
                 data: anime,
+
                 basePath:
                     PATHS.animeBase,
 
                 type: "anime"
             });
-
 
             renderMediaList({
                 container:
@@ -2056,12 +2102,12 @@ function musicReleasesForSchedule(
                     ),
 
                 data: series,
+
                 basePath:
                     PATHS.seriesBase,
 
                 type: "series"
             });
-
 
             renderMediaList({
                 container:
@@ -2070,6 +2116,7 @@ function musicReleasesForSchedule(
                     ),
 
                 data: music,
+
                 basePath:
                     PATHS.musicBase,
 
@@ -2091,23 +2138,23 @@ function musicReleasesForSchedule(
 
     async function initBackstage() {
 
-        /*
-            Start character video immediately.
-        */
+        /* =============================================
+           CHARACTER VIDEO
+           ============================================= */
 
         initCharacterPreview();
 
 
-        /*
-            Show timezone information.
-        */
+        /* =============================================
+           TIMEZONE LABELS
+           ============================================= */
 
         initTimezoneLabels();
 
 
-        /*
-            Independent tasks.
-        */
+        /* =============================================
+           INDEPENDENT TASKS
+           ============================================= */
 
         const independentTasks = [
             initCurrentGoal(),
@@ -2117,14 +2164,17 @@ function musicReleasesForSchedule(
 
 
         let livestreams = [];
-        let manualSchedule = [];
-        let musicReleases = [];
+
+        let scheduleData = [];
+
+        let vacationData = [];
+
         let releaseTime = null;
 
 
-        /* =========================
+        /* =============================================
            LOAD LIVESTREAMS
-           ========================= */
+           ============================================= */
 
         try {
             const liveData =
@@ -2145,64 +2195,70 @@ function musicReleasesForSchedule(
         }
 
 
+        /* =============================================
+           LIVESTREAM COUNTDOWN
+           ============================================= */
+
         initCountdown(
             livestreams
         );
 
 
-        /* =========================
-           LOAD MANUAL SCHEDULE
-           ========================= */
+        /* =============================================
+           LOAD CENTRAL SCHEDULE
+           ============================================= */
 
         try {
-            manualSchedule =
+            scheduleData =
                 await fetchJSON(
                     PATHS.schedule
                 );
+
+            if (!Array.isArray(scheduleData)) {
+                throw new Error(
+                    "schedule.json must contain an array."
+                );
+            }
 
         } catch (error) {
             console.error(
                 "Could not load schedule.json:",
                 error
             );
+
+            scheduleData = [];
         }
 
 
-        /* =========================
-           LOAD MUSIC RELEASES
-           ========================= */
+        /* =============================================
+           LOAD VACATION DAYS
+           ============================================= */
 
         try {
-            musicReleases =
+            vacationData =
                 await fetchJSON(
-                    PATHS.admin
+                    PATHS.vacation
                 );
+
+            if (!Array.isArray(vacationData)) {
+                throw new Error(
+                    "vacation.json must contain an array."
+                );
+            }
 
         } catch (error) {
             console.error(
-                "Could not load admin.json:",
+                "Could not load vacation.json:",
                 error
             );
+
+            vacationData = [];
         }
 
 
-        /* =========================
+        /* =============================================
            LOAD CENTRAL RELEASE TIME
-           ========================= */
-
-        /*
-            This setting is used ONLY for:
-
-            - NEW RELEASE
-            - UPCOMING RELEASE
-
-            Livestream and manual schedule
-            times remain unchanged.
-
-            If loading fails, music release
-            events are omitted rather than
-            displayed at an incorrect time.
-        */
+           ============================================= */
 
         try {
             releaseTime =
@@ -2216,27 +2272,30 @@ function musicReleasesForSchedule(
         }
 
 
-        /* =========================
-           RENDER SCHEDULE
-           ========================= */
+        /* =============================================
+           INITIALIZE SCHEDULE
+           ============================================= */
 
         initScheduleRefresh(
-            manualSchedule,
+            scheduleData,
             livestreams,
-            musicReleases,
+            vacationData,
             releaseTime
         );
 
 
-        /*
-            Wait for independent tasks before
-            revealing the page.
-        */
+        /* =============================================
+           WAIT FOR INDEPENDENT TASKS
+           ============================================= */
 
         await Promise.allSettled(
             independentTasks
         );
 
+
+        /* =============================================
+           REVEAL PAGE
+           ============================================= */
 
         revealBackstagePage();
     }
@@ -2247,8 +2306,7 @@ function musicReleasesForSchedule(
        ========================================================= */
 
     if (
-        document.readyState ===
-        "loading"
+        document.readyState === "loading"
     ) {
         document.addEventListener(
             "DOMContentLoaded",

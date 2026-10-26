@@ -22,7 +22,7 @@
    CONFIGURATION
    ========================================================= */
 
-const DATA_URL = "/data/admin.json";
+const DATA_URL = "/data/database.json";
 
 const MAX_ITEMS_DESKTOP = 12;
 const MAX_ITEMS_MOBILE = 5;

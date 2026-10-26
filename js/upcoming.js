@@ -1,18 +1,34 @@
 /* =========================================================
    UPCOMING PAGE – REWOD
 
-   Loads the latest NON-DAILY music release from admin.json
-   and displays its upcoming music information.
+   DATA SOURCE:
+   /data/schedule.json
 
-   DAILY entries are completely ignored.
+   Only upcoming MUSIC RELEASES are displayed.
+
+   Music releases require:
+   - title
+   - artist
+
+   Photo, video promo, review and vlog
+   entries are completely ignored.
+
+   Always selects the nearest future
+   music release.
 
    + DYNAMIC FULL PAGE COVER BACKGROUND
    ========================================================= */
 
 
 const CONFIG = {
-  dataUrl: "/data/admin.json",
-  fallbackCover: "/img/upcoming.jpg"
+  dataUrl: "/data/schedule.json",
+
+  releaseTimeUrl:
+    "/backstage/backstage-edit-data/releasetime.json",
+
+  fallbackCover: "/img/upcoming.jpg",
+
+  timezone: "Europe/Budapest"
 };
 
 
@@ -22,19 +38,6 @@ const CONFIG = {
 
 function safeText(v) {
   return (v ?? "").toString().trim();
-}
-
-
-/* =========================================================
-   DAILY CHECK
-   ========================================================= */
-
-function isDaily(row) {
-
-  return (
-    safeText(row.daily).toLowerCase() === "x"
-  );
-
 }
 
 
@@ -66,8 +69,6 @@ function syncUpcomingBackground() {
   }
 
 
-  /* Image already loaded */
-
   if (
     cover.complete &&
     cover.naturalWidth > 0
@@ -76,15 +77,11 @@ function syncUpcomingBackground() {
   }
 
 
-  /* Image load listener */
-
   cover.addEventListener(
     "load",
     updateBackground
   );
 
-
-  /* Detect future src changes */
 
   const observer =
     new MutationObserver(() => {
@@ -111,102 +108,35 @@ function syncUpcomingBackground() {
    DATE PARSER
    ========================================================= */
 
-/*
- * Supports:
- *
- * 2026_11_01
- * 2026.11.01.
- * 2026-11-01
- *
- * Uses UTC to avoid timezone shifts.
- */
-
 function parseDateFlexible(s) {
 
   if (!s) return null;
 
-  const trimmed =
-    safeText(s);
+  const trimmed = safeText(s);
 
-
-  /* YYYY_MM_DD */
-
-  const m0 = trimmed.match(
-    /^(\d{4})_(\d{2})_(\d{2})$/
+  const match = trimmed.match(
+    /^(\d{4})[_\-.](\d{2})[_\-.](\d{2})\.?$/
   );
 
-  if (m0) {
+  if (!match) return null;
 
-    return new Date(
-      Date.UTC(
-        Number(m0[1]),
-        Number(m0[2]) - 1,
-        Number(m0[3])
-      )
-    );
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
 
-  }
-
-
-  /* YYYY.MM.DD. */
-
-  const m1 = trimmed.match(
-    /^(\d{4})\.(\d{2})\.(\d{2})\.?$/
+  const date = new Date(
+    Date.UTC(year, month - 1, day)
   );
 
-  if (m1) {
-
-    return new Date(
-      Date.UTC(
-        Number(m1[1]),
-        Number(m1[2]) - 1,
-        Number(m1[3])
-      )
-    );
-
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() + 1 !== month ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
   }
 
-
-  /* YYYY-MM-DD */
-
-  const m2 = trimmed.match(
-    /^(\d{4})-(\d{2})-(\d{2})$/
-  );
-
-  if (m2) {
-
-    return new Date(
-      Date.UTC(
-        Number(m2[1]),
-        Number(m2[2]) - 1,
-        Number(m2[3])
-      )
-    );
-
-  }
-
-
-  /* Legacy fallback */
-
-  const t =
-    Date.parse(trimmed);
-
-  if (!Number.isNaN(t)) {
-
-    const d =
-      new Date(t);
-
-    return new Date(
-      Date.UTC(
-        d.getUTCFullYear(),
-        d.getUTCMonth(),
-        d.getUTCDate()
-      )
-    );
-
-  }
-
-  return null;
+  return date;
 
 }
 
@@ -217,18 +147,15 @@ function parseDateFlexible(s) {
 
 function formatToYYYYMMDDDots(d) {
 
-  const yyyy =
-    d.getUTCFullYear();
+  const yyyy = d.getUTCFullYear();
 
-  const mm =
-    String(
-      d.getUTCMonth() + 1
-    ).padStart(2, "0");
+  const mm = String(
+    d.getUTCMonth() + 1
+  ).padStart(2, "0");
 
-  const dd =
-    String(
-      d.getUTCDate()
-    ).padStart(2, "0");
+  const dd = String(
+    d.getUTCDate()
+  ).padStart(2, "0");
 
   return `${yyyy}.${mm}.${dd}.`;
 
@@ -236,75 +163,285 @@ function formatToYYYYMMDDDots(d) {
 
 
 /* =========================================================
-   PICK LATEST NON-DAILY RELEASE
+   TIME PARSER
    ========================================================= */
 
-/*
- * IMPORTANT:
- *
- * We sort by newmusicdate,
- * NOT by comingmusicdate.
- *
- * This ensures that the Upcoming page always
- * uses the upcoming information belonging to
- * the latest regular music release.
- */
+function parseTime(value) {
 
-function pickRow(rows) {
+  const text = safeText(value);
 
-  if (!Array.isArray(rows) || !rows.length) {
-    return null;
+  const match = text.match(
+    /^([01]?\d|2[0-3]):([0-5]\d)$/
+  );
+
+  if (!match) return null;
+
+  return {
+    hour: Number(match[1]),
+    minute: Number(match[2])
+  };
+
+}
+
+
+/* =========================================================
+   CENTRAL RELEASE TIME
+   ========================================================= */
+
+async function loadReleaseTime() {
+
+  const res = await fetch(
+    CONFIG.releaseTimeUrl,
+    {
+      cache: "no-store"
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to load ${CONFIG.releaseTimeUrl}: ${res.status}`
+    );
   }
 
+  const data = await res.json();
 
-  /* STEP 1: Remove all DAILY entries */
+  if (
+    !Array.isArray(data) ||
+    !data.length
+  ) {
+    throw new Error(
+      "Invalid releasetime.json."
+    );
+  }
 
-  const regularRows = rows.filter(
-    row => !isDaily(row)
+  const releaseTime = parseTime(
+    data[0]?.releasetime
+  );
+
+  if (!releaseTime) {
+    throw new Error(
+      "Invalid release time."
+    );
+  }
+
+  return releaseTime;
+
+}
+
+
+/* =========================================================
+   BUDAPEST TIMEZONE HELPERS
+   ========================================================= */
+
+const budapestFormatter =
+  new Intl.DateTimeFormat(
+    "en-US",
+    {
+      timeZone: CONFIG.timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23"
+    }
   );
 
 
-  if (!regularRows.length) {
+function getBudapestParts(date) {
+
+  const parts =
+    budapestFormatter.formatToParts(date);
+
+  const values = {};
+
+  parts.forEach(part => {
+    if (part.type !== "literal") {
+      values[part.type] =
+        Number(part.value);
+    }
+  });
+
+  return values;
+
+}
+
+
+function getTimezoneOffsetMs(date) {
+
+  const values =
+    getBudapestParts(date);
+
+  const asUTC = Date.UTC(
+    values.year,
+    values.month - 1,
+    values.day,
+    values.hour,
+    values.minute,
+    values.second
+  );
+
+  const timestampWithoutMs =
+    Math.floor(
+      date.getTime() / 1000
+    ) * 1000;
+
+  return asUTC - timestampWithoutMs;
+
+}
+
+
+/* =========================================================
+   BUILD BUDAPEST RELEASE DATETIME
+   ========================================================= */
+
+function buildBudapestDateTime(
+  dateString,
+  hour,
+  minute
+) {
+
+  const date =
+    parseDateFlexible(dateString);
+
+  if (!date) return null;
+
+  const year =
+    date.getUTCFullYear();
+
+  const month =
+    date.getUTCMonth();
+
+  const day =
+    date.getUTCDate();
+
+
+  const utcGuess = Date.UTC(
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    0,
+    0
+  );
+
+
+  const offsets = [
+    getTimezoneOffsetMs(
+      new Date(utcGuess)
+    ),
+
+    getTimezoneOffsetMs(
+      new Date(
+        utcGuess - 86400000
+      )
+    ),
+
+    getTimezoneOffsetMs(
+      new Date(
+        utcGuess + 86400000
+      )
+    )
+  ];
+
+
+  const candidates = offsets
+    .map(offset =>
+      new Date(utcGuess - offset)
+    )
+    .filter(candidate => {
+
+      const parts =
+        getBudapestParts(candidate);
+
+      return (
+        parts.year === year &&
+        parts.month === month + 1 &&
+        parts.day === day &&
+        parts.hour === hour &&
+        parts.minute === minute
+      );
+
+    })
+    .sort((a, b) => a - b);
+
+
+  return candidates[0] || null;
+
+}
+
+
+/* =========================================================
+   MUSIC RELEASE DETECTION
+   ========================================================= */
+
+function isMusicRelease(row) {
+
+  return Boolean(
+    safeText(row?.title) &&
+    safeText(row?.artist)
+  );
+
+}
+
+
+/* =========================================================
+   PICK NEAREST UPCOMING MUSIC RELEASE
+   ========================================================= */
+
+function pickRow(rows, releaseTime) {
+
+  if (
+    !Array.isArray(rows) ||
+    !rows.length
+  ) {
     return null;
   }
 
+  const now = new Date();
 
-  /* STEP 2: Parse release dates */
 
-  const withDate = regularRows
-    .map(row => ({
-      row,
-      date: parseDateFlexible(
-        row.newmusicdate
-      )
-    }))
+  const upcoming = rows
+    .filter(isMusicRelease)
+    .map(row => {
+
+      const time =
+        safeText(row.hour)
+          ? parseTime(row.hour)
+          : releaseTime;
+
+      if (!time) return null;
+
+      const dateTime =
+        buildBudapestDateTime(
+          row.date,
+          time.hour,
+          time.minute
+        );
+
+      if (!dateTime) return null;
+
+      return {
+        row,
+        dateTime
+      };
+
+    })
     .filter(item =>
-      item.date instanceof Date &&
-      !Number.isNaN(
-        item.date.getTime()
-      )
+      item &&
+      item.dateTime > now
+    )
+    .sort(
+      (a, b) =>
+        a.dateTime - b.dateTime
     );
 
 
-  /* Fallback if no valid dates exist */
-
-  if (!withDate.length) {
-    return regularRows[0];
-  }
-
-
-  /* STEP 3: Sort newest first */
-
-  withDate.sort(
-    (a, b) =>
-      b.date.getTime() -
-      a.date.getTime()
-  );
-
-
-  /* STEP 4: Return latest regular release */
-
-  return withDate[0].row;
+  return upcoming.length
+    ? upcoming[0].row
+    : null;
 
 }
 
@@ -332,24 +469,16 @@ function setText(id, value) {
 function initUpcoming(row) {
 
   const title =
-    safeText(
-      row.comingmusictitle
-    );
+    safeText(row.title);
 
   const artist =
-    safeText(
-      row.comingmusicartist
-    );
+    safeText(row.artist);
 
   const feat =
-    safeText(
-      row.comingfeat
-    );
+    safeText(row.feat);
 
   const dateRaw =
-    safeText(
-      row.comingmusicdate
-    );
+    safeText(row.date);
 
 
   /* =========================
@@ -448,46 +577,46 @@ function initUpcoming(row) {
 
 async function loadUpcoming() {
 
-  const res =
-    await fetch(
-      CONFIG.dataUrl,
-      {
-        cache: "no-store"
-      }
-    );
+  const [scheduleResponse, releaseTime] =
+    await Promise.all([
+      fetch(
+        CONFIG.dataUrl,
+        {
+          cache: "no-store"
+        }
+      ),
+
+      loadReleaseTime()
+    ]);
 
 
-  if (!res.ok) {
+  if (!scheduleResponse.ok) {
 
     throw new Error(
-      `Failed to load ${CONFIG.dataUrl}: ${res.status}`
+      `Failed to load ${CONFIG.dataUrl}: ${scheduleResponse.status}`
     );
 
   }
 
 
   const rows =
-    await res.json();
+    await scheduleResponse.json();
 
-
-  /* Select latest NON-DAILY release */
 
   const row =
-    pickRow(rows);
+    pickRow(rows, releaseTime);
 
 
   if (!row) {
 
     console.warn(
-      "Upcoming: No regular music releases found."
+      "Upcoming: No future music releases found."
     );
 
     return;
 
   }
 
-
-  /* Update page */
 
   initUpcoming(row);
 
@@ -497,18 +626,6 @@ async function loadUpcoming() {
 /* =========================================================
    INIT
    ========================================================= */
-
-/*
- * 1. Watch upcomingCover.
- *
- * 2. Load admin.json.
- *
- * 3. Find the latest NON-DAILY release.
- *
- * 4. Read its upcoming music fields.
- *
- * 5. Update the cover and page background.
- */
 
 syncUpcomingBackground();
 
