@@ -9208,3 +9208,228 @@ body.page-webshop .webshop-page {
         font-weight: 400;
     }
 }
+
+/* =========================================
+   MUSIC MOBILE – SEARCH BAR WIDTH FIX
+   ========================================= */
+@media (max-width: 768px) {
+    body.page-music .music-discovery-search {
+        display: block;
+        width: calc(100vw - 46px) !important;
+        max-width: 380px !important;
+        margin-left: 50% !important;
+        transform: translateX(-50%);
+        box-sizing: border-box;
+    }
+}
+
+/* =========================================
+   MUSIC MOBILE – EXACT WEBSHOP TYPOGRAPHY
+   ========================================= */
+@media (max-width: 768px) {
+    /* INTRODUCTION – EXACT WEBSHOP STYLE */
+    body.page-music .music-discovery-intro {
+        font-family: "Barlow", sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 400 !important;
+        line-height: 1.65 !important;
+        letter-spacing: normal !important;
+        color: #ffffff !important;
+    }
+
+    /* SWITCH LABELS – EXACT WEBSHOP STYLE */
+    body.page-music .music-discovery-filter,
+    body.page-music .music-discovery-filter > span:first-child {
+        font-family: "Barlow", sans-serif !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.04em !important;
+        color: #ffffff !important;
+    }
+}
+
+/* =========================================
+   MUSIC MOBILE – EXACT WEBSHOP SEARCH BAR
+   ========================================= */
+@media (max-width: 768px) {
+    body.page-music .music-discovery-search {
+        /* SIZE */
+        display: block !important;
+        width: 100% !important;
+        max-width: 340px !important;
+        height: 40px !important;
+
+        /* CENTER */
+        margin: 0 auto !important;
+        transform: none !important;
+
+        /* TEXT */
+        font-family: "Barlow", sans-serif !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        letter-spacing: normal !important;
+        text-align: center !important;
+
+        /* APPEARANCE */
+        padding: 0 18px !important;
+        border: none !important;
+        border-radius: 12px !important;
+        outline: none !important;
+        background: rgba(255,255,255,0.88) !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        box-sizing: border-box !important;
+        -webkit-appearance: none;
+        appearance: none;
+        transition: background 180ms ease;
+    }
+
+    /* PLACEHOLDER */
+    body.page-music .music-discovery-search::placeholder {
+        font-family: "Barlow", sans-serif !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        letter-spacing: normal !important;
+        color: rgba(0,0,0,0.52) !important;
+        opacity: 1 !important;
+    }
+
+    /* FOCUS */
+    body.page-music .music-discovery-search:focus {
+        background: #ffffff !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    /* SAME AS WEBSHOP */
+    body.page-music .music-discovery-search::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+    }
+}
+
+/* =========================================
+   MUSIC MOBILE – EXACT WEBSHOP SWITCHES
+   ========================================= */
+@media (max-width: 768px) {
+    /* TELJES KAPCSOLÓBLOKK */
+    body.page-music .music-discovery-controls {
+        width: min(100%, 290px) !important;
+        max-width: 310px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 18px !important;
+        margin: 0 auto 30px !important;
+        padding: 0 !important;
+    }
+
+    /* KAPCSOLÓSOROK */
+    body.page-music .music-discovery-filter {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 22px !important;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    /* FELIRATOK */
+    body.page-music .music-discovery-filter > span:first-child {
+        font-family: "Barlow", sans-serif !important;
+        font-size: 11px !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.04em !important;
+        line-height: normal !important;
+        color: #ffffff !important;
+    }
+
+    /* KAPCSOLÓ MÉRETE */
+    body.page-music .music-discovery-switch {
+        position: relative !important;
+        width: 46px !important;
+        height: 27px !important;
+        flex: 0 0 46px !important;
+        border-radius: 999px !important;
+        background: #414141 !important;
+        transition: background 220ms ease !important;
+    }
+
+    /* KAPCSOLÓ KEREK GOMBJA */
+    body.page-music .music-discovery-switch::after {
+        content: "" !important;
+        position: absolute !important;
+        width: 21px !important;
+        height: 21px !important;
+        left: 3px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        border-radius: 50% !important;
+        background: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.20) !important;
+        transition: transform 220ms ease,
+            background 220ms ease !important;
+    }
+
+    /* BEKAPCSOLT ÁLLAPOT */
+    body.page-music .music-discovery-filter input:checked
+    + .music-discovery-switch {
+        background: #ffffff !important;
+    }
+
+    body.page-music .music-discovery-filter input:checked
+    + .music-discovery-switch::after {
+        background: #222222 !important;
+        transform: translate(19px, -50%) !important;
+    }
+}
+
+/* =========================================
+   MUSIC – EXACT WEBSHOP EMPTY RESULTS STYLE
+   DESKTOP + MOBILE
+   ========================================= */
+body.page-music .music-discovery-empty {
+    /* EXACT WEBSHOP TYPOGRAPHY */
+    font-family: "Barlow", sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    letter-spacing: normal !important;
+
+    /* COLOR */
+    color: rgba(255, 255, 255, 0.75) !important;
+
+    /* ALIGNMENT */
+    text-align: center !important;
+
+    /* SPACING */
+    margin: 0 0 35px !important;
+    padding: 0 !important;
+}
+
+/* Keep the message hidden when there are results */
+body.page-music .music-discovery-empty[hidden] {
+    display: none !important;
+}
+
+/* =========================================
+   MUSIC – SEARCH / EMPTY MESSAGE GAP
+   ========================================= */
+/* DESKTOP */
+body.page-music {
+    --music-empty-gap-desktop: 25px;
+    --music-empty-gap-mobile: 20px;
+}
+
+/* DESKTOP SPACING */
+@media (min-width: 769px) {
+    body.page-music .music-discovery-empty {
+        margin-top: var(--music-empty-gap-desktop) !important;
+    }
+}
+
+/* MOBILE SPACING */
+@media (max-width: 768px) {
+    body.page-music .music-discovery-empty {
+        margin-top: var(--music-empty-gap-mobile) !important;
+    }
+}
