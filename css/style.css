@@ -11287,3 +11287,14 @@ body.page-latest .service-box {
         box-sizing: border-box !important;
     }
 }
+
+/* =========================================
+   MEDIA PAGE – MODERN BUTTON CORNERS
+   ========================================= */
+body.media-page .media-load-btn,
+body.media-page .media-cta-btn {
+    border-radius: 10px !important;
+}
+
+
+
