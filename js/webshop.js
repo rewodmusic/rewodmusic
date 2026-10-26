@@ -14,6 +14,7 @@
    - Real LOAD MORE
    - Preserved item count when toggling filters
    - Responsive desktop / mobile limits
+   - Automatic preview image fallback
    ========================================================= */
 
 
@@ -27,6 +28,7 @@ const MAX_ITEMS_DESKTOP = 12;
 const MAX_ITEMS_MOBILE = 5;
 
 const PREVIEW_DIR = "/img/0_sheetmusic";
+const PREVIEW_FALLBACK = "/img/sample.jpg";
 
 const MYMUSICFIVE_URL =
     "https://www.mymusicfive.com/rewodmusic";
@@ -461,7 +463,7 @@ function makeCard(row) {
 
     const previewSrc = dateStr
         ? `${PREVIEW_DIR}/${dateStr}.jpg`
-        : "";
+        : PREVIEW_FALLBACK;
 
 
     /* CARD */
@@ -560,7 +562,9 @@ function makeCard(row) {
     );
 
 
-    /* PREVIEW IMAGE */
+    /* =========================================================
+       PREVIEW IMAGE – AUTOMATIC FALLBACK
+       ========================================================= */
 
     const image =
         document.createElement("img");
@@ -574,9 +578,28 @@ function makeCard(row) {
     image.decoding = "async";
 
 
+    /* FALLBACK HANDLING */
+
     image.addEventListener(
         "error",
         () => {
+
+            const fallbackURL = new URL(
+                PREVIEW_FALLBACK,
+                window.location.href
+            ).href;
+
+            /* Original image failed */
+
+            if (image.src !== fallbackURL) {
+
+                image.src = PREVIEW_FALLBACK;
+
+                return;
+
+            }
+
+            /* Fallback also failed */
 
             image.removeAttribute("src");
 
@@ -590,11 +613,9 @@ function makeCard(row) {
     );
 
 
-    if (previewSrc) {
-        image.src = previewSrc;
-    } else {
-        image.style.display = "none";
-    }
+    /* INITIAL IMAGE SOURCE */
+
+    image.src = previewSrc;
 
 
     previewLink.appendChild(image);
@@ -697,15 +718,15 @@ function renderWebshop() {
     grid.appendChild(fragment);
 
 
-/* INFINITE SCROLL VISIBILITY */
+    /* INFINITE SCROLL VISIBILITY */
 
-const trigger = document.getElementById(
-    "wsInfiniteScrollTrigger"
-);
+    const trigger = document.getElementById(
+        "wsInfiniteScrollTrigger"
+    );
 
-if (trigger) {
-    trigger.hidden = total <= visibleCount;
-}
+    if (trigger) {
+        trigger.hidden = total <= visibleCount;
+    }
 
 
     /* SEARCH STATUS */
@@ -736,7 +757,7 @@ if (trigger) {
 /* =========================================================
    LOAD MORE
 
-   DESKTOP: +8
+   DESKTOP: +12
    MOBILE: +5
    ========================================================= */
 
@@ -753,6 +774,7 @@ function loadMoreItems() {
     renderWebshop();
 
 }
+
 
 /* =========================================================
    INFINITE SCROLL
@@ -798,6 +820,7 @@ function setupInfiniteScroll() {
     webshopScrollObserver.observe(trigger);
 
 }
+
 
 /* =========================================================
    CATEGORY SWITCH EVENTS
@@ -968,7 +991,7 @@ async function initWebshop() {
 
     setupResponsiveRendering();
 
-setupInfiniteScroll();
+    setupInfiniteScroll();
 
 
     /* FETCH JSON */
@@ -992,28 +1015,28 @@ setupInfiniteScroll();
     const data = await response.json();
 
 
-/* =========================================================
-   VALIDATE + FILTER + SORT
+    /* =========================================================
+       VALIDATE + FILTER + SORT
 
-   TAPE RECORDINGS:
-   No sheet music available.
-   Exclude these releases from the webshop entirely.
+       TAPE RECORDINGS:
+       No sheet music available.
+       Exclude these releases from the webshop entirely.
 
-   All other releases remain unchanged.
-   ========================================================= */
+       All other releases remain unchanged.
+       ========================================================= */
 
-webshopRows = sortByDate(
-    (Array.isArray(data) ? data : []).filter(row => {
+    webshopRows = sortByDate(
+        (Array.isArray(data) ? data : []).filter(row => {
 
-        /* Exclude Tape Recordings */
+            /* Exclude Tape Recordings */
 
-        const isTape =
-            normalizeText(row.tape) === "x";
+            const isTape =
+                normalizeText(row.tape) === "x";
 
-        return !isTape;
+            return !isTape;
 
-    })
-);
+        })
+    );
 
 
     /* FIRST RENDER */

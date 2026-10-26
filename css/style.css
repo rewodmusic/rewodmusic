@@ -9443,3 +9443,18 @@ body.page-music {
         font-size: 16px !important;
     }
 }
+
+/* =========================================
+   WEBSHOP – DESKTOP CARD BOTTOM SPACE
+   ========================================= */
+@media (min-width: 769px) {
+    body.page-webshop {
+        --ws-desktop-extra-bottom: 10px;
+    }
+
+    body.page-webshop .ws-card {
+        height: calc(
+            435px + var(--ws-desktop-extra-bottom)
+        ) !important;
+    }
+}
