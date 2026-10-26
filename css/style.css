@@ -10113,3 +10113,104 @@ body.page-song .playlists {
 body.page-song .playlists::before {
     content: none !important;
 }
+
+/* =========================================================
+   SONG PAGE – NEXT 7 DAYS SCHEDULE
+   DESKTOP FIX ONLY – MOBILE UNTOUCHED
+   ========================================================= */
+@media (min-width: 769px) {
+    /* SECTION BACKGROUND */
+    body.page-song .home-schedule {
+        --schedule-bg-darkness: 0.35;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 90px 60px 60px;
+        background-color: #000;
+        background-image: linear-gradient(
+                rgba(0, 0, 0, var(--schedule-bg-darkness)),
+                rgba(0, 0, 0, var(--schedule-bg-darkness))
+            ),
+            url("/img/7days.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* CENTER SCHEDULE CONTENT */
+    body.page-song .home-schedule > .backstage-schedule-section {
+        display: block;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* HEADING */
+    body.page-song .home-schedule .backstage-heading {
+        display: block;
+        font-family: "Arial Black", Arial, Helvetica, sans-serif;
+        font-size: 36px;
+        font-weight: 900;
+        line-height: 1.1;
+        letter-spacing: 0.02em;
+        color: #fff;
+        text-align: left;
+        margin: 0 0 42px;
+        padding: 0;
+    }
+
+    /* SCHEDULE TABLE */
+    body.page-song .home-schedule .backstage-schedule {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        overflow: hidden;
+        border-radius: 8px;
+        background: #141414;
+    }
+
+    /* ROWS */
+    body.page-song .home-schedule .backstage-schedule-row {
+        display: grid;
+        grid-template-columns: 105px 120px 1fr;
+        align-items: center;
+        min-height: 53px;
+        padding: 0 22px;
+        box-sizing: border-box;
+    }
+
+    /* ALTERNATING ROW COLORS */
+    body.page-song .home-schedule .backstage-schedule-row:nth-child(odd) {
+        background: #171717;
+    }
+
+    body.page-song .home-schedule .backstage-schedule-row:nth-child(even) {
+        background: #222;
+    }
+
+    /* DATE */
+    body.page-song .home-schedule .backstage-schedule-date {
+        font-family: "Barlow", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #fff;
+    }
+
+    /* TIME */
+    body.page-song .home-schedule .backstage-schedule-time {
+        font-family: "Barlow", sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.62);
+    }
+
+    /* EVENT */
+    body.page-song .home-schedule .backstage-schedule-type {
+        font-family: "Fraunces", serif;
+        font-size: 16px;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.94);
+    }
+}

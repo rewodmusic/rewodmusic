@@ -8,7 +8,9 @@
 
    FEATURES:
    - Dynamic song page by ?id=
-   - NON-DAILY releases only
+   - DAILY + NON-DAILY song pages
+   - DAILY URLs end with -daily
+   - NON-DAILY URLs remain unchanged
    - Latest NON-DAILY fallback
    - Latest from database.json
    - Upcoming from schedule.json
@@ -311,6 +313,8 @@ function normId(s) {
 function slugify(s) {
 
   return safeText(s)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim()
     .replace(/&/g, "and")
@@ -335,6 +339,12 @@ function isOriginalComposition(row) {
 
 /* =========================================================
    BUILD ROW ID
+
+   REGULAR:
+   artist-title
+
+   DAILY:
+   artist-title-daily
    ========================================================= */
 
 function buildRowId(row) {
@@ -348,22 +358,34 @@ function buildRowId(row) {
     ]
   );
 
+  let baseId = "";
+
   if (isOriginalComposition(row)) {
-    return slugify(title);
+
+    baseId = slugify(title);
+
+  } else {
+
+    const artist = pick(
+      row,
+      [
+        "artist",
+        "newmusicartist",
+        "musicartist"
+      ]
+    );
+
+    baseId = (
+      `${slugify(artist)}-${slugify(title)}`
+    ).replace(/^-+|-+$/g, "");
+
   }
 
-  const artist = pick(
-    row,
-    [
-      "artist",
-      "newmusicartist",
-      "musicartist"
-    ]
-  );
+  if (isDaily(row)) {
+    return `${baseId}-daily`;
+  }
 
-  return (
-    `${slugify(artist)}-${slugify(title)}`
-  ).replace(/^-+|-+$/g, "");
+  return baseId;
 
 }
 
@@ -1296,10 +1318,6 @@ function setDynamicCover(
   if (!coverEl) return;
 
 
-  let src =
-    CONFIG.covers.default;
-
-
   const rowKey = normId(
     buildRowId(row)
   );
@@ -1312,6 +1330,7 @@ function setDynamicCover(
 
 
   const isLatestPage =
+    !isDaily(row) &&
     !!latestRow &&
     rowKey &&
     latestKey &&
@@ -1566,8 +1585,8 @@ async function initSong() {
 
 
   /* =========================
-     REMOVE ALL DAILY ENTRIES
-     ========================= */
+     NON-DAILY RELEASES FOR LATEST
+     ========================================================= */
 
   const regularRows = data.filter(
     row => row && !isDaily(row)
@@ -1619,68 +1638,95 @@ async function initSong() {
   }
 
 
-  /* =========================
+  /* =========================================================
      PICK SONG BY ?id=
-     ========================= */
 
-  const wantedRaw =
-    getQueryId();
+     DAILY:
+     artist-title-daily
+
+     REGULAR:
+     artist-title
+
+     DAILY AND REGULAR CAN COEXIST
+     ========================================================= */
 
   const wanted =
-    normId(wantedRaw);
+    normId(getQueryId());
 
   let row = null;
 
 
   if (wanted) {
 
-    row =
+    /* =========================
+       DAILY RELEASES
+       ========================= */
 
-      regularRows.find(
-        r => normId(r.id) === wanted
-      ) ||
+    row = data.find(
+      r =>
+        r &&
+        isDaily(r) &&
+        normId(buildRowId(r)) === wanted
+    ) || null;
 
-      regularRows.find(
-        r => normId(r.slug) === wanted
-      ) ||
 
-      regularRows.find(
-        r =>
-          normId(
-            buildRowId(r)
-          ) === wanted
-      ) ||
+    /* =========================
+       REGULAR RELEASES
+       ========================= */
 
-      regularRows.find(
-        r =>
-          isOriginalComposition(r) &&
-          normId(
-            slugify(
-              pick(
-                r,
-                ["newmusictitle", "title"]
+    if (!row) {
+
+      row =
+
+        regularRows.find(
+          r => normId(r.id) === wanted
+        ) ||
+
+        regularRows.find(
+          r => normId(r.slug) === wanted
+        ) ||
+
+        regularRows.find(
+          r =>
+            normId(
+              buildRowId(r)
+            ) === wanted
+        ) ||
+
+        regularRows.find(
+          r =>
+            isOriginalComposition(r) &&
+            normId(
+              slugify(
+                pick(
+                  r,
+                  ["newmusictitle", "title"]
+                )
               )
-            )
-          ) === wanted
-      ) ||
+            ) === wanted
+        ) ||
 
-      regularRows.find(
-        r =>
-          normId(
-            slugify(
-              pick(
-                r,
-                ["newmusicartist", "artist"]
+        regularRows.find(
+          r =>
+            normId(
+              slugify(
+                pick(
+                  r,
+                  ["newmusicartist", "artist"]
+                )
+              ) +
+              slugify(
+                pick(
+                  r,
+                  ["newmusictitle", "title"]
+                )
               )
-            ) +
-            slugify(
-              pick(
-                r,
-                ["newmusictitle", "title"]
-              )
-            )
-          ) === wanted
-      );
+            ) === wanted
+        ) ||
+
+        null;
+
+    }
 
   }
 
