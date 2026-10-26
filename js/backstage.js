@@ -446,39 +446,67 @@
         Only its visual representation changes.
     */
 
-    function formatLivestreamLocalDateTime(date) {
-        if (
-            !(date instanceof Date) ||
-            Number.isNaN(date.getTime())
-        ) {
-            return "";
-        }
+/* =========================================================
+   NEXT LIVESTREAM – LOCAL DATE / TIME / TIMEZONE
+   ========================================================= */
 
-        const datePart = date.toLocaleDateString(
-            "en-US",
-            {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-            }
-        );
+/*
+    DISPLAY FORMAT:
 
-        const timePart = date.toLocaleTimeString(
-            "en-GB",
-            {
-                hour: "2-digit",
-                minute: "2-digit",
-                hourCycle: "h23"
-            }
-        );
+    THURSDAY, NOVEMBER 5, 2026
+    AT 13:00 (BUDAPEST TIME)
 
-        const city = getVisitorTimezoneCity();
+    Features:
 
-        return (
-            `${datePart} at ${timePart} in ${city}`
-        ).toUpperCase();
+    - Visitor's local date
+    - Visitor's local time
+    - 24-hour clock
+    - Representative timezone city
+    - Timezone displayed in parentheses
+    - Full uppercase
+    - Automatic daylight saving handling
+
+    The underlying livestream timestamp
+    is NOT modified.
+
+    Only its visual representation changes.
+*/
+
+function formatLivestreamLocalDateTime(date) {
+
+    if (
+        !(date instanceof Date) ||
+        Number.isNaN(date.getTime())
+    ) {
+        return "";
     }
+
+    const datePart = date.toLocaleDateString(
+        "en-US",
+        {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        }
+    );
+
+    const timePart = date.toLocaleTimeString(
+        "en-GB",
+        {
+            hour: "2-digit",
+            minute: "2-digit",
+            hourCycle: "h23"
+        }
+    );
+
+    const city = getVisitorTimezoneCity();
+
+    return (
+        `${datePart} at ${timePart} (${city} TIME)`
+    ).toUpperCase();
+
+}
 
 
     /* =========================================================
