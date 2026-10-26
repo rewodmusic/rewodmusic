@@ -8259,14 +8259,28 @@ body.page-backstage .backstage-support-actions
     }
 }
 
-/* BACKSTAGE – MOBILE SUPPORT TEXT WIDTH */
+/* =========================================================
+   BACKSTAGE – MOBILE SUPPORT TEXT POSITION
+   ========================================================= */
 @media (max-width: 768px) {
     body.page-backstage {
+        /* Szövegdoboz szélessége */
         --bs-support-text-width: 140%;
+
+        /* Vízszintes eltolás */
+        /* Negatív = balra | Pozitív = jobbra */
+        --bs-support-text-shift: 0px;
     }
 
     body.page-backstage .backstage-support-text {
         width: var(--bs-support-text-width) !important;
         max-width: none !important;
+        position: relative;
+        left: 50% !important;
+        transform: translateX(
+            calc(-50% + var(--bs-support-text-shift))
+        ) !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
 }
