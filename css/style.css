@@ -9821,8 +9821,8 @@ body.page-home .playlists-inner {
    ========================================================= */
 @media (max-width: 768px) {
     body.page-backstage .backstage-schedule {
-        width: calc(100% - 0px) !important;
-        max-width: calc(100% - 0px) !important;
+        width: calc(100% - -20px) !important;
+        max-width: calc(100% - -20px) !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }
@@ -9876,3 +9876,5 @@ body.page-home .playlists-inner {
         margin-top: var(--m-pl-title-line-gap, 2px) !important;
     }
 }
+
+
