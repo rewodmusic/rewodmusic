@@ -8269,7 +8269,7 @@ body.page-backstage .backstage-support-actions
 
         /* Vízszintes eltolás */
         /* Negatív = balra | Pozitív = jobbra */
-        --bs-support-text-shift: 40px;
+        --bs-support-text-shift: 50px;
     }
 
     body.page-backstage .backstage-support-text {
