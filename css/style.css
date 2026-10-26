@@ -9904,3 +9904,13 @@ body.page-home .playlists-inner {
         letter-spacing: inherit !important;
     }
 }
+
+/* =========================================================
+   BACKSTAGE – ENTIRE SCHEDULE HORIZONTAL POSITION
+   MOBILE ONLY
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-backstage .backstage-schedule-section {
+        transform: translateX(-5px) !important;
+    }
+}
