@@ -7,6 +7,10 @@
 
     const PATHS = {
         live: "/data/live.json",
+        admin: "/data/admin.json",
+
+        releaseTime:
+            "/backstage/backstage-edit-data/releasetime.json",
 
         status: "/backstage/backstage-edit-data/status.json",
         schedule: "/backstage/backstage-edit-data/schedule.json",
@@ -23,6 +27,27 @@
         musicBase: "/backstage/backstage-edit-pics/2_music/"
     };
 
+    /*
+        ALL JSON EVENT TIMES ARE ENTERED
+        IN BUDAPEST LOCAL TIME.
+
+        Visitors see the converted time
+        in their own device timezone.
+
+        MUSIC RELEASE TIMES:
+        Loaded from releasetime.json.
+
+        LIVESTREAM / MANUAL SCHEDULE TIMES:
+        Remain independently defined
+        in their original JSON files.
+    */
+
+    const SOURCE_TIMEZONE = "Europe/Budapest";
+
+    const SCHEDULE_DAYS = 7;
+
+    const SCHEDULE_REFRESH_INTERVAL = 60 * 1000;
+
 
     /* =========================================================
        PAGE REVEAL / FADE-IN
@@ -36,13 +61,6 @@
 
         if (!page) return;
 
-        /*
-            Two RAFs ensure the browser paints the initial hidden
-            state first. Then the visible class is added.
-
-            This makes the page appear as one finished page instead
-            of visibly assembling individual elements.
-        */
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 page.classList.add("backstage-page-loaded");
@@ -70,32 +88,56 @@
     }
 
 
-    function parseDateString(dateString) {
-        if (!dateString) return null;
+    function safeText(value) {
+        return String(value ?? "").trim();
+    }
 
-        const match = String(dateString).match(
+
+    function parseDateString(dateString) {
+        const value = safeText(dateString);
+
+        const match = value.match(
             /^(\d{4})_(\d{2})_(\d{2})$/
         );
 
         if (!match) return null;
 
+        const year = Number(match[1]);
+        const month = Number(match[2]);
+        const day = Number(match[3]);
+
+        const testDate = new Date(
+            Date.UTC(year, month - 1, day)
+        );
+
+        if (
+            testDate.getUTCFullYear() !== year ||
+            testDate.getUTCMonth() + 1 !== month ||
+            testDate.getUTCDate() !== day
+        ) {
+            return null;
+        }
+
         return {
-            year: Number(match[1]),
-            month: Number(match[2]),
-            day: Number(match[3])
+            year,
+            month,
+            day
         };
     }
 
 
     /*
-        Supported examples:
+        Supported time examples:
 
         youtube, 1:00 pm
         youtube, 1 pm
         12:00 am
         13:00
         9:30 PM
+
+        All interpreted as Budapest time.
     */
+
     function extractTimeFromText(text) {
         if (!text) return null;
 
@@ -107,9 +149,20 @@
 
         if (twelveHour) {
             let hour = Number(twelveHour[1]);
-            const minute = Number(twelveHour[2] || 0);
+
+            const minute =
+                Number(twelveHour[2] || 0);
+
             const meridiem =
                 twelveHour[3].toLowerCase();
+
+            if (
+                hour < 1 ||
+                hour > 12 ||
+                minute > 59
+            ) {
+                return null;
+            }
 
             if (hour === 12) {
                 hour =
@@ -140,47 +193,17 @@
     }
 
 
-    function buildDateTime(dateString, timeText) {
-        const date =
-            parseDateString(dateString);
-
-        const time =
-            extractTimeFromText(timeText);
-
-        if (!date || !time) return null;
-
-        const result = new Date(
-            date.year,
-            date.month - 1,
-            date.day,
-            time.hour,
-            time.minute,
-            0,
-            0
-        );
-
-        if (Number.isNaN(result.getTime())) {
-            return null;
-        }
-
-        return result;
-    }
-
-
     function isLivestream(item) {
-        return String(item?.livestream || "")
-            .trim()
-            .toLowerCase() === "x";
+        return safeText(
+            item?.livestream
+        ).toLowerCase() === "x";
     }
 
 
-    function escapeHTML(value) {
-        return String(value ?? "")
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
+    function isDaily(item) {
+        return safeText(
+            item?.daily
+        ).toLowerCase() === "x";
     }
 
 
@@ -189,45 +212,548 @@
     }
 
 
+    /* =========================================================
+       CENTRAL RELEASE TIME
+       ========================================================= */
+
+    /*
+        Source:
+
+        /backstage/backstage-edit-data/releasetime.json
+
+        Expected JSON:
+
+        [
+          {
+            "releasetime": "12:00"
+          }
+        ]
+
+        Examples:
+
+        12:00 -> Budapest 12:00
+        13:00 -> Budapest 13:00
+        18:30 -> Budapest 18:30
+
+        This setting affects ONLY music releases.
+
+        It does NOT affect livestreams
+        or manually scheduled events.
+    */
+
+    function parseReleaseTime(value) {
+        const text = safeText(value);
+
+        const match = text.match(
+            /^([01]\d|2[0-3]):([0-5]\d)$/
+        );
+
+        if (!match) {
+            return null;
+        }
+
+        return {
+            hour: Number(match[1]),
+            minute: Number(match[2])
+        };
+    }
+
+
+    async function loadReleaseTime() {
+        const data = await fetchJSON(
+            PATHS.releaseTime
+        );
+
+        if (
+            !Array.isArray(data) ||
+            !data.length
+        ) {
+            throw new Error(
+                "releasetime.json must contain a non-empty array."
+            );
+        }
+
+        const releaseTime =
+            parseReleaseTime(
+                data[0]?.releasetime
+            );
+
+        if (!releaseTime) {
+            throw new Error(
+                "Invalid releasetime.json value. Expected HH:MM (00:00–23:59)."
+            );
+        }
+
+        return releaseTime;
+    }
+
+
+    /* =========================================================
+       VISITOR LOCAL TIMEZONE
+       ========================================================= */
+
+    /*
+        No timezone is specified in the
+        visitor-facing formatters.
+
+        JavaScript therefore uses the visitor's
+        browser/device timezone automatically.
+    */
+
     function formatScheduleDate(date) {
-        return date
-            .toLocaleDateString("en-US", {
+        return date.toLocaleDateString(
+            "en-US",
+            {
                 weekday: "long"
-            })
-            .toUpperCase();
+            }
+        ).toUpperCase();
     }
 
 
     function formatScheduleTime(date) {
-        let hour = date.getHours();
-        const minute = date.getMinutes();
-
-        const meridiem =
-            hour >= 12 ? "pm" : "am";
-
-        hour %= 12;
-
-        if (hour === 0) {
-            hour = 12;
-        }
-
-        if (minute === 0) {
-            return `${hour}${meridiem}`;
-        }
-
-        return `${hour}:${pad2(minute)}${meridiem}`;
+        return date.toLocaleTimeString(
+            "en-US",
+            {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+            }
+        )
+        .toLowerCase()
+        .replace(":00", "")
+        .replace(/\s/g, "");
     }
 
 
     /*
-        We cannot enumerate a static web directory from browser JS.
+        Full local date/time for schedule
+        tooltips.
 
-        Instead, image candidates are tried in sequence.
-        This also supports odd downloaded names such as:
-
-        3.jpg.webp
-        3.png.webp
+        This function remains unchanged.
     */
+
+    function formatFullLocalDateTime(date) {
+        return date.toLocaleString(
+            "en-US",
+            {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+                timeZoneName: "short"
+            }
+        );
+    }
+
+
+    /* =========================================================
+       VISITOR TIMEZONE DETECTION
+       ========================================================= */
+
+    function getVisitorTimezone() {
+        try {
+            return Intl.DateTimeFormat()
+                .resolvedOptions()
+                .timeZone || "Local time";
+        } catch (error) {
+            return "Local time";
+        }
+    }
+
+
+    /*
+        Extract the representative city name
+        from the visitor's IANA timezone.
+
+        Examples:
+
+        Europe/Budapest    -> Budapest
+        Europe/London      -> London
+        America/New_York   -> New York
+        Asia/Tokyo         -> Tokyo
+        Asia/Seoul         -> Seoul
+    */
+
+    function getVisitorTimezoneCity() {
+        const timezone = getVisitorTimezone();
+
+        if (
+            !timezone ||
+            timezone === "Local time"
+        ) {
+            return "LOCAL TIME";
+        }
+
+        const city = timezone
+            .split("/")
+            .pop()
+            .replace(/_/g, " ");
+
+        return city.toUpperCase();
+    }
+
+
+    /* =========================================================
+       LOCAL TIMEZONE LABELS
+       ========================================================= */
+
+    function initTimezoneLabels() {
+        const timezone = getVisitorTimezone();
+
+        const city = getVisitorTimezoneCity();
+
+        const labels =
+            document.querySelectorAll(
+                ".backstage-timezone-note"
+            );
+
+        labels.forEach(label => {
+            label.textContent =
+                `ALL TIMES IN YOUR LOCAL TIMEZONE: ${city}`;
+
+            label.title =
+                `Detected timezone: ${timezone}`;
+        });
+    }
+
+
+    /* =========================================================
+       NEXT LIVESTREAM – LOCAL DATE / TIME / CITY
+       ========================================================= */
+
+    /*
+        DISPLAY FORMAT:
+
+        THURSDAY, NOVEMBER 5, 2026
+        AT 13:00 IN BUDAPEST
+
+        Features:
+
+        - Visitor's local date
+        - Visitor's local time
+        - 24-hour clock
+        - Representative timezone city
+        - Full uppercase
+        - No GMT / UTC suffix
+        - Automatic daylight saving handling
+
+        The underlying livestream timestamp
+        is NOT modified.
+
+        Only its visual representation changes.
+    */
+
+    function formatLivestreamLocalDateTime(date) {
+        if (
+            !(date instanceof Date) ||
+            Number.isNaN(date.getTime())
+        ) {
+            return "";
+        }
+
+        const datePart = date.toLocaleDateString(
+            "en-US",
+            {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        );
+
+        const timePart = date.toLocaleTimeString(
+            "en-GB",
+            {
+                hour: "2-digit",
+                minute: "2-digit",
+                hourCycle: "h23"
+            }
+        );
+
+        const city = getVisitorTimezoneCity();
+
+        return (
+            `${datePart} at ${timePart} in ${city}`
+        ).toUpperCase();
+    }
+
+
+    /* =========================================================
+       BUDAPEST TIMEZONE HELPERS
+       ========================================================= */
+
+    /*
+        Converts a Budapest wall-clock date/time
+        into an absolute JavaScript Date.
+
+        Handles CET / CEST automatically.
+
+        Example:
+
+        JSON:
+        2026_11_05
+        13:00
+
+        Means:
+        November 5, 2026
+        13:00 in Budapest
+
+        NOT 13:00 in the visitor's timezone.
+    */
+
+    const budapestFormatter =
+        new Intl.DateTimeFormat(
+            "en-US",
+            {
+                timeZone: SOURCE_TIMEZONE,
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hourCycle: "h23"
+            }
+        );
+
+
+    function getTimezoneOffsetMs(date) {
+        const parts =
+            budapestFormatter.formatToParts(date);
+
+        const values = {};
+
+        parts.forEach(part => {
+            if (part.type !== "literal") {
+                values[part.type] =
+                    Number(part.value);
+            }
+        });
+
+        const asUTC = Date.UTC(
+            values.year,
+            values.month - 1,
+            values.day,
+            values.hour,
+            values.minute,
+            values.second
+        );
+
+        const timestampWithoutMs =
+            Math.floor(
+                date.getTime() / 1000
+            ) * 1000;
+
+        return asUTC - timestampWithoutMs;
+    }
+
+
+    /*
+        Returns the Budapest calendar components
+        of an absolute Date.
+    */
+
+    function getBudapestParts(date) {
+        const parts =
+            budapestFormatter.formatToParts(date);
+
+        const values = {};
+
+        parts.forEach(part => {
+            if (part.type !== "literal") {
+                values[part.type] =
+                    Number(part.value);
+            }
+        });
+
+        return values;
+    }
+
+
+    /*
+        Verify that the resulting Date really
+        represents the requested Budapest time.
+
+        This also prevents nonexistent times
+        during the spring DST transition.
+    */
+
+    function matchesBudapestTime(
+        date,
+        target,
+        hour,
+        minute
+    ) {
+        const parts =
+            getBudapestParts(date);
+
+        return (
+            parts.year === target.year &&
+            parts.month === target.month &&
+            parts.day === target.day &&
+            parts.hour === hour &&
+            parts.minute === minute
+        );
+    }
+
+
+    /*
+        Converts a Budapest local date/time
+        into an absolute JavaScript Date.
+
+        The hour and minute must be supplied
+        explicitly by the caller.
+    */
+
+    function buildBudapestDateTime(
+        dateString,
+        hour,
+        minute
+    ) {
+        const date =
+            parseDateString(dateString);
+
+        if (!date) return null;
+
+        if (
+            !Number.isInteger(hour) ||
+            !Number.isInteger(minute) ||
+            hour < 0 ||
+            hour > 23 ||
+            minute < 0 ||
+            minute > 59
+        ) {
+            return null;
+        }
+
+        const utcGuess = Date.UTC(
+            date.year,
+            date.month - 1,
+            date.day,
+            hour,
+            minute,
+            0,
+            0
+        );
+
+        /*
+            Calculate both offsets.
+
+            Normally they are identical.
+            Around DST transitions they
+            can differ.
+        */
+
+        const firstOffset =
+            getTimezoneOffsetMs(
+                new Date(utcGuess)
+            );
+
+        const firstTimestamp =
+            utcGuess - firstOffset;
+
+        const secondOffset =
+            getTimezoneOffsetMs(
+                new Date(firstTimestamp)
+            );
+
+        /*
+            Try both possible candidates.
+
+            On the autumn DST transition,
+            an ambiguous local time can occur
+            twice. We choose the earlier
+            matching instant.
+        */
+
+        const candidates = [
+            new Date(
+                utcGuess - firstOffset
+            ),
+
+            new Date(
+                utcGuess - secondOffset
+            )
+        ];
+
+        /*
+            Also check nearby offsets.
+
+            This makes the conversion more
+            robust around DST boundaries.
+        */
+
+        const nearbyOffsets = [
+            getTimezoneOffsetMs(
+                new Date(
+                    utcGuess - 24 * 60 * 60 * 1000
+                )
+            ),
+
+            getTimezoneOffsetMs(
+                new Date(
+                    utcGuess + 24 * 60 * 60 * 1000
+                )
+            )
+        ];
+
+        nearbyOffsets.forEach(offset => {
+            candidates.push(
+                new Date(utcGuess - offset)
+            );
+        });
+
+        const valid = candidates
+            .filter(candidate =>
+                matchesBudapestTime(
+                    candidate,
+                    date,
+                    hour,
+                    minute
+                )
+            )
+            .sort((a, b) => a - b);
+
+        return valid[0] || null;
+    }
+
+
+    /*
+        Parse a JSON date and time as Budapest
+        local time.
+
+        Used by:
+        - Livestreams
+        - Manual schedule
+
+        These events do NOT use
+        releasetime.json.
+    */
+
+    function buildDateTime(
+        dateString,
+        timeText
+    ) {
+        const time =
+            extractTimeFromText(timeText);
+
+        if (!time) return null;
+
+        return buildBudapestDateTime(
+            dateString,
+            time.hour,
+            time.minute
+        );
+    }
+
+
+    /* =========================================================
+       FLEXIBLE IMAGE LOADING
+       ========================================================= */
+
     const IMAGE_EXTENSIONS = [
         ".jpg",
         ".jpeg",
@@ -342,6 +868,11 @@
                 "countdownSeconds"
             );
 
+        const localTimeEl =
+            document.getElementById(
+                "backstageNextLiveLocalTime"
+            );
+
         if (
             !countdown ||
             !empty ||
@@ -351,6 +882,12 @@
             !secondsEl
         ) {
             return;
+        }
+
+
+        if (countdownTimer) {
+            clearInterval(countdownTimer);
+            countdownTimer = null;
         }
 
 
@@ -371,6 +908,11 @@
                 countdown.hidden = true;
                 empty.hidden = false;
 
+                if (localTimeEl) {
+                    localTimeEl.hidden = true;
+                    localTimeEl.textContent = "";
+                }
+
                 if (countdownTimer) {
                     clearInterval(
                         countdownTimer
@@ -385,6 +927,54 @@
             countdown.hidden = false;
             empty.hidden = true;
 
+
+            /* =============================================
+               NEXT LIVESTREAM LOCAL DATE DISPLAY
+               ============================================= */
+
+            /*
+                Automatically converted to
+                the visitor's timezone.
+
+                This does not change the
+                countdown calculation.
+            */
+
+            if (localTimeEl) {
+                localTimeEl.hidden = false;
+
+                localTimeEl.textContent =
+                    formatLivestreamLocalDateTime(
+                        next.dateTime
+                    );
+
+                localTimeEl.style.textTransform =
+                    "uppercase";
+
+                localTimeEl.style.letterSpacing =
+                    "1.5px";
+
+                localTimeEl.style.fontWeight =
+                    "600";
+
+                localTimeEl.style.fontSize =
+                    "11px";
+
+                localTimeEl.style.lineHeight =
+                    "1.8";
+
+                localTimeEl.style.textAlign =
+                    "center";
+
+                localTimeEl.style.color =
+                    "rgba(255, 255, 255, 0.75)";
+            }
+
+
+            /* =============================================
+               COUNTDOWN CALCULATION
+               ============================================= */
+
             const now = new Date();
 
             const difference =
@@ -392,7 +982,6 @@
                 now.getTime();
 
             if (difference <= 0) {
-                render();
                 return;
             }
 
@@ -437,11 +1026,18 @@
 
         render();
 
-        countdownTimer =
-            setInterval(
-                render,
-                1000
-            );
+        if (
+            livestreams.some(
+                stream =>
+                    stream.dateTime > new Date()
+            )
+        ) {
+            countdownTimer =
+                setInterval(
+                    render,
+                    1000
+                );
+        }
     }
 
 
@@ -452,9 +1048,6 @@
     function prepareCharacterVideo(video) {
         if (!video) return;
 
-        /*
-            Important for iOS / Safari / mobile browsers.
-        */
         video.muted = true;
         video.defaultMuted = true;
         video.playsInline = true;
@@ -476,44 +1069,23 @@
                 typeof playPromise.catch ===
                     "function"
             ) {
-                playPromise.catch(() => {
-                    /*
-                        Browser may still block autoplay.
-                        The interaction fallback below
-                        will try again.
-                    */
-                });
+                playPromise.catch(() => {});
             }
         }
 
 
-        /*
-            Try immediately.
-        */
         tryPlay();
 
-
-        /*
-            Try when the browser has enough video data.
-        */
         video.addEventListener(
             "loadeddata",
             tryPlay
         );
-
 
         video.addEventListener(
             "canplay",
             tryPlay
         );
 
-
-        /*
-            Some mobile browsers pause media when the page
-            goes into the background.
-
-            Try again when the page becomes visible.
-        */
         document.addEventListener(
             "visibilitychange",
             () => {
@@ -527,12 +1099,6 @@
         );
 
 
-        /*
-            Final mobile Safari fallback.
-
-            If autoplay was blocked during page load,
-            the first real user interaction unlocks it.
-        */
         let unlocked = false;
 
         function unlockVideo() {
@@ -610,9 +1176,6 @@
         }
 
 
-        /*
-            Prepare and force initial autoplay.
-        */
         prepareCharacterVideo(video);
 
 
@@ -631,11 +1194,6 @@
                         );
 
                     if (alreadyActive) {
-                        /*
-                            If mobile browser somehow paused
-                            the current video, clicking the
-                            active race also restarts it.
-                        */
                         const playPromise =
                             video.play();
 
@@ -672,10 +1230,6 @@
 
                         video.pause();
 
-                        /*
-                            Re-apply these before every
-                            source change for mobile Safari.
-                        */
                         video.muted = true;
                         video.defaultMuted = true;
                         video.playsInline = true;
@@ -956,8 +1510,7 @@
 
                 return {
                     dateTime,
-                    type:
-                        item.type || ""
+                    type: item.type || ""
                 };
             })
             .filter(
@@ -984,9 +1537,130 @@
     }
 
 
+    /* =========================================================
+       MUSIC RELEASES – LATEST NON-DAILY
+       ========================================================= */
+
+    /*
+        Matches Latest / Upcoming pages:
+
+        1. Ignore daily: "x"
+        2. Sort by newmusicdate descending
+        3. Select latest regular release
+    */
+
+    function pickLatestRegularRelease(
+        adminData
+    ) {
+        if (!Array.isArray(adminData)) {
+            return null;
+        }
+
+        const regular = adminData
+            .filter(
+                item =>
+                    item &&
+                    !isDaily(item)
+            )
+            .filter(
+                item =>
+                    parseDateString(
+                        item.newmusicdate
+                    )
+            );
+
+        regular.sort((a, b) => {
+            const dateA =
+                safeText(a.newmusicdate);
+
+            const dateB =
+                safeText(b.newmusicdate);
+
+            return dateB.localeCompare(dateA);
+        });
+
+        return regular[0] || null;
+    }
+
+
+/* =========================================================
+   MUSIC RELEASES FOR SCHEDULE
+   ========================================================= */
+
+/*
+    ONLY UPCOMING RELEASES.
+
+    Source:
+    - Date: admin.json
+    - Time: releasetime.json
+
+    All release times are interpreted
+    in Europe/Budapest timezone.
+
+    Visitors see the converted time
+    in their own local timezone.
+
+    NEW RELEASE entries are intentionally
+    excluded from the schedule.
+*/
+
+function musicReleasesForSchedule(
+    adminData,
+    releaseTime
+) {
+    if (
+        !Array.isArray(adminData) ||
+        !releaseTime
+    ) {
+        return [];
+    }
+
+    const latest =
+        pickLatestRegularRelease(
+            adminData
+        );
+
+    if (!latest) {
+        return [];
+    }
+
+    const dateTime =
+        buildBudapestDateTime(
+            latest.comingmusicdate,
+            releaseTime.hour,
+            releaseTime.minute
+        );
+
+    const title =
+        safeText(
+            latest.comingmusictitle
+        );
+
+    if (!dateTime || !title) {
+        return [];
+    }
+
+    return [
+        {
+            dateTime,
+            type: `UPCOMING RELEASE: ${title}`
+        }
+    ];
+}
+
+
+    /* =========================================================
+       SCHEDULE RENDERING
+       ========================================================= */
+
+    let scheduleRefreshTimer = null;
+
+
     function renderSchedule(
         manualSchedule,
-        livestreams
+        livestreams,
+        musicReleases,
+        releaseTime
     ) {
         const container =
             document.getElementById(
@@ -1008,20 +1682,14 @@
 
         const now = new Date();
 
-
-        /*
-            "Next 7 days" means from right now
-            until exactly seven days from now.
-        */
-        const end =
-            new Date(
-                now.getTime() +
-                7 *
-                24 *
-                60 *
-                60 *
-                1000
-            );
+        const end = new Date(
+            now.getTime() +
+            SCHEDULE_DAYS *
+            24 *
+            60 *
+            60 *
+            1000
+        );
 
 
         const combined = [
@@ -1031,23 +1699,25 @@
 
             ...livestreamsForSchedule(
                 livestreams
+            ),
+
+            ...musicReleasesForSchedule(
+                musicReleases,
+                releaseTime
             )
         ];
 
 
-        const upcoming =
-            combined
-                .filter(item => {
-                    return (
-                        item.dateTime >= now &&
-                        item.dateTime <= end
-                    );
-                })
-                .sort(
-                    (a, b) =>
-                        a.dateTime -
-                        b.dateTime
-                );
+        const upcoming = combined
+            .filter(item => (
+                item.dateTime >= now &&
+                item.dateTime <= end
+            ))
+            .sort(
+                (a, b) =>
+                    a.dateTime -
+                    b.dateTime
+            );
 
 
         container.innerHTML = "";
@@ -1082,6 +1752,14 @@
             date.className =
                 "backstage-schedule-date";
 
+            /*
+                VISITOR LOCAL DAY.
+
+                Example:
+                Budapest Monday night
+                may be Tuesday in Seoul.
+            */
+
             date.textContent =
                 formatScheduleDate(
                     item.dateTime
@@ -1095,6 +1773,10 @@
 
             time.className =
                 "backstage-schedule-time";
+
+            /*
+                VISITOR LOCAL TIME.
+            */
 
             time.textContent =
                 formatScheduleTime(
@@ -1114,6 +1796,16 @@
                 item.type;
 
 
+            /*
+                Full date/time appears on hover.
+            */
+
+            row.title =
+                formatFullLocalDateTime(
+                    item.dateTime
+                );
+
+
             row.append(
                 date,
                 time,
@@ -1124,6 +1816,44 @@
                 row
             );
         });
+    }
+
+
+    /*
+        Refresh the upcoming window every minute.
+
+        This removes events that have passed
+        without requiring a page reload.
+    */
+
+    function initScheduleRefresh(
+        manualSchedule,
+        livestreams,
+        musicReleases,
+        releaseTime
+    ) {
+        if (scheduleRefreshTimer) {
+            clearInterval(
+                scheduleRefreshTimer
+            );
+        }
+
+        const render = () => {
+            renderSchedule(
+                manualSchedule,
+                livestreams,
+                musicReleases,
+                releaseTime
+            );
+        };
+
+        render();
+
+        scheduleRefreshTimer =
+            setInterval(
+                render,
+                SCHEDULE_REFRESH_INTERVAL
+            );
     }
 
 
@@ -1141,7 +1871,6 @@
 
         container.innerHTML = "";
 
-
         if (!Array.isArray(data)) {
             return;
         }
@@ -1155,15 +1884,13 @@
                         : "div"
                 );
 
-            row.className =
-                "backstage-media-row";
+                row.className =
+                    "backstage-media-row";
 
 
             if (item.link) {
                 let href =
-                    String(
-                        item.link
-                    ).trim();
+                    safeText(item.link);
 
                 if (
                     !href.startsWith(
@@ -1236,13 +1963,10 @@
                 "backstage-media-subtitle";
 
 
-            if (type === "music") {
-                subtitle.textContent =
-                    item.artist || "";
-            } else {
-                subtitle.textContent =
-                    item.subtitle || "";
-            }
+            subtitle.textContent =
+                type === "music"
+                    ? (item.artist || "")
+                    : (item.subtitle || "");
 
 
             text.append(
@@ -1340,15 +2064,23 @@
     async function initBackstage() {
 
         /*
-            Character video starts immediately instead of
-            waiting for JSON requests.
+            Start character video immediately.
         */
+
         initCharacterPreview();
 
 
         /*
-            These can load independently.
+            Show timezone information.
         */
+
+        initTimezoneLabels();
+
+
+        /*
+            Independent tasks.
+        */
+
         const independentTasks = [
             initCurrentGoal(),
             initCharacterStatus(),
@@ -1358,7 +2090,13 @@
 
         let livestreams = [];
         let manualSchedule = [];
+        let musicReleases = [];
+        let releaseTime = null;
 
+
+        /* =========================
+           LOAD LIVESTREAMS
+           ========================= */
 
         try {
             const liveData =
@@ -1384,6 +2122,10 @@
         );
 
 
+        /* =========================
+           LOAD MANUAL SCHEDULE
+           ========================= */
+
         try {
             manualSchedule =
                 await fetchJSON(
@@ -1398,19 +2140,71 @@
         }
 
 
-        renderSchedule(
+        /* =========================
+           LOAD MUSIC RELEASES
+           ========================= */
+
+        try {
+            musicReleases =
+                await fetchJSON(
+                    PATHS.admin
+                );
+
+        } catch (error) {
+            console.error(
+                "Could not load admin.json:",
+                error
+            );
+        }
+
+
+        /* =========================
+           LOAD CENTRAL RELEASE TIME
+           ========================= */
+
+        /*
+            This setting is used ONLY for:
+
+            - NEW RELEASE
+            - UPCOMING RELEASE
+
+            Livestream and manual schedule
+            times remain unchanged.
+
+            If loading fails, music release
+            events are omitted rather than
+            displayed at an incorrect time.
+        */
+
+        try {
+            releaseTime =
+                await loadReleaseTime();
+
+        } catch (error) {
+            console.error(
+                "Could not load releasetime.json:",
+                error
+            );
+        }
+
+
+        /* =========================
+           RENDER SCHEDULE
+           ========================= */
+
+        initScheduleRefresh(
             manualSchedule,
-            livestreams
+            livestreams,
+            musicReleases,
+            releaseTime
         );
 
 
         /*
-            Wait for the independent Backstage data to settle
-            before revealing the finished page.
-
-            Promise.allSettled prevents one failed JSON request
-            from keeping the entire page invisible.
+            Wait for independent tasks before
+            revealing the page.
         */
+
         await Promise.allSettled(
             independentTasks
         );
@@ -1434,11 +2228,6 @@
                 initBackstage().catch(
                     error => {
                         console.error(error);
-
-                        /*
-                            Never leave the page invisible if
-                            something unexpected fails.
-                        */
                         revealBackstagePage();
                     }
                 );

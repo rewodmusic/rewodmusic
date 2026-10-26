@@ -1,13 +1,25 @@
-/* =========================
-   LATEST PAGE – JS
-   TAPE + DESCR + SIGNATURE + DYNAMIC BACKGROUND
-   ========================= */
+/* =========================================================
+   LATEST PAGE – REWOD
+
+   Latest NON-DAILY music release
+   + TAPE
+   + DESCRIPTION
+   + SIGNATURE
+   + DYNAMIC BACKGROUND
+
+   DAILY entries are completely ignored.
+   ========================================================= */
 
 const CONFIG = {
   dataUrl: "/data/admin.json",
   kofiUrl: "https://ko-fi.com/rewodmusic",
   signatureUrl: "/img/signature.png"
 };
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
 
 function safeText(s) {
   return (s ?? "").toString();
@@ -48,10 +60,109 @@ function buildTitle(row) {
 }
 
 
-/* =========================
+/* =========================================================
+   DAILY CHECK
+   ========================================================= */
+
+function isDaily(row) {
+  return safeText(row.daily).trim().toLowerCase() === "x";
+}
+
+
+/* =========================================================
+   DATE PARSER
+   ========================================================= */
+
+/*
+ * Expected format:
+ * YYYY_MM_DD
+ *
+ * Example:
+ * 2026_10_26
+ */
+
+function parseReleaseDate(value) {
+  const text = safeText(value).trim();
+
+  const match = text.match(
+    /^(\d{4})_(\d{2})_(\d{2})$/
+  );
+
+  if (!match) return null;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+
+  const date = new Date(
+    Date.UTC(year, month - 1, day)
+  );
+
+  // Reject invalid dates such as 2026_02_31
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() + 1 !== month ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
+}
+
+
+/* =========================================================
+   PICK LATEST NON-DAILY RELEASE
+   ========================================================= */
+
+function pickLatestRelease(data) {
+
+  if (!Array.isArray(data) || data.length === 0) {
+    return null;
+  }
+
+  /* Remove ALL Daily entries */
+
+  const regularReleases = data.filter(
+    row => row && !isDaily(row)
+  );
+
+  if (regularReleases.length === 0) {
+    return null;
+  }
+
+  /* Sort by release date, newest first */
+
+  regularReleases.sort((a, b) => {
+
+    const dateA = parseReleaseDate(
+      a.newmusicdate
+    );
+
+    const dateB = parseReleaseDate(
+      b.newmusicdate
+    );
+
+    const timeA = dateA
+      ? dateA.getTime()
+      : -Infinity;
+
+    const timeB = dateB
+      ? dateB.getTime()
+      : -Infinity;
+
+    return timeB - timeA;
+
+  });
+
+  return regularReleases[0];
+}
+
+
+/* =========================================================
    DYNAMIC PAGE BACKGROUND
    Uses the ACTUAL loaded cover image
-   ========================= */
+   ========================================================= */
 
 function setLatestBackgroundFromCover() {
   const cover = document.getElementById("latestCover");
@@ -85,9 +196,9 @@ function setLatestBackgroundFromCover() {
 }
 
 
-/* =========================
+/* =========================================================
    TAPE UI
-   ========================= */
+   ========================================================= */
 
 function setTapeMode(isTape) {
   const root =
@@ -127,9 +238,9 @@ function setTapeMode(isTape) {
 }
 
 
-/* =========================
+/* =========================================================
    DESCRIPTION + SIGNATURE
-   ========================= */
+   ========================================================= */
 
 let _latestDescrNode = null;
 
@@ -214,9 +325,9 @@ function setDescr(row) {
 }
 
 
-/* =========================
+/* =========================================================
    MAIN INIT
-   ========================= */
+   ========================================================= */
 
 async function initLatest() {
 
@@ -237,14 +348,16 @@ async function initLatest() {
 
   const data = await res.json();
 
-  if (
-    !Array.isArray(data) ||
-    data.length === 0
-  ) {
+  /* Select latest NON-DAILY release */
+
+  const row = pickLatestRelease(data);
+
+  if (!row) {
+    console.warn(
+      "Latest Release: No non-daily releases found."
+    );
     return;
   }
-
-  const row = data[0];
 
 
   /* =========================
@@ -381,8 +494,8 @@ async function initLatest() {
 }
 
 
-/* =========================
+/* =========================================================
    START
-   ========================= */
+   ========================================================= */
 
 initLatest().catch(console.error);

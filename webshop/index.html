@@ -48,7 +48,7 @@
                 </nav>
                 <div class="m-flex-spacer"></div>
                 <div class="m-menu-bottom">
-                    <nav class="socialbar" aria-label="REWOD social links"><a class="social-link" href="#" target="_blank" rel="noopener"> <img src="/socialbars/spotify.svg" alt="Spotify"/> </a><a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank" rel="noopener"> <img src="/socialbars/applemusic.svg" alt="Apple Music"/> </a><a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431?l=hu" target="_blank" rel="noopener"> <img src="/socialbars/youtube.svg" alt="YouTube"/> </a><a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/tiktok.svg" alt="TikTok"/> </a><a class="social-link" href="http://tiktok.com/@rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/instagram.svg" alt="Instagram"/> </a><a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/mms.png" alt="MyMusicSheet"/> </a><a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/kofi.svg" alt="Ko-fi"/> </a><a class="social-link" href="mailto:contact@rewodmusic.com"> <img src="/socialbars/mail.png" alt="Email"/> </a>
+                    <nav class="socialbar" aria-label="REWOD social links"><a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank" rel="noopener"> <img src="/socialbars/spotify.svg" alt="Spotify"/> </a><a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431?l=hu" target="_blank" rel="noopener"> <img src="/socialbars/applemusic.svg" alt="Apple Music"/> </a><a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/youtube.svg" alt="YouTube"/> </a><a class="social-link" href="http://tiktok.com/@rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/tiktok.svg" alt="TikTok"/> </a><a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/instagram.svg" alt="Instagram"/> </a><a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/mms.png" alt="MyMusicSheet"/> </a><a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/kofi.svg" alt="Ko-fi"/> </a><a class="social-link" href="mailto:contact@rewodmusic.com"> <img src="/socialbars/mail.png" alt="Email"/> </a>
                     </nav>
                     <div class="m-credit">
                         Designed &amp; engineered by REWOD, including frontend, backend &amp; data architecture
@@ -56,7 +56,7 @@
                 </div>
             </div>
         </div>
-        <!-- HEADER (plain, no hero image) -->
+        <!-- DESKTOP HEADER -->
         <section class="hero hero--plain">
             <div class="hero-inner">
                 <div data-empty-placeholder class="nav-left"></div><a href="/" class="logo-link" aria-label="REWOD – Home"> <img src="/img/logo.png" class="logo" alt="REWOD logo"> </a>
@@ -64,29 +64,55 @@
                 </div>
             </div>
         </section>
-        <!-- WEBSHOP GRID (JSON-driven) -->
+        <!-- =========================================================
+             WEBSHOP – SEARCHABLE SHEET MUSIC LIBRARY
+             ========================================================= -->
         <section class="webshop-page">
             <div class="webshop-inner">
+                <!-- INTRODUCTION -->
+                <div class="ws-introduction">
+                    <p>
+                        Discover new sheet music every day! The collection
+                        continues to grow with easy-to-play daily arrangements,
+                        more challenging sheet music from my Spotify releases,
+                        and original compositions. </p>
+                </div>
+                <!-- CATEGORY FILTERS -->
+                <div class="ws-filter-panel">
+                    <!-- DAILY SIMPLE SHEET MUSIC -->
+                    <label class="ws-switch-row"><span class="ws-switch-label">
+                            DAILY SIMPLE SHEET MUSIC </span><span class="ws-switch"> <input type="checkbox" id="wsFilterDaily" checked> <span class="ws-switch-slider"></span> </span>
+                    </label>
+                    <!-- EVERYTHING ELSE -->
+                    <label class="ws-switch-row"><span class="ws-switch-label">
+                            EVERYTHING ELSE </span><span class="ws-switch"> <input type="checkbox" id="wsFilterRegular" checked> <span class="ws-switch-slider"></span> </span>
+                    </label>
+                </div>
+                <!-- LIVE SEARCH -->
+                <div class="ws-search-wrap">
+                    <input type="search" id="wsSearchInput" class="ws-search-input" placeholder="type artist or song name" aria-label="Search sheet music by artist or song name" autocomplete="off" spellcheck="false">
+                </div>
+                <!-- SEARCH STATUS -->
+                <div class="ws-results-status" id="wsResultsStatus" aria-live="polite"></div>
+                <!-- JSON-GENERATED SHEET MUSIC CARDS -->
                 <div class="webshop-grid" id="webshopGrid">
-                    <!-- JS injects cards here -->
+                    <!-- JavaScript generates cards here -->
                 </div>
-                <!-- ALWAYS visible CTA button (not conditional) -->
-                <div class="ws-loadmore-wrap"><a href="https://www.mymusicfive.com/rewodmusic" class="btn-listen load-more" target="_blank" rel="noopener">
-                        LOAD MORE SHEET MUSIC </a>
-                </div>
+                <!-- INFINITE SCROLL TRIGGER -->
+                <div id="wsInfiniteScrollTrigger" class="ws-infinite-scroll-trigger" aria-hidden="true"></div>
             </div>
         </section>
-        <!-- FOOTER (same as everywhere) -->
+        <!-- FOOTER -->
         <footer class="site-footer">
             <div class="footer-inner"><a href="/" class="footer-logo-link" aria-label="REWOD – Home"> <img class="footer-logo" src="/img/logo.png" alt="REWOD logo"/> </a>
-                <nav class="socialbar" aria-label="REWOD social links"><a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank" rel="noopener"><img src="/socialbars/spotify.svg" alt="Spotify"/></a><a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431?l=hu" target="_blank" rel="noopener"><img src="/socialbars/applemusic.svg" alt="Apple Music"/></a><a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/youtube.svg" alt="YouTube"/></a><a class="social-link" href="http://tiktok.com/@rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/tiktok.svg" alt="TikTok"/></a><a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/instagram.svg" alt="Instagram"/></a><a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/mms.png" alt="MyMusicSheet"/></a><a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"><img src="/socialbars/kofi.svg" alt="Ko-fi"/></a><a class="social-link" href="mailto:contact@rewodmusic.com"><img src="/socialbars/mail.png" alt="Email"/></a>
+                <nav class="socialbar" aria-label="REWOD social links"><a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF?si=bx6bkIEzSO2_xvlbQ3Vksw&nd=1" target="_blank" rel="noopener"> <img src="/socialbars/spotify.svg" alt="Spotify"/> </a><a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431?l=hu" target="_blank" rel="noopener"> <img src="/socialbars/applemusic.svg" alt="Apple Music"/> </a><a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/youtube.svg" alt="YouTube"/> </a><a class="social-link" href="http://tiktok.com/@rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/tiktok.svg" alt="TikTok"/> </a><a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/instagram.svg" alt="Instagram"/> </a><a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/mms.png" alt="MyMusicSheet"/> </a><a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/kofi.svg" alt="Ko-fi"/> </a><a class="social-link" href="mailto:contact@rewodmusic.com"> <img src="/socialbars/mail.png" alt="Email"/> </a>
                 </nav>
                 <div class="footer-credit">
                     Designed &amp; engineered by REWOD, including frontend, backend &amp; data architecture
 </div>
             </div>
         </footer>
-        <!-- JS -->
+        <!-- JAVASCRIPT -->
         <script src="/js/webshop.js"></script>
         <script src="/js/mobileMenu.js"></script>
     </body>

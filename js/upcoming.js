@@ -1,219 +1,336 @@
-/* UPCOMING PAGE – loads nearest future row from JSON (YYYY_MM_DD)
+/* =========================================================
+   UPCOMING PAGE – REWOD
+
+   Loads the latest NON-DAILY music release from admin.json
+   and displays its upcoming music information.
+
+   DAILY entries are completely ignored.
+
    + DYNAMIC FULL PAGE COVER BACKGROUND
-*/
+   ========================================================= */
+
 
 const CONFIG = {
   dataUrl: "/data/admin.json",
-  fallbackCover: "/img/upcoming.jpg",
-  pickNearestFuture: true
+  fallbackCover: "/img/upcoming.jpg"
 };
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
 
 function safeText(v) {
   return (v ?? "").toString().trim();
 }
 
 
-/* =========================
+/* =========================================================
+   DAILY CHECK
+   ========================================================= */
+
+function isDaily(row) {
+
+  return (
+    safeText(row.daily).toLowerCase() === "x"
+  );
+
+}
+
+
+/* =========================================================
    DYNAMIC UPCOMING BACKGROUND
-   ========================= */
+   ========================================================= */
 
 function syncUpcomingBackground() {
-  const cover = document.getElementById("upcomingCover");
-  const bg = document.getElementById("upcomingPageBg");
+
+  const cover =
+    document.getElementById("upcomingCover");
+
+  const bg =
+    document.getElementById("upcomingPageBg");
 
   if (!cover || !bg) return;
 
+
   function updateBackground() {
-    const src = cover.currentSrc || cover.src;
+
+    const src =
+      cover.currentSrc || cover.src;
 
     if (!src) return;
 
-    bg.style.backgroundImage = `url("${src}")`;
+    bg.style.backgroundImage =
+      `url("${src}")`;
+
   }
 
-  // Ha a kép már be van töltve
-  if (cover.complete && cover.naturalWidth > 0) {
+
+  /* Image already loaded */
+
+  if (
+    cover.complete &&
+    cover.naturalWidth > 0
+  ) {
     updateBackground();
   }
 
-  // Amikor a kép ténylegesen betöltődik
-  cover.addEventListener("load", updateBackground);
 
-  // Ha később változik a cover src-je
-  const observer = new MutationObserver(() => {
-    if (cover.complete && cover.naturalWidth > 0) {
-      updateBackground();
-    }
-  });
+  /* Image load listener */
+
+  cover.addEventListener(
+    "load",
+    updateBackground
+  );
+
+
+  /* Detect future src changes */
+
+  const observer =
+    new MutationObserver(() => {
+
+      if (
+        cover.complete &&
+        cover.naturalWidth > 0
+      ) {
+        updateBackground();
+      }
+
+    });
+
 
   observer.observe(cover, {
     attributes: true,
     attributeFilter: ["src"]
   });
+
 }
 
 
-/**
- * comingmusicdate: "YYYY_MM_DD"
- * -> Date object at UTC midnight
+/* =========================================================
+   DATE PARSER
+   ========================================================= */
+
+/*
+ * Supports:
+ *
+ * 2026_11_01
+ * 2026.11.01.
+ * 2026-11-01
+ *
+ * Uses UTC to avoid timezone shifts.
  */
+
 function parseDateFlexible(s) {
+
   if (!s) return null;
 
-  const trimmed = safeText(s);
+  const trimmed =
+    safeText(s);
 
-  // YYYY_MM_DD ✅ (your standard)
-  const m0 = trimmed.match(/^(\d{4})_(\d{2})_(\d{2})$/);
+
+  /* YYYY_MM_DD */
+
+  const m0 = trimmed.match(
+    /^(\d{4})_(\d{2})_(\d{2})$/
+  );
 
   if (m0) {
-    const y = Number(m0[1]);
-    const mo = Number(m0[2]) - 1;
-    const d = Number(m0[3]);
 
     return new Date(
-      Date.UTC(y, mo, d, 0, 0, 0)
+      Date.UTC(
+        Number(m0[1]),
+        Number(m0[2]) - 1,
+        Number(m0[3])
+      )
     );
+
   }
 
-  // optional legacy support
+
+  /* YYYY.MM.DD. */
+
   const m1 = trimmed.match(
     /^(\d{4})\.(\d{2})\.(\d{2})\.?$/
   );
 
   if (m1) {
+
     return new Date(
       Date.UTC(
         Number(m1[1]),
         Number(m1[2]) - 1,
-        Number(m1[3]),
-        0,
-        0,
-        0
+        Number(m1[3])
       )
     );
+
   }
+
+
+  /* YYYY-MM-DD */
 
   const m2 = trimmed.match(
     /^(\d{4})-(\d{2})-(\d{2})$/
   );
 
   if (m2) {
+
     return new Date(
       Date.UTC(
         Number(m2[1]),
         Number(m2[2]) - 1,
-        Number(m2[3]),
-        0,
-        0,
-        0
+        Number(m2[3])
       )
     );
+
   }
 
-  const t = Date.parse(trimmed);
+
+  /* Legacy fallback */
+
+  const t =
+    Date.parse(trimmed);
 
   if (!Number.isNaN(t)) {
-    const d = new Date(t);
+
+    const d =
+      new Date(t);
 
     return new Date(
       Date.UTC(
         d.getUTCFullYear(),
         d.getUTCMonth(),
-        d.getUTCDate(),
-        0,
-        0,
-        0
+        d.getUTCDate()
       )
     );
+
   }
 
   return null;
+
 }
 
+
+/* =========================================================
+   DATE FORMATTER
+   ========================================================= */
 
 function formatToYYYYMMDDDots(d) {
-  // IMPORTANT: use UTC getters so it never shifts
-  const yyyy = d.getUTCFullYear();
-  const mm = String(
-    d.getUTCMonth() + 1
-  ).padStart(2, "0");
 
-  const dd = String(
-    d.getUTCDate()
-  ).padStart(2, "0");
+  const yyyy =
+    d.getUTCFullYear();
+
+  const mm =
+    String(
+      d.getUTCMonth() + 1
+    ).padStart(2, "0");
+
+  const dd =
+    String(
+      d.getUTCDate()
+    ).padStart(2, "0");
 
   return `${yyyy}.${mm}.${dd}.`;
+
 }
 
+
+/* =========================================================
+   PICK LATEST NON-DAILY RELEASE
+   ========================================================= */
+
+/*
+ * IMPORTANT:
+ *
+ * We sort by newmusicdate,
+ * NOT by comingmusicdate.
+ *
+ * This ensures that the Upcoming page always
+ * uses the upcoming information belonging to
+ * the latest regular music release.
+ */
 
 function pickRow(rows) {
-  if (!rows.length) return null;
 
-  if (!CONFIG.pickNearestFuture) {
-    return rows[0];
+  if (!Array.isArray(rows) || !rows.length) {
+    return null;
   }
 
-  const now = new Date();
 
-  const todayUtcMidnight = Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-    0,
-    0,
-    0
+  /* STEP 1: Remove all DAILY entries */
+
+  const regularRows = rows.filter(
+    row => !isDaily(row)
   );
 
-  const withDate = rows
-    .map(r => ({
-      r,
-      d: parseDateFlexible(
-        r.comingmusicdate
+
+  if (!regularRows.length) {
+    return null;
+  }
+
+
+  /* STEP 2: Parse release dates */
+
+  const withDate = regularRows
+    .map(row => ({
+      row,
+      date: parseDateFlexible(
+        row.newmusicdate
       )
     }))
-    .filter(
-      x =>
-        x.d instanceof Date &&
-        !Number.isNaN(
-          x.d.getTime()
-        )
+    .filter(item =>
+      item.date instanceof Date &&
+      !Number.isNaN(
+        item.date.getTime()
+      )
     );
 
+
+  /* Fallback if no valid dates exist */
+
   if (!withDate.length) {
-    return rows[0];
+    return regularRows[0];
   }
 
-  const future = withDate.filter(
-    x =>
-      x.d.getTime() >=
-      todayUtcMidnight
-  );
 
-  const pool =
-    future.length
-      ? future
-      : withDate;
+  /* STEP 3: Sort newest first */
 
-  pool.sort(
+  withDate.sort(
     (a, b) =>
-      a.d - b.d
+      b.date.getTime() -
+      a.date.getTime()
   );
 
-  return pool[0].r;
+
+  /* STEP 4: Return latest regular release */
+
+  return withDate[0].row;
+
 }
 
 
+/* =========================================================
+   SET TEXT
+   ========================================================= */
+
 function setText(id, value) {
+
   const el =
     document.getElementById(id);
 
   if (el) {
     el.textContent = value;
   }
+
 }
 
 
+/* =========================================================
+   INITIALIZE UPCOMING CONTENT
+   ========================================================= */
+
 function initUpcoming(row) {
+
   const title =
     safeText(
       row.comingmusictitle
@@ -236,7 +353,7 @@ function initUpcoming(row) {
 
 
   /* =========================
-     DATE
+     UPCOMING DATE
      ========================= */
 
   const d =
@@ -251,7 +368,7 @@ function initUpcoming(row) {
 
 
   /* =========================
-     ARTIST / GENRE
+     UPCOMING ARTIST
      ========================= */
 
   setText(
@@ -261,7 +378,7 @@ function initUpcoming(row) {
 
 
   /* =========================
-     TITLE
+     UPCOMING TITLE
      ========================= */
 
   setText(
@@ -271,7 +388,7 @@ function initUpcoming(row) {
 
 
   /* =========================
-     FEAT
+     UPCOMING FEAT
      ========================= */
 
   const featEl =
@@ -280,23 +397,29 @@ function initUpcoming(row) {
     );
 
   if (featEl) {
+
     if (feat) {
+
       featEl.style.display =
         "block";
 
       featEl.textContent =
         `REWOD feat. ${feat}`;
+
     } else {
+
       featEl.style.display =
         "none";
 
       featEl.textContent = "";
+
     }
+
   }
 
 
   /* =========================
-     COVER
+     UPCOMING COVER
      ========================= */
 
   const coverEl =
@@ -305,6 +428,7 @@ function initUpcoming(row) {
     );
 
   if (coverEl) {
+
     const cover =
       safeText(row.coverUrl);
 
@@ -312,15 +436,18 @@ function initUpcoming(row) {
       cover
         ? cover
         : CONFIG.fallbackCover;
+
   }
+
 }
 
 
-/* =========================
+/* =========================================================
    LOAD UPCOMING
-   ========================= */
+   ========================================================= */
 
 async function loadUpcoming() {
+
   const res =
     await fetch(
       CONFIG.dataUrl,
@@ -329,40 +456,60 @@ async function loadUpcoming() {
       }
     );
 
+
   if (!res.ok) {
+
     throw new Error(
       `Failed to load ${CONFIG.dataUrl}: ${res.status}`
     );
+
   }
+
 
   const rows =
     await res.json();
 
+
+  /* Select latest NON-DAILY release */
+
   const row =
-    pickRow(
-      Array.isArray(rows)
-        ? rows
-        : []
+    pickRow(rows);
+
+
+  if (!row) {
+
+    console.warn(
+      "Upcoming: No regular music releases found."
     );
 
-  if (!row) return;
+    return;
+
+  }
+
+
+  /* Update page */
 
   initUpcoming(row);
+
 }
 
 
-/* =========================
+/* =========================================================
    INIT
-   ========================= */
+   ========================================================= */
 
 /*
- * Először figyeljük az upcomingCover-t.
- * Utána a loadUpcoming() lecseréli a kép src-jét.
+ * 1. Watch upcomingCover.
  *
- * Amikor az új cover betöltődik,
- * ugyanaz a kép automatikusan bekerül
- * az #upcomingPageBg hátterébe is.
+ * 2. Load admin.json.
+ *
+ * 3. Find the latest NON-DAILY release.
+ *
+ * 4. Read its upcoming music fields.
+ *
+ * 5. Update the cover and page background.
  */
+
 syncUpcomingBackground();
 
 loadUpcoming().catch(

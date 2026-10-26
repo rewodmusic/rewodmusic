@@ -99,7 +99,26 @@
         <!-- MUSIC -->
         <section class="music-page">
             <div class="music-inner">
-                <div id="musicApp" class="music-box" aria-label="Music library"></div>
+                <!-- MUSIC CATALOGUE FILTERS -->
+                <div class="music-discovery" aria-label="Explore music releases">
+                    <p class="music-discovery-intro">Discover new music every day! Explore daily simple covers, regularly released fully arranged covers, original music, and a special classical music series called Tape Recordings.</p>
+                    <div class="music-discovery-controls">
+                        <label class="music-discovery-filter" for="musicFilterDaily"><span>DAILY SIMPLE RELEASES</span>
+                            <input type="checkbox" id="musicFilterDaily" checked><span class="music-discovery-switch" aria-hidden="true"></span>
+                        </label>
+                        <label class="music-discovery-filter" for="musicFilterOther"><span>EVERYTHING ELSE</span>
+                            <input type="checkbox" id="musicFilterOther" checked><span class="music-discovery-switch" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                    <label class="music-discovery-search-label" for="musicSearch">
+                        Search the music catalogue
+</label>
+                    <input id="musicSearch" class="music-discovery-search" type="search" placeholder="type artist or song name" autocomplete="off" spellcheck="false" aria-controls="musicApp">
+                    <p id="musicSearchEmpty" class="music-discovery-empty" hidden>
+    No matching releases found.</p>
+                </div>
+                <div id="musicApp" class="music-box" aria-label="Music library" aria-live="polite">
+</div>
             </div>
         </section>
         <!-- MOBILE ONLY – BOTTOM MUSIC HERO -->

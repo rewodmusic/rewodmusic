@@ -24,7 +24,9 @@ const CONFIG = {
 };
 
 function toISODate(d) {
-  return new Date(d + "T00:00:00");
+  const value = safeText(d).replace(/_/g, "-");
+  const parsed = Date.parse(value + "T00:00:00Z");
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function upper(s) {
@@ -33,6 +35,10 @@ function upper(s) {
 
 function safeText(s) {
   return (s || "").toString();
+}
+
+function isDailyItem(item) {
+  return safeText(item.daily).trim().toLowerCase() === "x";
 }
 
 function isTapeItem(item) {
@@ -79,6 +85,7 @@ function normalizeItem(raw) {
     newmusicartist: raw.newmusicartist,
     newmusicartist2: raw.newmusicartist2,
     feat: raw.feat,
+    daily: raw.daily,
     tape: raw.tape,
     timeless: raw.timeless,
     descr: raw.descr,
@@ -292,9 +299,11 @@ function renderServicePanel(item, mode = "normal") {
 
   if (mode === "tape") {
     rows = rows.filter(r => r.key === "youtube");
+  } else if (isDailyItem(item)) {
+    rows = rows.filter(r => r.key === "youtube" || r.key === "mms");
   }
 
-  if (mode === "timeless") {
+  if (mode === "timeless" && !isDailyItem(item)) {
     rows = rows.filter(r => {
       if (r.key === "spotify" || r.key === "apple") return true;
       if (r.key === "youtube") return safeText(item.youtubeurl).trim().length > 0;
@@ -422,7 +431,8 @@ function renderSongs(panelEl, items, { mode = "normal" } = {}) {
     } else if (mode === "timeless") {
       title.textContent = buildTimelessTitle(it);
     } else {
-      title.textContent = upper(buildDisplayTitle(it));
+      const suffix = isDailyItem(it) ? " (SIMPLE VER.)" : "";
+      title.textContent = upper(buildDisplayTitle(it)) + suffix;
     }
 
     const right = document.createElement("div");
@@ -455,7 +465,7 @@ function renderSongs(panelEl, items, { mode = "normal" } = {}) {
   });
 }
 
-function renderCategory(appEl, cat) {
+function renderCategory(appEl, cat, autoOpen = false) {
   const catRow = document.createElement("div");
   catRow.className = "music-cat";
   catRow.setAttribute("role", "button");
@@ -498,6 +508,198 @@ function renderCategory(appEl, cat) {
 
   appEl.appendChild(catRow);
   appEl.appendChild(panel);
+
+  // During a search, show matching songs immediately under their artist.
+  if (autoOpen) {
+    catRow.classList.add("is-open");
+    panel.classList.add("is-open");
+    panel.style.height = "auto";
+  }
+}
+
+/* =========================
+   LIVE SEARCH + DAILY FILTERS
+   ========================= */
+
+function normaliseSearch(value) {
+  return safeText(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function matchesSearch(value, query) {
+  return normaliseSearch(value).includes(query);
+}
+
+function isOriginalItem(item) {
+  return normaliseSearch(item.newmusicartist) === "original composition";
+}
+
+function songMatchesSearch(item, query, cat) {
+  const searchable = [
+    item.newmusictitle,
+    item.newmusicartist,
+    item.newmusicartist2,
+    item.feat,
+    buildDisplayTitle(item)
+  ];
+
+  // Original compositions are also discoverable by REWOD.
+  if (isOriginalItem(item) || cat.id === "originals") {
+    searchable.push("REWOD", "original", "originals");
+  }
+
+  if (cat.id === "tape") searchable.push("tape recordings");
+  if (cat.id === "timeless") searchable.push("timeless repertoire");
+
+  return searchable.some(value => matchesSearch(value, query));
+}
+
+function renderFilteredCatalogue(appEl, items) {
+  const searchEl = document.getElementById("musicSearch");
+  const dailyEl = document.getElementById("musicFilterDaily");
+  const otherEl = document.getElementById("musicFilterOther");
+  const emptyEl = document.getElementById("musicSearchEmpty");
+
+  const query = normaliseSearch(searchEl?.value);
+const showDaily = dailyEl ? dailyEl.checked : true;
+const showOther = otherEl ? otherEl.checked : true;
+
+/*
+  If both switches are OFF,
+  the entire catalogue becomes empty.
+*/
+
+if (!showDaily && !showOther) {
+  appEl.replaceChildren();
+
+  if (emptyEl) {
+    emptyEl.hidden = true;
+  }
+
+  return;
+}
+
+const visibleItems = items.filter(item =>
+  isDailyItem(item) ? showDaily : showOther
+);
+
+  const grouped = groupData(visibleItems);
+
+  const categories = [
+    ...grouped.top,
+    ...grouped.artists.map(group => ({
+      id: `artist:${group.label}`,
+      label: group.label,
+      items: group.items,
+      mode: "normal"
+    }))
+  ];
+
+  appEl.replaceChildren();
+
+  let resultCount = 0;
+
+categories.forEach(cat => {
+
+  /*
+    When ONLY Daily Simple Releases is enabled,
+    hide Tape Recordings and Timeless Repertoire.
+  */
+
+  if (showDaily && !showOther) {
+    if (
+      cat.id === "tape" ||
+      cat.id === "timeless"
+    ) {
+      return;
+    }
+  }
+
+  const isPriorityCategory = [
+    "originals",
+    "features",
+    "tape",
+    "timeless"
+  ].includes(cat.id);
+
+    const categoryMatches =
+      Boolean(query) &&
+      matchesSearch(cat.label, query);
+
+    const matchingItems =
+      !query || categoryMatches
+        ? cat.items
+        : cat.items.filter(item =>
+            songMatchesSearch(item, query, cat)
+          );
+
+    /*
+      WITHOUT SEARCH:
+      Always show the four priority categories,
+      even when they contain no releases.
+
+      WITH SEARCH:
+      Show only matching categories and songs.
+    */
+
+if (!query) {
+  /*
+    DAILY ONLY:
+    Never force empty categories to appear.
+    ORIGINALS appears only if it contains
+    at least one Daily Simple release.
+
+    OTHER ENABLED:
+    Keep the four priority categories
+    visible even when empty.
+  */
+
+  if (showDaily && !showOther) {
+    if (!matchingItems.length) {
+      return;
+    }
+  } else {
+    if (
+      !isPriorityCategory &&
+      !matchingItems.length
+    ) {
+      return;
+    }
+  }
+
+    } else {
+      if (
+        !categoryMatches &&
+        !matchingItems.length
+      ) {
+        return;
+      }
+    }
+
+    resultCount += matchingItems.length;
+
+    renderCategory(
+      appEl,
+      {
+        ...cat,
+        items: matchingItems
+      },
+      Boolean(query)
+    );
+  });
+
+  /*
+    Display the empty message only when
+    searching and no results were found.
+  */
+
+  if (emptyEl) {
+    emptyEl.hidden =
+      !query || resultCount > 0;
+  }
 }
 
 async function init() {
@@ -510,17 +712,21 @@ async function init() {
   const raw = await res.json();
   const items = raw.map(normalizeItem).filter(x => x.date);
 
-  const grouped = groupData(items);
+  const controls = [
+    document.getElementById("musicSearch"),
+    document.getElementById("musicFilterDaily"),
+    document.getElementById("musicFilterOther")
+  ];
 
-  grouped.top.forEach(cat => renderCategory(appEl, cat));
-  grouped.artists.forEach(g => {
-    renderCategory(appEl, {
-      id: `artist:${g.label}`,
-      label: g.label,
-      items: g.items,
-      mode: "normal"
-    });
+  controls.forEach(control => {
+    if (!control) return;
+    control.addEventListener(
+      control.type === "search" ? "input" : "change",
+      () => renderFilteredCatalogue(appEl, items)
+    );
   });
+
+  renderFilteredCatalogue(appEl, items);
 }
 
 init().catch(console.error);

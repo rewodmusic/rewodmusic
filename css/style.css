@@ -8355,3 +8355,550 @@ body.page-backstage .backstage-support-actions
     mask: none !important;
     background-color: transparent !important;
 }
+
+/* =========================================================
+   REWOD WEBSHOP – FILTERS, SEARCH & DAILY RIBBONS
+   ========================================================= */
+/* =========================================================
+   GLOBAL WEBSHOP CONTROLS
+   ========================================================= */
+body.page-webshop {
+    /* INTRODUCTION */
+    --ws-intro-width: 620px;
+    --ws-intro-font-size: 15px;
+    --ws-intro-line-height: 1.65;
+    --ws-intro-bottom-gap: 42px;
+
+    /* FILTER PANEL */
+    --ws-filter-width: 320px;
+    --ws-filter-row-gap: 18px;
+    --ws-filter-bottom-gap: 35px;
+
+    /* SWITCH LABEL */
+    --ws-switch-font-size: 13px;
+
+    /* APPLE STYLE SWITCH */
+    --ws-switch-width: 48px;
+    --ws-switch-height: 28px;
+    --ws-switch-knob-size: 22px;
+
+    /* SWITCH COLORS */
+    --ws-switch-on-color: #ffffff;
+    --ws-switch-off-color: #414141;
+    --ws-switch-knob-on-color: #222222;
+    --ws-switch-knob-off-color: #ffffff;
+
+    /* SEARCH */
+    --ws-search-width: 380px;
+    --ws-search-height: 42px;
+    --ws-search-radius: 12px;
+    --ws-search-font-size: 14px;
+    --ws-search-bg: rgba(255, 255, 255, 0.88);
+    --ws-search-bottom-gap: 65px;
+
+    /* DAILY RIBBON */
+    --ws-ribbon-width: 130px;
+    --ws-ribbon-height: 25px;
+    --ws-ribbon-font-size: 10px;
+    --ws-ribbon-top: 22px;
+    --ws-ribbon-left: -33px;
+    --ws-ribbon-rotation: -45deg;
+}
+
+/* =========================================================
+   INTRODUCTION
+   ========================================================= */
+body.page-webshop .ws-introduction {
+    width: min(
+        var(--ws-intro-width),
+        calc(100% - 32px)
+    );
+    margin: 0 auto
+        var(--ws-intro-bottom-gap);
+    text-align: center;
+}
+
+body.page-webshop .ws-introduction p {
+    margin: 0;
+    color: #ffffff;
+    font-family: "Barlow", sans-serif;
+    font-size: var(--ws-intro-font-size);
+    font-weight: 400;
+    line-height: var(--ws-intro-line-height);
+}
+
+/* =========================================================
+   FILTER PANEL
+   ========================================================= */
+body.page-webshop .ws-filter-panel {
+    width: min(
+        var(--ws-filter-width),
+        100%
+    );
+    margin: 0 auto
+        var(--ws-filter-bottom-gap);
+    display: flex;
+    flex-direction: column;
+    gap: var(--ws-filter-row-gap);
+}
+
+/* FILTER ROW */
+body.page-webshop .ws-switch-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* FILTER LABEL */
+body.page-webshop .ws-switch-label {
+    font-family: "Barlow", sans-serif;
+    font-size: var(--ws-switch-font-size);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+}
+
+/* =========================================================
+   APPLE STYLE SWITCH
+   ========================================================= */
+body.page-webshop .ws-switch {
+    position: relative;
+    display: inline-block;
+    width: var(--ws-switch-width);
+    height: var(--ws-switch-height);
+    flex-shrink: 0;
+}
+
+/* REAL CHECKBOX */
+body.page-webshop .ws-switch input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* SWITCH TRACK */
+body.page-webshop .ws-switch-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--ws-switch-off-color);
+    border-radius: 999px;
+    transition: background 220ms ease;
+}
+
+/* SWITCH KNOB */
+body.page-webshop .ws-switch-slider::before {
+    content: "";
+    position: absolute;
+    width: var(--ws-switch-knob-size);
+    height: var(--ws-switch-knob-size);
+    left: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--ws-switch-knob-off-color);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.20);
+    transition: transform 220ms ease,
+        background 220ms ease;
+}
+
+/* ACTIVE TRACK */
+body.page-webshop .ws-switch input:checked
++ .ws-switch-slider {
+    background: var(--ws-switch-on-color);
+}
+
+/* ACTIVE KNOB */
+body.page-webshop .ws-switch input:checked
++ .ws-switch-slider::before {
+    background: var(--ws-switch-knob-on-color);
+    transform: translate(
+        calc(
+            var(--ws-switch-width)
+            - var(--ws-switch-knob-size)
+            - 6px
+        ),
+        -50%
+    );
+}
+
+/* KEYBOARD ACCESSIBILITY */
+body.page-webshop .ws-switch input:focus-visible
++ .ws-switch-slider {
+    outline: 2px solid #ffffff;
+    outline-offset: 4px;
+}
+
+/* =========================================================
+   SEARCH BAR
+   ========================================================= */
+body.page-webshop .ws-search-wrap {
+    width: min(
+        var(--ws-search-width),
+        100%
+    );
+    margin: 0 auto
+        var(--ws-search-bottom-gap);
+}
+
+/* INPUT */
+body.page-webshop .ws-search-input {
+    display: block;
+    width: 100%;
+    height: var(--ws-search-height);
+    padding: 0 18px;
+    border: none;
+    border-radius: var(--ws-search-radius);
+    outline: none;
+    background: var(--ws-search-bg);
+    color: #000000;
+    font-family: "Barlow", sans-serif;
+    font-size: var(--ws-search-font-size);
+    font-weight: 400;
+    text-align: center;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background 180ms ease;
+}
+
+/* PLACEHOLDER */
+body.page-webshop .ws-search-input::placeholder {
+    color: rgba(0,0,0,0.52);
+    opacity: 1;
+}
+
+/* FOCUS */
+body.page-webshop .ws-search-input:focus {
+    background: #ffffff;
+}
+
+/* HIDE NATIVE SEARCH CANCEL BUTTON */
+body.page-webshop .ws-search-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
+
+/* =========================================================
+   RESULTS STATUS
+   ========================================================= */
+body.page-webshop .ws-results-status {
+    text-align: center;
+    font-family: "Barlow", sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+}
+
+body.page-webshop .ws-results-status:not(:empty) {
+    margin-bottom: 35px;
+}
+
+/* =========================================================
+   DAILY CARD RIBBON
+   ========================================================= */
+body.page-webshop .ws-card {
+    position: relative;
+    overflow: hidden;
+}
+
+/* RIBBON */
+body.page-webshop .ws-daily-ribbon {
+    position: absolute;
+    top: var(--ws-ribbon-top);
+    left: var(--ws-ribbon-left);
+    width: var(--ws-ribbon-width);
+    height: var(--ws-ribbon-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    color: #000000;
+    font-family: "Barlow", sans-serif;
+    font-size: var(--ws-ribbon-font-size);
+    font-weight: 500;
+    letter-spacing: 0.035em;
+    white-space: nowrap;
+    transform: rotate(
+        var(--ws-ribbon-rotation)
+    );
+    transform-origin: center;
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* =========================================================
+   LOAD MORE – REAL BUTTON
+   ========================================================= */
+body.page-webshop #wsLoadMoreBtn {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: "Barlow", sans-serif;
+    font-weight: 400;
+    background: rgba(59,59,59,0.85);
+    color: #ffffff;
+    transition: background 180ms ease;
+}
+
+body.page-webshop #wsLoadMoreBtn:hover {
+    background: rgba(68,68,68,1);
+}
+
+body.page-webshop #wsLoadMoreBtn[hidden] {
+    display: none !important;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+@media (max-width: 768px) {
+    body.page-webshop {
+        /* INTRO */
+        --ws-intro-width: 100%;
+        --ws-intro-font-size: 12px;
+        --ws-intro-line-height: 1.65;
+        --ws-intro-bottom-gap: 35px;
+
+        /* FILTERS */
+        --ws-filter-width: 100%;
+        --ws-filter-row-gap: 18px;
+        --ws-filter-bottom-gap: 30px;
+
+        /* LABEL */
+        --ws-switch-font-size: 11px;
+
+        /* SWITCH */
+        --ws-switch-width: 46px;
+        --ws-switch-height: 27px;
+        --ws-switch-knob-size: 21px;
+
+        /* SEARCH */
+        --ws-search-width: 100%;
+        --ws-search-height: 40px;
+        --ws-search-font-size: 13px;
+        --ws-search-bottom-gap: 45px;
+
+        /* RIBBON */
+        --ws-ribbon-width: 120px;
+        --ws-ribbon-height: 23px;
+        --ws-ribbon-font-size: 9px;
+        --ws-ribbon-top: 21px;
+        --ws-ribbon-left: -31px;
+    }
+
+    body.page-webshop .ws-introduction {
+        width: 100%;
+    }
+
+    body.page-webshop .ws-filter-panel {
+        max-width: 320px;
+    }
+
+    body.page-webshop .ws-search-wrap {
+        max-width: 340px;
+    }
+}
+
+/* =========================================================
+   WEBSHOP – INFINITE SCROLL
+   ========================================================= */
+body.page-webshop {
+    --ws-infinite-trigger-height: 30px;
+}
+
+body.page-webshop .ws-infinite-scroll-trigger {
+    width: 100%;
+    height: var(--ws-infinite-trigger-height);
+    pointer-events: none;
+}
+
+body.page-webshop .ws-infinite-scroll-trigger[hidden] {
+    display: none !important;
+}
+
+/* WEBSHOP – INTRO TOP GAP */
+body.page-webshop {
+    --ws-intro-top-gap: 60px;
+}
+
+body.page-webshop .webshop-page {
+    padding-top: var(--ws-intro-top-gap);
+}
+
+/* =========================================================
+   MUSIC PAGE – DISCOVERY FILTERS + LIVE SEARCH
+   Add to the END of /css/style.css
+   ========================================================= */
+.page-music .music-discovery {
+    width: min(100%, 560px);
+    margin: 0 auto 60px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    color: #fff;
+    font-family: "Inter Tight", Arial, sans-serif;
+}
+
+.page-music .music-discovery-intro {
+    margin: 0 auto 36px;
+    max-width: 560px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.65;
+    text-align: center;
+}
+
+.page-music .music-discovery-controls {
+    width: min(100%, 310px);
+    margin: 0 auto 32px;
+    display: grid;
+    gap: 18px;
+}
+
+.page-music .music-discovery-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 22px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.3;
+    user-select: none;
+}
+
+.page-music .music-discovery-filter input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.page-music .music-discovery-switch {
+    position: relative;
+    flex: 0 0 48px;
+    height: 28px;
+    border-radius: 999px;
+    background: #555;
+    transition: background .2s ease;
+}
+
+.page-music .music-discovery-switch::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #222;
+    transition: transform .2s ease;
+}
+
+.page-music .music-discovery-filter input:checked + .music-discovery-switch {
+    background: #f6f6f6;
+}
+
+.page-music .music-discovery-filter input:checked + .music-discovery-switch::after {
+    transform: translateX(20px);
+}
+
+.page-music .music-discovery-filter input:focus-visible + .music-discovery-switch {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+}
+
+.page-music .music-discovery-search-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.page-music .music-discovery-search {
+    display: block;
+    width: min(100%, 380px);
+    height: 44px;
+    margin: 0 auto;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 12px;
+    background: #e8e8e8;
+    color: #222;
+    text-align: center;
+    font: 400 14px "Inter Tight", Arial, sans-serif;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.page-music .music-discovery-search::placeholder {
+    color: #777;
+    opacity: 1;
+}
+
+.page-music .music-discovery-empty {
+    margin: 22px auto 50px;
+    color: #fff;
+    text-align: center;
+    font: 500 14px "Inter Tight", Arial, sans-serif;
+}
+
+.page-music .music-discovery-empty[hidden] {
+    display: none;
+}
+
+/* Remove blue focus ring from music search */
+.page-music .music-discovery-search:focus,
+.page-music .music-discovery-search:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+@media (max-width: 600px) {
+    .page-music .music-discovery {
+        margin-bottom: 36px;
+        padding: 0 20px;
+    }
+
+    .page-music .music-discovery-intro {
+        font-size: 13px;
+        line-height: 1.65;
+        margin-bottom: 28px;
+    }
+
+    .page-music .music-discovery-controls {
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+}
+
+/* =========================================================
+   MUSIC – ELEGANT INTRO TYPOGRAPHY
+   ========================================================= */
+.page-music .music-discovery-intro {
+    font-family: "Inter Tight", Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+/* MUSIC PAGE – Reduce space below hero image */
+.page-music .music-page {
+    padding-top: 50px;
+}
+
+/* WEBSHOP SEARCH – Native clear button */
+#wsSearchInput::-webkit-search-cancel-button {
+    -webkit-appearance: searchfield-cancel-button;
+    appearance: auto;
+    cursor: pointer;
+}

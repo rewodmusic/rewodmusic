@@ -1,16 +1,38 @@
-/* =========================
-   SONG PAGE – dynamic by ?id=
-   + HOME blocks (latest/upcoming) SAFE
-   + PROFILE IMAGE on top (always)
-   + DYNAMIC FULL PAGE COVER BACKGROUND
-   ========================= */
+/* =========================================================
+   SONG PAGE – REWOD
+
+   Dynamic song page by ?id=
+
+   + NON-DAILY RELEASES ONLY
+   + LATEST NON-DAILY FALLBACK
+   + UPCOMING FROM LATEST NON-DAILY RELEASE
+   + HOME BLOCKS
+   + TAPE MODE
+   + DESCRIPTION + SIGNATURE
+   + DYNAMIC COVER RULES
+   + DYNAMIC FULL PAGE BACKGROUND
+
+   RELEASE TIME:
+   Loaded from releasetime.json.
+
+   All release times are interpreted
+   in Europe/Budapest timezone.
+
+   Automatically handles CET / CEST.
+   ========================================================= */
+
 
 const CONFIG = {
   dataUrl: "/data/admin.json",
+
+  releaseTimeUrl:
+    "/backstage/backstage-edit-data/releasetime.json",
+
+  releaseTimezone: "Europe/Budapest",
+
   kofiUrl: "https://ko-fi.com/rewodmusic",
   signatureUrl: "/img/signature.png",
 
-  // cover images by rule
   covers: {
     latest: "/img/latest.jpg",
     original: "/img/profile_original.jpg",
@@ -19,10 +41,14 @@ const CONFIG = {
     default: "/img/profile.jpg"
   },
 
-  // newsletter folder for release images (originals + feats)
   newsletterDir: "/newsletter",
   newsletterExt: ".jpg"
 };
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
 
 function safeText(s) {
   return (s ?? "").toString();
@@ -32,34 +58,157 @@ function hasText(s) {
   return safeText(s).trim().length > 0;
 }
 
-/* =========================
+function pick(row, keys, fallback = "") {
+  for (const k of keys) {
+    if (hasText(row?.[k])) {
+      return safeText(row[k]).trim();
+    }
+  }
+
+  return fallback;
+}
+
+
+/* =========================================================
+   DAILY FILTER
+   ========================================================= */
+
+function isDaily(row) {
+  return (
+    safeText(row?.daily)
+      .trim()
+      .toLowerCase() === "x"
+  );
+}
+
+
+/* =========================================================
+   RELEASE DATE
+   ========================================================= */
+
+/*
+ * Standard format:
+ *
+ * YYYY_MM_DD
+ *
+ * Example:
+ * 2026_10_26
+ */
+
+function parseReleaseDate(value) {
+  const text = safeText(value).trim();
+
+  const match = text.match(
+    /^(\d{4})_(\d{2})_(\d{2})$/
+  );
+
+  if (!match) return null;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+
+  const date = new Date(
+    Date.UTC(year, month - 1, day)
+  );
+
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() + 1 !== month ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
+}
+
+
+/* =========================================================
+   LATEST NON-DAILY RELEASE
+   ========================================================= */
+
+function pickLatestRelease(rows) {
+  if (!Array.isArray(rows) || !rows.length) {
+    return null;
+  }
+
+  const regularRows = rows.filter(
+    row => row && !isDaily(row)
+  );
+
+  if (!regularRows.length) {
+    return null;
+  }
+
+  regularRows.sort((a, b) => {
+    const dateA = parseReleaseDate(
+      a.newmusicdate
+    );
+
+    const dateB = parseReleaseDate(
+      b.newmusicdate
+    );
+
+    const timeA = dateA
+      ? dateA.getTime()
+      : -Infinity;
+
+    const timeB = dateB
+      ? dateB.getTime()
+      : -Infinity;
+
+    return timeB - timeA;
+  });
+
+  return regularRows[0];
+}
+
+
+/* =========================================================
    DYNAMIC SONG BACKGROUND
-   ========================= */
+   ========================================================= */
 
 function syncSongBackground() {
-  const cover = document.getElementById("latestCover");
-  const bg = document.getElementById("songPageBg");
+  const cover =
+    document.getElementById("latestCover");
+
+  const bg =
+    document.getElementById("songPageBg");
 
   if (!cover || !bg) return;
 
   function updateBackground() {
+    if (
+      !cover.complete ||
+      cover.naturalWidth === 0
+    ) {
+      return;
+    }
+
     const src = cover.currentSrc || cover.src;
 
     if (!src) return;
 
-    bg.style.backgroundImage = `url("${src}")`;
+    bg.style.backgroundImage =
+      `url("${src}")`;
   }
 
-  // ha a kép már betöltődött
-  if (cover.complete && cover.src) {
+  if (
+    cover.complete &&
+    cover.naturalWidth > 0
+  ) {
     updateBackground();
   }
 
-  // normál betöltéskor
-  cover.addEventListener("load", updateBackground);
+  cover.addEventListener(
+    "load",
+    updateBackground
+  );
 
-  // ha JS később megváltoztatja a src-t
-  const observer = new MutationObserver(updateBackground);
+  const observer = new MutationObserver(
+    updateBackground
+  );
 
   observer.observe(cover, {
     attributes: true,
@@ -67,7 +216,11 @@ function syncSongBackground() {
   });
 }
 
-/** erős normalizálás id-k összehasonlításához */
+
+/* =========================================================
+   ID NORMALIZATION
+   ========================================================= */
+
 function normId(s) {
   return safeText(s)
     .normalize("NFD")
@@ -76,7 +229,6 @@ function normId(s) {
     .replace(/[^a-z0-9]+/g, "");
 }
 
-/** klasszikus slug (artist-title) */
 function slugify(s) {
   return safeText(s)
     .toLowerCase()
@@ -86,32 +238,21 @@ function slugify(s) {
     .replace(/^-+|-+$/g, "");
 }
 
-/** rugalmas mező-lookup */
-function pick(row, keys, fallback = "") {
-  for (const k of keys) {
-    if (hasText(row?.[k])) return safeText(row[k]).trim();
-  }
-
-  return fallback;
-}
-
-/* detect originals */
 function isOriginalComposition(row) {
-  const a = pick(
+  const artist = pick(
     row,
     ["newmusicartist", "artist"],
     ""
-  ).toLowerCase().trim();
+  ).toLowerCase();
 
-  return a === "original composition";
+  return artist === "original composition";
 }
 
-/**
- * id = "artist-title"
- *
- * RULE:
- * - if original composition -> ONLY "title"
- */
+
+/* =========================================================
+   BUILD ROW ID
+   ========================================================= */
+
 function buildRowId(row) {
   const title = pick(
     row,
@@ -119,7 +260,7 @@ function buildRowId(row) {
   );
 
   if (isOriginalComposition(row)) {
-    return `${slugify(title)}`.replace(/^-+|-+$/g, "");
+    return slugify(title);
   }
 
   const artist = pick(
@@ -127,14 +268,25 @@ function buildRowId(row) {
     ["artist", "newmusicartist", "musicartist"]
   );
 
-  return `${slugify(artist)}-${slugify(title)}`
-    .replace(/^-+|-+$/g, "");
+  return (
+    `${slugify(artist)}-${slugify(title)}`
+  ).replace(/^-+|-+$/g, "");
 }
 
 function getQueryId() {
-  const params = new URLSearchParams(window.location.search);
-  return safeText(params.get("id")).trim();
+  const params = new URLSearchParams(
+    window.location.search
+  );
+
+  return safeText(
+    params.get("id")
+  ).trim();
 }
+
+
+/* =========================================================
+   SERVICE BUTTONS
+   ========================================================= */
 
 function setBtn(btn, url) {
   if (!btn) return;
@@ -154,36 +306,61 @@ function setBtn(btn, url) {
   }
 }
 
+
+/* =========================================================
+   SONG TITLE
+   ========================================================= */
+
 function buildTitle(row) {
-  const t = pick(row, ["title", "newmusictitle"], "...");
-  const f = pick(row, ["feat"], "");
-  const tape = pick(row, ["tape"], "").toLowerCase();
+  const title = pick(
+    row,
+    ["title", "newmusictitle"],
+    "..."
+  );
+
+  const feat = pick(
+    row,
+    ["feat"],
+    ""
+  );
+
+  const tape = pick(
+    row,
+    ["tape"],
+    ""
+  ).toLowerCase();
 
   if (tape === "x") {
-    const a = pick(
+    const artist = pick(
       row,
       ["artist", "newmusicartist"],
       "REWOD"
     );
 
-    return `${a} - ${t}`;
+    return `${artist} - ${title}`;
   }
 
-  if (f) return `REWOD ft. ${f} - ${t}`;
+  if (feat) {
+    return `REWOD ft. ${feat} - ${title}`;
+  }
 
-  return `REWOD - ${t}`;
+  return `REWOD - ${title}`;
 }
 
-/* =========================
-   TAPE UI
-   ========================= */
+
+/* =========================================================
+   TAPE MODE
+   ========================================================= */
 
 function setTapeMode(isTape) {
   const root =
     document.querySelector(".latest-release") ||
     document.body;
 
-  root.classList.toggle("is-tape", !!isTape);
+  root.classList.toggle(
+    "is-tape",
+    !!isTape
+  );
 
   const rowSpotify =
     document.querySelector(
@@ -201,19 +378,30 @@ function setTapeMode(isTape) {
     );
 
   [rowSpotify, rowApple, rowMMS].forEach(el => {
-    if (el) el.style.display = "";
+    if (el) {
+      el.style.display = "";
+    }
   });
 
   if (isTape) {
-    if (rowSpotify) rowSpotify.style.display = "none";
-    if (rowApple) rowApple.style.display = "none";
-    if (rowMMS) rowMMS.style.display = "none";
+    if (rowSpotify) {
+      rowSpotify.style.display = "none";
+    }
+
+    if (rowApple) {
+      rowApple.style.display = "none";
+    }
+
+    if (rowMMS) {
+      rowMMS.style.display = "none";
+    }
   }
 }
 
-/* =========================
-   DESCR BLOCK
-   ========================= */
+
+/* =========================================================
+   DESCRIPTION + SIGNATURE
+   ========================================================= */
 
 let _latestDescrNode = null;
 
@@ -229,14 +417,16 @@ function setDescr(row) {
 
   if (!services || !wrap || !text) return;
 
-  const d = pick(
+  const description = pick(
     row,
     ["descr", "description"],
     ""
   );
 
-  if (!d) {
-    services.classList.remove("has-descr");
+  if (!description) {
+    services.classList.remove(
+      "has-descr"
+    );
 
     wrap.hidden = true;
 
@@ -254,86 +444,387 @@ function setDescr(row) {
     );
   }
 
-  services.classList.add("has-descr");
+  services.classList.add(
+    "has-descr"
+  );
 
   wrap.hidden = false;
 
   text.textContent =
-    `"${d}"\n- REWOD`;
+    `"${description}"\n- REWOD`;
 
-  let sig =
-    document.getElementById("latestSignature");
+  let signature =
+    document.getElementById(
+      "latestSignature"
+    );
 
-  if (!sig) {
-    sig = document.createElement("img");
-    sig.id = "latestSignature";
-    sig.className = "latest-descr-signature";
-    sig.alt = "REWOD signature";
+  if (!signature) {
+    signature = document.createElement(
+      "img"
+    );
 
-    wrap.appendChild(sig);
+    signature.id =
+      "latestSignature";
+
+    signature.className =
+      "latest-descr-signature";
+
+    signature.alt =
+      "REWOD signature";
+
+    wrap.appendChild(signature);
   }
 
-  const sigUrl = pick(
+  const signatureUrl = pick(
     row,
     ["signatureUrl", "signatureurl"],
     CONFIG.signatureUrl
   );
 
-  sig.src = sigUrl;
-  sig.loading = "lazy";
-  sig.decoding = "async";
+  signature.src = signatureUrl;
+  signature.loading = "lazy";
+  signature.decoding = "async";
 }
 
-/* =========================
-   HOME BLOCKS
-   ========================= */
 
-function utcMidnightMs(dateStr) {
-  const s = safeText(dateStr).trim();
+/* =========================================================
+   RELEASE TIME JSON
+   ========================================================= */
 
-  if (!s) return null;
+/*
+ * Source:
+ *
+ * /backstage/backstage-edit-data/releasetime.json
+ *
+ * Expected:
+ *
+ * [
+ *   {
+ *     "releasetime": "12:00"
+ *   }
+ * ]
+ *
+ * Examples:
+ *
+ * 12:00 -> Budapest 12:00
+ * 13:00 -> Budapest 13:00
+ * 18:30 -> Budapest 18:30
+ *
+ * The time is NOT interpreted
+ * in the visitor's timezone.
+ */
 
-  const normalized =
-    s.replace(/_/g, "-");
+function parseReleaseTime(value) {
+  const text = safeText(value).trim();
 
-  const m =
-    normalized.match(
-      /^(\d{4})-(\d{2})-(\d{2})$/
+  const match = text.match(
+    /^([01]\d|2[0-3]):([0-5]\d)$/
+  );
+
+  if (!match) {
+    return null;
+  }
+
+  return {
+    hour: Number(match[1]),
+    minute: Number(match[2])
+  };
+}
+
+
+async function loadReleaseTime() {
+  const response = await fetch(
+    CONFIG.releaseTimeUrl,
+    {
+      cache: "no-store"
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to load ${CONFIG.releaseTimeUrl}: ${response.status}`
     );
+  }
 
-  if (!m) return null;
+  const data = await response.json();
 
-  return Date.UTC(
-    Number(m[1]),
-    Number(m[2]) - 1,
-    Number(m[3]),
-    0,
-    0,
-    0
+  if (
+    !Array.isArray(data) ||
+    !data.length
+  ) {
+    throw new Error(
+      "releasetime.json must contain a non-empty array."
+    );
+  }
+
+  const releaseTime = parseReleaseTime(
+    data[0]?.releasetime
+  );
+
+  if (!releaseTime) {
+    throw new Error(
+      "Invalid releasetime.json value. Expected HH:MM (00:00–23:59)."
+    );
+  }
+
+  return releaseTime;
+}
+
+
+/* =========================================================
+   BUDAPEST TIMEZONE HELPERS
+   ========================================================= */
+
+/*
+ * Convert Budapest local date/time
+ * into an absolute timestamp.
+ *
+ * Automatically handles CET / CEST.
+ */
+
+const budapestFormatter = new Intl.DateTimeFormat(
+  "en-US",
+  {
+    timeZone: CONFIG.releaseTimezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23"
+  }
+);
+
+
+function getBudapestParts(date) {
+  const parts =
+    budapestFormatter.formatToParts(date);
+
+  const values = {};
+
+  parts.forEach(part => {
+    if (part.type !== "literal") {
+      values[part.type] =
+        Number(part.value);
+    }
+  });
+
+  return values;
+}
+
+
+function getBudapestOffsetMs(date) {
+  const values =
+    getBudapestParts(date);
+
+  const asUTC = Date.UTC(
+    values.year,
+    values.month - 1,
+    values.day,
+    values.hour,
+    values.minute,
+    values.second
+  );
+
+  const timestampWithoutMs =
+    Math.floor(
+      date.getTime() / 1000
+    ) * 1000;
+
+  return asUTC - timestampWithoutMs;
+}
+
+
+function matchesBudapestTime(
+  date,
+  target,
+  hour,
+  minute
+) {
+  const parts =
+    getBudapestParts(date);
+
+  return (
+    parts.year === target.year &&
+    parts.month === target.month &&
+    parts.day === target.day &&
+    parts.hour === hour &&
+    parts.minute === minute
   );
 }
 
+
+/* =========================================================
+   RELEASE COUNTDOWN TARGET
+   ========================================================= */
+
+/*
+ * Accepts:
+ *
+ * YYYY_MM_DD
+ * YYYY-MM-DD
+ *
+ * Date comes from admin.json.
+ * Time comes from releasetime.json.
+ *
+ * Both are interpreted as
+ * Europe/Budapest local time.
+ *
+ * Returns an absolute timestamp
+ * in milliseconds.
+ */
+
+function budapestReleaseMs(
+  dateStr,
+  releaseTime
+) {
+  const text = safeText(dateStr).trim();
+
+  if (!text || !releaseTime) {
+    return null;
+  }
+
+  const hour = releaseTime.hour;
+  const minute = releaseTime.minute;
+
+  if (
+    !Number.isInteger(hour) ||
+    !Number.isInteger(minute) ||
+    hour < 0 ||
+    hour > 23 ||
+    minute < 0 ||
+    minute > 59
+  ) {
+    return null;
+  }
+
+  const normalized =
+    text.replace(/-/g, "_");
+
+  const match = normalized.match(
+    /^(\d{4})_(\d{2})_(\d{2})$/
+  );
+
+  if (!match) {
+    return null;
+  }
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+
+  const validationDate = new Date(
+    Date.UTC(year, month - 1, day)
+  );
+
+  if (
+    validationDate.getUTCFullYear() !== year ||
+    validationDate.getUTCMonth() + 1 !== month ||
+    validationDate.getUTCDate() !== day
+  ) {
+    return null;
+  }
+
+  const target = {
+    year,
+    month,
+    day
+  };
+
+  const utcGuess = Date.UTC(
+    year,
+    month - 1,
+    day,
+    hour,
+    minute,
+    0,
+    0
+  );
+
+  const firstOffset =
+    getBudapestOffsetMs(
+      new Date(utcGuess)
+    );
+
+  const firstTimestamp =
+    utcGuess - firstOffset;
+
+  const secondOffset =
+    getBudapestOffsetMs(
+      new Date(firstTimestamp)
+    );
+
+  /*
+   * Check multiple possible offsets
+   * to handle daylight saving changes.
+   */
+
+  const offsets = [
+    firstOffset,
+    secondOffset,
+
+    getBudapestOffsetMs(
+      new Date(
+        utcGuess - 24 * 60 * 60 * 1000
+      )
+    ),
+
+    getBudapestOffsetMs(
+      new Date(
+        utcGuess + 24 * 60 * 60 * 1000
+      )
+    )
+  ];
+
+  const candidates = offsets
+    .map(offset =>
+      new Date(utcGuess - offset)
+    )
+    .filter(candidate =>
+      matchesBudapestTime(
+        candidate,
+        target,
+        hour,
+        minute
+      )
+    )
+    .sort((a, b) => a - b);
+
+  if (!candidates.length) {
+    return null;
+  }
+
+  return candidates[0].getTime();
+}
+
+
+/* =========================================================
+   HOME BLOCKS – HELPERS
+   ========================================================= */
+
 function formatCountdownText(msLeft) {
-  if (msLeft <= 0) return "Out now";
+  if (msLeft <= 0) {
+    return "Out now";
+  }
 
-  const totalSec =
-    Math.floor(msLeft / 1000);
+  const totalSec = Math.floor(
+    msLeft / 1000
+  );
 
-  const days =
-    Math.floor(totalSec / 86400);
+  const days = Math.floor(
+    totalSec / 86400
+  );
 
-  const hours =
-    Math.floor(
-      (totalSec % 86400) / 3600
-    );
+  const hours = Math.floor(
+    (totalSec % 86400) / 3600
+  );
 
-  const minutes =
-    Math.floor(
-      (totalSec % 3600) / 60
-    );
+  const minutes = Math.floor(
+    (totalSec % 3600) / 60
+  );
 
-  const seconds =
-    totalSec % 60;
+  const seconds = totalSec % 60;
 
   return (
     `${days} days ${hours} hours<br>` +
@@ -355,8 +846,7 @@ function appendFeatIfNeeded(
   const t = safeText(title).trim();
   const f = safeText(feat).trim();
 
-  if (!t) return "";
-  if (!f) return t;
+  if (!t || !f) return t;
 
   if (artistContainsRewod(artistStr)) {
     return t;
@@ -365,24 +855,51 @@ function appendFeatIfNeeded(
   return `${t} ft. ${f}`;
 }
 
-function initHomeBlocks(rows) {
+
+/* =========================================================
+   HOME BLOCKS
+   ========================================================= */
+
+function initHomeBlocks(
+  rows,
+  releaseTime
+) {
   const hasAny =
-    document.getElementById("homeLatestTitle") ||
-    document.getElementById("homeComingTitle") ||
-    document.getElementById("homeComingCountdown");
+    document.getElementById(
+      "homeLatestTitle"
+    ) ||
+    document.getElementById(
+      "homeComingTitle"
+    ) ||
+    document.getElementById(
+      "homeComingCountdown"
+    );
 
   if (!hasAny) return;
 
-  const latest =
-    rows?.[0] || {};
+  /*
+   * Both LATEST and UPCOMING use the
+   * latest NON-DAILY release.
+   */
 
-  /* ---------- LATEST ---------- */
+  const latest = pickLatestRelease(rows);
+
+  if (!latest) return;
+
+
+  /* =========================
+     LATEST BLOCK
+     ========================= */
 
   const latestTitleEl =
-    document.getElementById("homeLatestTitle");
+    document.getElementById(
+      "homeLatestTitle"
+    );
 
   const latestArtistEl =
-    document.getElementById("homeLatestArtist");
+    document.getElementById(
+      "homeLatestArtist"
+    );
 
   const latestTitle = pick(
     latest,
@@ -437,8 +954,7 @@ function initHomeBlocks(rows) {
     latestCoverEl &&
     latestCoverUrl
   ) {
-    latestCoverEl.src =
-      latestCoverUrl;
+    latestCoverEl.src = latestCoverUrl;
   }
 
   const latestBtn =
@@ -450,7 +966,10 @@ function initHomeBlocks(rows) {
     latestBtn.href = "/latest/";
   }
 
-  /* ---------- UPCOMING ---------- */
+
+  /* =========================
+     UPCOMING BLOCK
+     ========================= */
 
   const comingTitleEl =
     document.getElementById(
@@ -512,9 +1031,13 @@ function initHomeBlocks(rows) {
     comingCoverEl &&
     comingCoverUrl
   ) {
-    comingCoverEl.src =
-      comingCoverUrl;
+    comingCoverEl.src = comingCoverUrl;
   }
+
+
+  /* =========================
+     UPCOMING COUNTDOWN
+     ========================= */
 
   const countdownEl =
     document.getElementById(
@@ -523,16 +1046,28 @@ function initHomeBlocks(rows) {
 
   if (!countdownEl) return;
 
-  const targetUtc =
-    utcMidnightMs(
+  /*
+   * Date:
+   * admin.json -> comingmusicdate
+   *
+   * Time:
+   * releasetime.json -> releasetime
+   *
+   * Timezone:
+   * Europe/Budapest
+   */
+
+  const targetTimestamp =
+    budapestReleaseMs(
       pick(
         latest,
         ["comingmusicdate"],
         ""
-      )
+      ),
+      releaseTime
     );
 
-  if (!targetUtc) {
+  if (targetTimestamp === null) {
     countdownEl.textContent = "--";
     return;
   }
@@ -540,7 +1075,7 @@ function initHomeBlocks(rows) {
   function tick() {
     countdownEl.innerHTML =
       formatCountdownText(
-        targetUtc - Date.now()
+        targetTimestamp - Date.now()
       );
   }
 
@@ -552,9 +1087,10 @@ function initHomeBlocks(rows) {
   );
 }
 
-/* =========================
+
+/* =========================================================
    DYNAMIC COVER RULES
-   ========================= */
+   ========================================================= */
 
 function setImgWithFallback(
   imgEl,
@@ -569,10 +1105,7 @@ function setImgWithFallback(
   imgEl.src = preferredSrc;
 }
 
-function setDynamicCover(
-  row,
-  allRows
-) {
+function setDynamicCover(row, latestRow) {
   const coverEl =
     document.getElementById(
       "latestCover"
@@ -580,19 +1113,19 @@ function setDynamicCover(
 
   if (!coverEl) return;
 
-  let src =
-    CONFIG.covers.default;
+  let src = CONFIG.covers.default;
 
-  const latestRow =
-    allRows?.[0] || null;
+  const rowKey = normId(
+    buildRowId(row)
+  );
 
-  const rowKey =
-    normId(buildRowId(row));
+  const latestKey = latestRow
+    ? normId(buildRowId(latestRow))
+    : "";
 
-  const latestKey =
-    latestRow
-      ? normId(buildRowId(latestRow))
-      : "";
+  /*
+   * Latest means latest NON-DAILY release.
+   */
 
   const isLatestPage =
     !!latestRow &&
@@ -600,19 +1133,24 @@ function setDynamicCover(
     latestKey &&
     rowKey === latestKey;
 
-  /* ---------- LATEST ---------- */
+
+  /* =========================
+     LATEST COVER
+     ========================= */
 
   if (isLatestPage) {
     coverEl.src =
       CONFIG.covers.latest;
 
-    coverEl.alt =
-      "REWOD cover";
+    coverEl.alt = "REWOD cover";
 
     return;
   }
 
-  /* ---------- NON-LATEST ---------- */
+
+  /* =========================
+     NON-LATEST COVER
+     ========================= */
 
   const tape = pick(
     row,
@@ -624,43 +1162,41 @@ function setDynamicCover(
     row,
     ["feat"],
     ""
-  ).trim();
+  );
 
   const artist = pick(
     row,
     ["newmusicartist", "artist"],
     ""
-  ).toLowerCase().trim();
+  ).toLowerCase();
 
-  const titleSlug =
-    slugify(
-      pick(
-        row,
-        ["newmusictitle", "title"]
-      )
-    );
+  const titleSlug = slugify(
+    pick(
+      row,
+      ["newmusictitle", "title"],
+      ""
+    )
+  );
 
-  /* ---------- TAPE ---------- */
+
+  /* TAPE */
 
   if (tape === "x") {
-    src =
+    coverEl.src =
       CONFIG.covers.tape;
 
-    coverEl.src = src;
-    coverEl.alt =
-      "REWOD cover";
+    coverEl.alt = "REWOD cover";
 
     return;
   }
 
-  /* ---------- ORIGINAL / FEAT ---------- */
+
+  /* ORIGINAL / FEAT */
 
   const isOriginal =
-    artist ===
-    "original composition";
+    artist === "original composition";
 
-  const isFeat =
-    !!feat;
+  const isFeat = !!feat;
 
   if (isOriginal || isFeat) {
     const preferred =
@@ -668,10 +1204,9 @@ function setDynamicCover(
       `${titleSlug}` +
       `${CONFIG.newsletterExt}`;
 
-    const fallback =
-      isOriginal
-        ? CONFIG.covers.original
-        : CONFIG.covers.feat;
+    const fallback = isOriginal
+      ? CONFIG.covers.original
+      : CONFIG.covers.feat;
 
     setImgWithFallback(
       coverEl,
@@ -679,36 +1214,85 @@ function setDynamicCover(
       fallback
     );
 
-    coverEl.alt =
-      "REWOD cover";
+    coverEl.alt = "REWOD cover";
 
     return;
   }
 
-  /* ---------- DEFAULT ---------- */
+
+  /* DEFAULT */
 
   coverEl.src =
     CONFIG.covers.default;
 
-  coverEl.alt =
-    "REWOD cover";
+  coverEl.alt = "REWOD cover";
 }
 
-/* =========================
+
+/* =========================================================
    MAIN
-   ========================= */
+   ========================================================= */
 
 async function initSong() {
-  const res =
-    await fetch(
+
+  /*
+   * Load admin.json and releasetime.json
+   * independently.
+   *
+   * If release time fails, the song page
+   * still works, but the countdown shows --.
+   */
+
+  const [
+    adminResult,
+    releaseTimeResult
+  ] = await Promise.allSettled([
+    fetch(
       CONFIG.dataUrl,
       {
         cache: "no-store"
       }
-    );
+    ),
+    loadReleaseTime()
+  ]);
 
-  const data =
-    await res.json();
+
+  if (
+    adminResult.status !== "fulfilled"
+  ) {
+    throw adminResult.reason;
+  }
+
+  const res = adminResult.value;
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to load ${CONFIG.dataUrl}: ${res.status}`
+    );
+  }
+
+  const data = await res.json();
+
+
+  /*
+   * Release time is required for
+   * the countdown only.
+   */
+
+  let releaseTime = null;
+
+  if (
+    releaseTimeResult.status === "fulfilled"
+  ) {
+    releaseTime =
+      releaseTimeResult.value;
+  } else {
+    console.error(
+      "Song Page: Could not load release time:",
+      releaseTimeResult.reason
+    );
+  }
+
 
   if (
     !Array.isArray(data) ||
@@ -717,114 +1301,155 @@ async function initSong() {
     return;
   }
 
-  /* HOME BLOCKS */
+
+  /* =========================
+     REMOVE ALL DAILY ENTRIES
+     ========================= */
+
+  const regularRows = data.filter(
+    row => row && !isDaily(row)
+  );
+
+  if (!regularRows.length) {
+    console.warn(
+      "Song Page: No non-daily releases found."
+    );
+    return;
+  }
+
+
+  /* =========================
+     FIND LATEST REGULAR RELEASE
+     ========================= */
+
+  const latestRow = pickLatestRelease(
+    regularRows
+  );
+
+  if (!latestRow) return;
+
+
+  /* =========================
+     HOME BLOCKS
+     ========================= */
 
   try {
-    initHomeBlocks(data);
-  } catch (e) {
+    initHomeBlocks(
+      regularRows,
+      releaseTime
+    );
+  } catch (error) {
     console.error(
-      "home blocks error:",
-      e
+      "Home blocks error:",
+      error
     );
   }
 
-  /* PICK ROW BY ?id= */
 
-  const wantedRaw =
-    getQueryId();
+  /* =========================
+     PICK SONG BY ?id=
+     ========================= */
 
-  const wanted =
-    normId(wantedRaw);
+  const wantedRaw = getQueryId();
+
+  const wanted = normId(
+    wantedRaw
+  );
 
   let row = null;
 
   if (wanted) {
     row =
-      data.find(
-        r =>
-          normId(r?.id) ===
-          wanted
+      regularRows.find(
+        r => normId(r.id) === wanted
       ) ||
 
-      data.find(
-        r =>
-          normId(r?.slug) ===
-          wanted
+      regularRows.find(
+        r => normId(r.slug) === wanted
       ) ||
 
-      data.find(
+      regularRows.find(
         r =>
-          normId(
-            buildRowId(r)
-          ) === wanted
+          normId(buildRowId(r)) === wanted
       ) ||
 
-      data.find(
+      regularRows.find(
         r =>
           isOriginalComposition(r) &&
           normId(
             slugify(
               pick(
                 r,
-                [
-                  "newmusictitle",
-                  "title"
-                ]
+                ["newmusictitle", "title"]
               )
             )
           ) === wanted
       ) ||
 
-      data.find(
+      regularRows.find(
         r =>
           normId(
             slugify(
               pick(
                 r,
-                [
-                  "newmusicartist",
-                  "artist"
-                ]
+                ["newmusicartist", "artist"]
               )
             ) +
             slugify(
               pick(
                 r,
-                [
-                  "newmusictitle",
-                  "title"
-                ]
+                ["newmusictitle", "title"]
               )
             )
           ) === wanted
       );
   }
 
+
+  /* =========================
+     INVALID URL FALLBACK
+     ========================= */
+
+  /*
+   * Missing / invalid ID:
+   * always display the latest
+   * NON-DAILY release.
+   */
+
   if (!row) {
-    row = data[0];
+    row = latestRow;
   }
 
-  /* DYNAMIC COVER */
+
+  /* =========================
+     DYNAMIC COVER
+     ========================= */
 
   setDynamicCover(
     row,
-    data
+    latestRow
   );
 
-  /* SONG CONTENT */
+
+  /* =========================
+     SONG TITLE
+     ========================= */
 
   const titleEl =
     document.getElementById(
       "latestTitle"
     );
 
-  const titleStr =
-    buildTitle(row);
+  const titleStr = buildTitle(row);
 
   if (titleEl) {
-    titleEl.textContent =
-      titleStr;
+    titleEl.textContent = titleStr;
   }
+
+
+  /* =========================
+     TAPE MODE
+     ========================= */
 
   const isTape =
     pick(
@@ -834,6 +1459,11 @@ async function initSong() {
     ).toLowerCase() === "x";
 
   setTapeMode(isTape);
+
+
+  /* =========================
+     SERVICE BUTTONS
+     ========================= */
 
   setBtn(
     document.getElementById(
@@ -896,38 +1526,50 @@ async function initSong() {
     )
   );
 
+
+  /* =========================
+     KO-FI
+     ========================= */
+
   const kofiBtn =
     document.getElementById(
       "btnKofi"
     );
 
   if (kofiBtn) {
-    kofiBtn.href =
-      CONFIG.kofiUrl;
-
-    kofiBtn.target =
-      "_blank";
-
-    kofiBtn.rel =
-      "noopener";
+    kofiBtn.href = CONFIG.kofiUrl;
+    kofiBtn.target = "_blank";
+    kofiBtn.rel = "noopener";
   }
+
+
+  /* =========================
+     DESCRIPTION + SIGNATURE
+     ========================= */
 
   setDescr(row);
 
-  /* BROWSER TAB TITLE */
 
-  document.title =
-    titleStr;
+  /* =========================
+     BROWSER TAB TITLE
+     ========================= */
+
+  document.title = titleStr;
 }
 
+
+/* =========================================================
+   START
+   ========================================================= */
+
 /*
- * FONTOS:
- * előbb bekötjük a cover figyelését,
- * utána indul az initSong().
+ * First watch the cover image.
+ * Then initialize the song page.
  *
- * Így bármilyen cover kerül a #latestCover-re,
- * ugyanaz lesz az oldal háttere is.
+ * This keeps the full-page background
+ * synchronized with the actual cover.
  */
+
 syncSongBackground();
 
 initSong().catch(
