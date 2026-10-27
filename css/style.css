@@ -11296,5 +11296,815 @@ body.media-page .media-cta-btn {
     border-radius: 10px !important;
 }
 
+/* ============================================================
+   REWOD CONNECT — V1
+   ============================================================ */
+/* ============================================================
+   1. PAGE + DYNAMIC BACKGROUND
+   ============================================================ */
+body.page-connect {
+    --connect-max-width: 920px;
+    --connect-section-gap: 105px;
+    --connect-heading-size: 36px;
+    --connect-bg-grayscale: 0%;
+    --connect-bg-blur: 11px;
+    --connect-bg-opacity: 100%;
+    --connect-bg-darken: 85%;
+    --backstage-vlog-width: 680px;
+    --backstage-vlog-radius: 10px;
+    --backstage-support-width: 650px;
+    --backstage-action-bg: #444444;
+    --backstage-action-hover: #323232;
+    --backstage-action-radius: 0px;
+    position: relative;
+    min-height: 100vh;
+    background: #000;
+    color: #fff;
+}
 
+/* DYNAMIC UPCOMING COVER BACKGROUND */
+body.page-connect .connect-page-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(var(--connect-bg-grayscale))
+        blur(var(--connect-bg-blur));
+    opacity: var(--connect-bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
 
+/* BLACK OVERLAY */
+body.page-connect .connect-page-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(
+        0 0 0 / var(--connect-bg-darken)
+    );
+    pointer-events: none;
+}
+
+/* PAGE CONTENT ABOVE BACKGROUND */
+body.page-connect > .m-header,
+body.page-connect > .m-menu,
+body.page-connect > .hero,
+body.page-connect > .connect-page {
+    position: relative;
+    z-index: 1;
+}
+
+/* TRANSPARENT HERO */
+body.page-connect .hero {
+    background: transparent !important;
+}
+
+/* FOOTER */
+body.page-connect .site-footer {
+    position: relative;
+    z-index: 2;
+}
+
+/* ============================================================
+   2. MAIN LAYOUT
+   ============================================================ */
+body.page-connect .connect-page {
+    width: 100%;
+    max-width: var(--connect-max-width);
+    margin: 0 auto;
+    padding: 80px
+        60px
+        150px;
+    background: transparent;
+}
+
+body.page-connect .connect-section {
+    width: 100%;
+    min-width: 0;
+}
+
+body.page-connect .connect-section +
+body.page-connect .connect-section {
+    margin-top: var(--connect-section-gap);
+}
+
+/* ============================================================
+   3. SECTION HEADINGS
+   ============================================================ */
+body.page-connect .connect-heading {
+    margin: 0 0 42px;
+    font-family: "Arial Black",
+        Arial,
+        Helvetica,
+        sans-serif;
+    font-size: var(--connect-heading-size);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: #ffffff;
+}
+
+/* ============================================================
+   4. REWOD WEEKLY
+   ============================================================ */
+body.page-connect .connect-weekly {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+body.page-connect .connect-weekly .connect-heading {
+    margin-bottom: 18px;
+}
+
+body.page-connect .connect-weekly-subtitle {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    line-height: 1.4;
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+
+body.page-connect .connect-weekly-description {
+    width: 600px;
+    max-width: 100%;
+    margin: 0 auto 35px;
+    font-family: "Fraunces", serif;
+    font-size: 15px;
+    font-weight: 220;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.92);
+}
+
+body.page-connect .connect-weekly-description p {
+    margin: 0 0 18px;
+}
+
+body.page-connect .connect-weekly-description p:last-child {
+    margin-bottom: 0;
+}
+
+/* EXISTING NEWSLETTER FORM */
+/* ORIGINAL CLASSES AND IDS ARE PRESERVED */
+body.page-connect .upcoming-newsletter-wrap {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+body.page-connect .upcoming-newsletter {
+    width: 100%;
+}
+
+body.page-connect .newsletter-form {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    width: 100%;
+}
+
+body.page-connect .newsletter-input {
+    min-width: 0;
+    flex: 1;
+}
+
+/* ============================================================
+   5. LATEST VLOG
+   ============================================================ */
+body.page-connect .connect-vlog-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+body.page-connect .backstage-vlog-container {
+    width: min(
+        var(--backstage-vlog-width),
+        100%
+    );
+    margin: 0 auto;
+}
+
+body.page-connect .backstage-vlog-video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: var(--backstage-vlog-radius);
+    background: #171717;
+}
+
+body.page-connect .backstage-vlog-video iframe {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: inherit;
+}
+
+/* ============================================================
+   6. SHARED ACTION BUTTONS
+   ============================================================ */
+body.page-connect .backstage-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 43px;
+    padding: 12px 25px;
+    background: var(--backstage-action-bg);
+    color: #ffffff;
+    border: 0;
+    border-radius: var(--backstage-action-radius);
+    text-decoration: none;
+    text-align: center;
+    font-family: "Barlow", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 180ms ease,
+        opacity 180ms ease;
+}
+
+body.page-connect .backstage-action-button:hover {
+    background: var(--backstage-action-hover);
+    color: #ffffff;
+}
+
+body.page-connect .backstage-action-button[hidden] {
+    display: none !important;
+}
+
+body.page-connect .backstage-vlog-button {
+    margin-top: 20px;
+}
+
+/* ============================================================
+   7. UPCOMING MUSIC — DESKTOP
+   ============================================================ */
+body.page-connect .connect-upcoming-section {
+    text-align: center;
+}
+
+body.page-connect .connect-upcoming-content {
+    width: 100%;
+}
+
+body.page-connect .upcoming-grid {
+    display: grid;
+    grid-template-columns: 260px
+        minmax(0, 1fr);
+    align-items: center;
+    column-gap: 65px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    transform: none !important;
+}
+
+body.page-connect .upcoming-cover {
+    width: 260px;
+    min-width: 0;
+}
+
+body.page-connect .upcoming-cover img {
+    display: block;
+    width: 260px;
+    height: 260px;
+    max-width: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    transform: none !important;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset;
+}
+
+body.page-connect .upcoming-textbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+    transform: none !important;
+}
+
+body.page-connect .upcoming-date {
+    font-family: "Fraunces", serif;
+    font-size: 46px;
+    font-weight: 400;
+    line-height: 1.05;
+    margin-bottom: 12px;
+}
+
+body.page-connect .upcoming-artist {
+    font-family: "Fraunces", serif;
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    opacity: 0.85;
+}
+
+body.page-connect .upcoming-title {
+    font-family: "Fraunces", serif;
+    font-size: 29px;
+    font-weight: 400;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    overflow-wrap: anywhere;
+}
+
+body.page-connect .upcoming-feat {
+    font-family: "Fraunces", serif;
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1.3;
+    opacity: 0.95;
+}
+
+/* ============================================================
+   8. NEXT 7 DAYS SCHEDULE
+   ============================================================ */
+body.page-connect .connect-schedule-section {
+    width: 100%;
+}
+
+body.page-connect .connect-schedule-section .connect-heading {
+    text-align: left;
+}
+
+body.page-connect .backstage-timezone-note {
+    text-align: center;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    opacity: 0.6;
+    margin: 10px 0 22px;
+}
+
+body.page-connect .backstage-schedule {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #141414;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.055);
+}
+
+body.page-connect .backstage-schedule-row {
+    display: grid;
+    grid-template-columns: 105px
+        120px
+        minmax(0, 1fr);
+    align-items: center;
+    min-height: 53px;
+    padding: 0 22px;
+    font-family: "Barlow", sans-serif;
+}
+
+body.page-connect .backstage-schedule-row:nth-child(odd) {
+    background: #171717;
+}
+
+body.page-connect .backstage-schedule-row:nth-child(even) {
+    background: #222222;
+}
+
+body.page-connect .backstage-schedule-date {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+body.page-connect .backstage-schedule-time {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.62);
+}
+
+body.page-connect .backstage-schedule-type {
+    font-family: "Fraunces", serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.94);
+    overflow-wrap: anywhere;
+}
+
+body.page-connect .backstage-empty-message {
+    font-family: "Barlow", sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+}
+
+/* ============================================================
+   9. SUPPORT REWOD
+   ============================================================ */
+body.page-connect .connect-support-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+}
+
+body.page-connect .backstage-support-text {
+    width: min(
+        var(--backstage-support-width),
+        100%
+    );
+    margin: 0 auto;
+    font-family: "Barlow", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: #ffffff;
+}
+
+body.page-connect .backstage-support-text p {
+    margin: 0 0 18px;
+}
+
+body.page-connect .backstage-support-text p:last-child {
+    margin-bottom: 0;
+}
+
+body.page-connect .backstage-support-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-top: 30px;
+}
+
+body.page-connect
+.backstage-support-actions
+.backstage-action-button {
+    width: 245px;
+    max-width: 100%;
+}
+
+/* ============================================================
+   10. MOBILE
+   ============================================================ */
+@media (max-width: 768px) {
+    body.page-connect {
+        --connect-heading-size: 25px;
+        --connect-section-gap: 75px;
+    }
+
+    /* MAIN PAGE */
+    body.page-connect .connect-page {
+        width: 100%;
+        padding: 35px
+            20px
+            100px;
+    }
+
+    /* HEADINGS */
+    body.page-connect .connect-heading {
+        margin-bottom: 28px;
+        font-size: var(--connect-heading-size);
+        line-height: 1.05;
+        text-align: center;
+    }
+
+    /* WEEKLY */
+    body.page-connect .connect-weekly .connect-heading {
+        margin-bottom: 14px;
+    }
+
+    body.page-connect .connect-weekly-subtitle {
+        font-size: 11px;
+        letter-spacing: 1.2px;
+        margin-bottom: 22px;
+    }
+
+    body.page-connect .connect-weekly-description {
+        width: 100%;
+        font-size: 14px;
+        line-height: 1.7;
+        margin-bottom: 28px;
+    }
+
+    /* VLOG */
+    body.page-connect .backstage-vlog-container {
+        width: 100%;
+    }
+
+    /* ==========================================
+       UPCOMING MUSIC — MOBILE SPLIT VIEW
+       ========================================== */
+    body.page-connect .upcoming-grid {
+        display: grid !important;
+        grid-template-columns: minmax(0, 42%)
+            minmax(0, 58%) !important;
+        align-items: center !important;
+        gap: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        transform: none !important;
+    }
+
+    body.page-connect .upcoming-cover {
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
+    }
+
+    body.page-connect .upcoming-cover img {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 9px;
+        transform: none !important;
+    }
+
+    body.page-connect .upcoming-textbox {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        padding-left: 12px !important;
+        margin: 0 !important;
+        text-align: center !important;
+        transform: none !important;
+    }
+
+    body.page-connect .upcoming-date {
+        font-size: clamp(15px, 4vw, 23px) !important;
+        line-height: 1.1;
+        margin-bottom: 8px;
+    }
+
+    body.page-connect .upcoming-artist {
+        font-size: clamp(10px, 2.8vw, 14px) !important;
+        line-height: 1.2;
+        margin-bottom: 6px;
+    }
+
+    body.page-connect .upcoming-title {
+        font-size: clamp(14px, 3.7vw, 21px) !important;
+        line-height: 1.15;
+        margin-bottom: 5px;
+        overflow-wrap: anywhere;
+    }
+
+    body.page-connect .upcoming-feat {
+        font-size: clamp(10px, 2.6vw, 13px) !important;
+        line-height: 1.2;
+    }
+
+    /* ==========================================
+       SCHEDULE
+       ========================================== */
+    body.page-connect .backstage-schedule {
+        width: 100%;
+    }
+
+    body.page-connect .backstage-schedule-row {
+        grid-template-columns: 1.05fr
+            0.85fr
+            1.8fr !important;
+        min-height: 53px;
+        padding: 0 12px;
+        column-gap: 6px;
+    }
+
+    body.page-connect .backstage-schedule-date {
+        font-size: 11px;
+    }
+
+    body.page-connect .backstage-schedule-time {
+        font-size: 11px;
+    }
+
+    body.page-connect .backstage-schedule-type {
+        font-size: 12px;
+    }
+
+    /* SUPPORT */
+    body.page-connect .backstage-support-text {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* ============================================================
+   11. VERY SMALL PHONES
+   ============================================================ */
+@media (max-width: 380px) {
+    body.page-connect .connect-page {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    body.page-connect .upcoming-grid {
+        grid-template-columns: minmax(0, 40%)
+            minmax(0, 60%) !important;
+    }
+
+    body.page-connect .upcoming-textbox {
+        padding-left: 9px !important;
+    }
+
+    body.page-connect .upcoming-date {
+        font-size: 14px !important;
+    }
+
+    body.page-connect .upcoming-artist {
+        font-size: 10px !important;
+    }
+
+    body.page-connect .upcoming-title {
+        font-size: 13px !important;
+    }
+
+    body.page-connect .backstage-schedule-row {
+        padding: 0 9px;
+    }
+}
+
+/* ============================================================
+   12. ACCESSIBILITY
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    body.page-connect *,
+    body.page-connect *::before,
+    body.page-connect *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
+
+/* ==================================================
+   CONNECT — SPACING REFINEMENTS
+   ================================================== */
+/* 1. NEWSLETTER INPUT / SUBSCRIBE BUTTON GAP */
+body.connect-page .connect-weekly .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 2. REWOD WEEKLY — MOVE UP ON DESKTOP */
+@media (min-width: 701px) {
+    body.connect-page .connect-content {
+        padding-top: 35px;
+    }
+}
+
+/* ==================================================
+   REWOD WEEKLY — HEADING REFINEMENT
+   ================================================== */
+/* Smaller gap between title and subtitle */
+body.connect-page .connect-weekly .backstage-heading {
+    margin-bottom: 14px !important;
+}
+
+/* Subtitle: +1px */
+body.connect-page .connect-weekly-subtitle {
+    font-size: 14px;
+}
+
+/* ==================================================
+   REWOD CONNECT — NEWSLETTER FORM REDESIGN
+   ================================================== */
+/* EMAIL INPUT — MODERN DARK DESIGN */
+body.connect-page .connect-weekly .newsletter-input {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: 43px;
+    padding: 0 px;
+    box-sizing: border-box;
+    background: rgba(35, 35, 35, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: #ffffff;
+    font-family: "Barlow", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    outline: none;
+    transition: background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+/* PLACEHOLDER */
+body.connect-page .connect-weekly .newsletter-input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+    opacity: 1;
+}
+
+/* INPUT FOCUS */
+body.connect-page .connect-weekly .newsletter-input:focus {
+    background: rgba(45, 45, 45, 0.9);
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+/* SUBSCRIBE BUTTON — MATCH LOAD MORE VLOGS */
+body.connect-page .connect-weekly .newsletter-form .btn-listen {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    min-width: 0;
+    min-height: 43px;
+    padding: 12px 25px;
+    margin: 0;
+    box-sizing: border-box;
+    background: #444444;
+    color: #ffffff;
+    border: 0;
+    border-radius: 0px;
+    font-family: "Barlow", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0.04em;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 180ms ease;
+}
+
+/* BUTTON HOVER */
+body.connect-page .connect-weekly .newsletter-form .btn-listen:hover {
+    background: #323232;
+    color: #ffffff;
+}
+
+/* DISABLED STATE — KEEP NEWSLETTER FUNCTIONAL */
+body.connect-page .connect-weekly .newsletter-form .btn-listen:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* FORM SPACING */
+body.connect-page .connect-weekly .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ==================================================
+   CONNECT — EMAIL INPUT CENTERING
+   ================================================== */
+body.connect-page .connect-weekly .newsletter-input {
+    width: 160%;
+    max-width: none;
+
+    /* Center oversized input */
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* CONNECT — NEWSLETTER PERFECT CENTERING */
+body.connect-page .connect-weekly .newsletter-form {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100%;
+}
+
+/* EMAIL INPUT */
+body.connect-page .connect-weekly .newsletter-input {
+    width: 40%;
+    max-width: none;
+    position: static;
+    left: auto;
+    transform: none;
+}
+
+/* SUBSCRIBE BUTTON */
+body.connect-page .connect-weekly .newsletter-form .btn-listen {
+    align-self: center !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}

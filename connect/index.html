@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- ==================================================
+         META
+         ================================================== -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>CONNECT – REWOD</title>
+        <meta name="description" content="Connect with REWOD. Subscribe to REWOD WEEKLY, watch the latest vlog, discover upcoming music, explore the next seven days and support the project.">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://rewodmusic.com/connect/">
+        <meta property="og:title" content="REWOD – Connect">
+        <meta property="og:description" content="REWOD WEEKLY, latest vlogs, upcoming music, schedule and more.">
+        <meta property="og:image" content="https://rewodmusic.com/og-image.jpg">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="REWOD – Connect">
+        <meta name="twitter:description" content="Stay connected with REWOD.">
+        <meta name="twitter:image" content="https://rewodmusic.com/og-image.jpg">
+        <!-- ==================================================
+         FAVICONS
+         ================================================== -->
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/img/favicon-192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/img/favicon-512.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon-192.png">
+        <!-- ==================================================
+         FONTS
+         ================================================== -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,200..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+        <!-- ==================================================
+         ORIGINAL WEBSITE CSS
+         ================================================== -->
+        <link rel="stylesheet" href="/css/style.css">
+        <!-- ==================================================
+         CONNECT PAGE – ONLY NECESSARY LAYOUT RULES
+
+         Original Upcoming / Backstage styles remain
+         responsible for the components themselves.
+         ================================================== -->
+        <style>
+
+        /* ================================================
+           PAGE
+           ================================================ */
+
+        body.connect-page {
+            min-height: 100vh;
+            background-color: #000;
+        }
+
+
+        /* ================================================
+           DYNAMIC BACKGROUND
+
+           Image source is controlled by the ORIGINAL
+           upcoming.js through #upcomingPageBg.
+
+           The background remains viewport-sized.
+           It does not stretch with page height.
+           ================================================ */
+
+        body.connect-page .upcoming-page-bg {
+
+            position: fixed;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+
+            pointer-events: none;
+
+            z-index: 0;
+
+        }
+
+
+        /* ================================================
+           CONTENT ABOVE BACKGROUND
+           ================================================ */
+
+        body.connect-page > .m-header,
+        body.connect-page > .m-menu,
+        body.connect-page > .hero,
+        body.connect-page > main,
+        body.connect-page > .site-footer {
+
+            position: relative;
+
+            z-index: 1;
+
+        }
+
+
+        /* ================================================
+           CONNECT CONTENT WIDTH
+           ================================================ */
+
+        .connect-content {
+
+            width: 100%;
+
+            max-width: 900px;
+
+            margin: 0 auto;
+
+            padding: 65px 25px 110px;
+
+            box-sizing: border-box;
+
+        }
+
+
+        /* ================================================
+           SECTIONS
+
+           Preserve Backstage section styles.
+           ================================================ */
+
+        .connect-content .backstage-section {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+        }
+
+
+        /* ================================================
+           REWOD WEEKLY
+
+           Heading uses the existing Backstage heading.
+           Text is deliberately separate from the form.
+           ================================================ */
+
+        .connect-weekly {
+
+            text-align: center;
+
+        }
+
+        .connect-weekly-subtitle {
+
+            font-family: "Inter Tight", sans-serif;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.8px;
+
+            text-align: center;
+
+            margin: 8px 0 25px;
+
+        }
+
+        .connect-weekly-description {
+
+            max-width: 610px;
+
+            margin: 0 auto 30px;
+
+            text-align: center;
+
+            font-family: "Fraunces", serif;
+
+            font-size: 14px;
+
+            line-height: 1.8;
+
+        }
+
+        .connect-weekly-description p {
+
+            margin: 0 0 16px;
+
+        }
+
+
+        /* ================================================
+           NEWSLETTER
+
+           IMPORTANT:
+
+           No custom styling for:
+           .newsletter-form
+           .newsletter-input
+           .btn-listen
+
+           They retain the original Upcoming styling.
+           ================================================ */
+
+        .connect-weekly .upcoming-newsletter-wrap {
+
+            margin-left: auto;
+
+            margin-right: auto;
+
+        }
+
+
+        /* ================================================
+           UPCOMING MUSIC
+
+           Original Upcoming component and classes.
+           ================================================ */
+
+        .connect-upcoming {
+
+            margin-top: 65px;
+
+        }
+
+        .connect-upcoming .upcoming-wrap {
+
+            width: 100%;
+
+            min-height: 0;
+
+            margin: 0;
+
+            padding: 0;
+
+        }
+
+        .connect-upcoming .upcoming-inner {
+
+            width: 100%;
+
+            max-width: none;
+
+            margin: 0 auto;
+
+        }
+
+        .connect-upcoming .upcoming-grid {
+
+            width: 100%;
+
+            max-width: 800px;
+
+            margin-left: auto;
+
+            margin-right: auto;
+
+        }
+
+
+        /* ================================================
+           SECTION SPACING
+           ================================================ */
+
+        .connect-vlog {
+
+            margin-top: 70px;
+
+        }
+
+        .connect-schedule {
+
+            margin-top: 75px;
+
+        }
+
+        .connect-support {
+
+            margin-top: 75px;
+
+        }
+
+
+        /* ================================================
+           BACKSTAGE REVEAL
+
+           The existing backstage.js handles loading.
+           ================================================ */
+
+        .connect-content.backstage-page {
+
+            max-width: 900px;
+
+        }
+
+
+        /* ================================================
+           MOBILE
+           ================================================ */
+
+        @media (max-width: 700px) {
+
+            .connect-content {
+
+                padding: 45px 18px 85px;
+
+            }
+
+            .connect-weekly-description {
+
+                font-size: 13px;
+
+                line-height: 1.8;
+
+            }
+
+            .connect-upcoming {
+
+                margin-top: 55px;
+
+            }
+
+            .connect-vlog,
+            .connect-schedule,
+            .connect-support {
+
+                margin-top: 60px;
+
+            }
+
+        }
+
+    </style>
+    </head>
+    <body class="upcoming-page page-backstage connect-page">
+        <!-- ==================================================
+         DYNAMIC UPCOMING BACKGROUND
+
+         Original upcoming.js controls this element.
+         ================================================== -->
+        <div class="upcoming-page-bg" id="upcomingPageBg" aria-hidden="true"></div>
+        <!-- ==================================================
+         MOBILE HEADER
+         ================================================== -->
+        <header class="m-header"><a class="m-logo" href="/" aria-label="Go to Home"> <img src="/img/logo.png" alt="REWOD logo"> </a>
+            <button class="m-burger" id="mBurger" aria-label="Open menu" aria-controls="mMenu" aria-expanded="false"><span></span><span></span><span></span>
+            </button>
+        </header>
+        <!-- ==================================================
+         MOBILE MENU
+         ================================================== -->
+        <div class="m-menu" id="mMenu" aria-hidden="true">
+            <div class="m-menu-inner">
+                <nav class="m-nav" aria-label="Mobile navigation"><a href="/">HOME</a><a href="/latest/">LATEST RELEASE</a><a href="/webshop/">WEBSHOP</a><a href="/music/">MUSIC</a><a href="/media/">MEDIA</a><a href="/connect/">CONNECT</a><a href="/live/">LIVE</a>
+                </nav>
+                <div class="m-flex-spacer"></div>
+                <div class="m-menu-bottom">
+                    <nav class="socialbar" aria-label="REWOD social links"><a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF" target="_blank" rel="noopener"> <img src="/socialbars/spotify.svg" alt="Spotify"> </a><a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431" target="_blank" rel="noopener"> <img src="/socialbars/applemusic.svg" alt="Apple Music"> </a><a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/youtube.svg" alt="YouTube"> </a><a class="social-link" href="https://www.tiktok.com/@rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/tiktok.svg" alt="TikTok"> </a><a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/instagram.svg" alt="Instagram"> </a><a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/mms.png" alt="MyMusicSheet"> </a><a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/kofi.svg" alt="Ko-fi"> </a><a class="social-link" href="mailto:contact@rewodmusic.com"> <img src="/socialbars/mail.png" alt="Email"> </a>
+                    </nav>
+                    <div class="m-credit">
+                        Designed &amp; engineered by REWOD,
+                        including frontend, backend &amp;
+                        data architecture
+</div>
+                </div>
+            </div>
+        </div>
+        <!-- ==================================================
+         DESKTOP HEADER
+         ================================================== -->
+        <section class="hero hero--plain">
+            <div class="hero-inner">
+                <div data-empty-placeholder class="nav-left"></div><a href="/" class="logo-link" aria-label="REWOD – Home"> <img src="/img/logo.png" class="logo" alt="REWOD logo"> </a>
+                <div class="nav-right"><a href="/">HOME</a><a href="/latest/">LATEST RELEASE</a><a href="/webshop/">WEBSHOP</a><a href="/music/">MUSIC</a><a href="/media/">MEDIA</a><a href="/connect/">CONNECT</a><a href="/live/">LIVE</a>
+                </div>
+            </div>
+        </section>
+        <!-- ==================================================
+         CONNECT MAIN CONTENT
+         ================================================== -->
+        <main class="connect-content backstage-page">
+            <!-- ==============================================
+             1. REWOD WEEKLY
+             ============================================== -->
+            <section class="backstage-section connect-weekly">
+                <h2 class="backstage-heading">
+                REWOD WEEKLY </h2>
+                <div class="connect-weekly-subtitle">
+                    A PERSONAL LETTER FROM REWOD
+</div>
+                <div class="connect-weekly-description">
+                    <p>
+                    Every week, I write a personal letter
+                    exclusively for my subscribers.
+                    It's a little space where I share
+                    thoughts, stories, and updates
+                    that I don't post anywhere else. </p>
+                    <p>
+                    You'll also receive a recap of
+                    everything I've created during
+                    the week, along with a look at
+                    what's coming next. </p>
+                </div>
+                <!-- ORIGINAL UPCOMING NEWSLETTER HTML -->
+                <div class="upcoming-newsletter-wrap" aria-label="Newsletter subscription">
+                    <div class="upcoming-newsletter">
+                        <form class="newsletter-form" id="newsletterForm" autocomplete="on" novalidate>
+                            <input class="newsletter-input" id="newsletterEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="Email" required>
+                            <button class="btn-listen" id="newsletterBtn" type="submit">
+                                SUBSCRIBE
+</button>
+                        </form>
+                    </div>
+                    <div class="newsletter-status" id="newsletterStatus" aria-live="polite"></div>
+                </div>
+            </section>
+            <!-- ==============================================
+             2. LATEST VLOG
+
+             Original Backstage HTML + YouTube system.
+             ============================================== -->
+            <section class="backstage-section backstage-vlog-section connect-vlog">
+                <h2 class="backstage-heading">
+                LATEST VLOG </h2>
+                <div class="backstage-vlog-container">
+                    <div class="backstage-vlog-video">
+                        <iframe id="backstageLatestVlog" title="REWOD – Latest Vlog" src="about:blank" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div><a id="backstageVlogPlaylist" class="backstage-action-button backstage-vlog-button" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener noreferrer">
+                    LOAD MORE VLOGS </a>
+                </div>
+            </section>
+            <!-- ==============================================
+             3. UPCOMING MUSIC
+
+             Original Upcoming component.
+
+             Original upcoming.js handles:
+             - schedule.json
+             - releasetime.json
+             - nearest future music release
+             - date
+             - artist
+             - title
+             - featuring
+             - cover
+             - background
+             ============================================== -->
+            <section class="connect-upcoming">
+                <h2 class="backstage-heading">
+                UPCOMING MUSIC </h2>
+                <div class="upcoming-wrap">
+                    <div class="upcoming-inner" id="upcomingApp">
+                        <div class="upcoming-grid">
+                            <!-- COVER -->
+                            <div class="upcoming-cover">
+                                <img id="upcomingCover" src="/img/upcoming.jpg" alt="Upcoming release cover">
+                            </div>
+                            <!-- RELEASE DETAILS -->
+                            <div class="upcoming-textbox">
+                                <div class="upcoming-date" id="upcomingDate">
+                                    —
+</div>
+                                <div class="upcoming-artist" id="upcomingArtist">
+                                    —
+</div>
+                                <div class="upcoming-title" id="upcomingTitle">
+                                    —
+</div>
+                                <div class="upcoming-feat" id="upcomingFeat" style="display:none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- ==============================================
+             4. NEXT 7 DAYS SCHEDULE
+
+             Original Backstage HTML.
+
+             Original backstage.js handles:
+             - schedule.json
+             - live.json
+             - vacation.json
+             - releasetime.json
+             - automatic daily videos
+             - livestreams
+             - local timezone
+             - chronological sorting
+             - automatic refresh
+             ============================================== -->
+            <section class="backstage-section backstage-schedule-section connect-schedule">
+                <h2 class="backstage-heading">
+                NEXT 7 DAYS SCHEDULE </h2>
+                <div class="backstage-timezone-note" style="
+                    text-align:center;
+                    font-family:'Inter Tight',sans-serif;
+                    font-size:11px;
+                    font-weight:600;
+                    letter-spacing:1.5px;
+                    opacity:0.6;
+                    margin:10px 0 22px;
+                ">
+                    ALL TIMES IN YOUR LOCAL TIMEZONE
+</div>
+                <div id="backstageSchedule" class="backstage-schedule" aria-live="polite"></div>
+                <div id="backstageScheduleEmpty" class="backstage-empty-message" hidden>
+                    NOTHING SCHEDULED
+</div>
+            </section>
+            <!-- ==============================================
+             5. SUPPORT REWOD
+
+             Original Backstage HTML and CSS classes.
+             ============================================== -->
+            <section class="backstage-section backstage-support-section connect-support">
+                <h2 class="backstage-heading">
+                SUPPORT REWOD </h2>
+                <div class="backstage-support-text">
+                    <p>
+                    REWOD is an independent music project
+                    built with my full-time dedication.
+                    From daily videos and sheet music
+                    releases to fully arranged covers
+                    with professional music videos,
+                    original compositions, and classical
+                    performances, every creative and
+                    production aspect is handled
+                    personally by me. </p>
+                    <p>
+                    Behind every release are countless
+                    hours of composing, arranging,
+                    recording, filming, editing, and
+                    preparing sheet music. Your support
+                    helps me continue creating
+                    independently, improve the quality
+                    of my productions, and dedicate
+                    even more time and resources to
+                    bringing new music to life. </p>
+                </div>
+                <div class="backstage-support-actions"><a class="backstage-action-button" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener noreferrer">
+                    SUPPORT ON KO-FI </a><a class="backstage-action-button" href="/webshop/">
+                    BUY MY SHEET MUSIC </a><a class="backstage-action-button" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener noreferrer">
+                    WATCH &amp; SHARE </a>
+                </div>
+            </section>
+        </main>
+        <!-- ==================================================
+         FOOTER
+         ================================================== -->
+        <footer class="site-footer">
+            <div class="footer-inner"><a href="/" class="footer-logo-link" aria-label="REWOD – Home"> <img class="footer-logo" src="/img/logo.png" alt="REWOD logo"> </a>
+                <nav class="socialbar" aria-label="REWOD social links"><a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF" target="_blank" rel="noopener"> <img src="/socialbars/spotify.svg" alt="Spotify"> </a><a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431" target="_blank" rel="noopener"> <img src="/socialbars/applemusic.svg" alt="Apple Music"> </a><a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/youtube.svg" alt="YouTube"> </a><a class="social-link" href="https://www.tiktok.com/@rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/tiktok.svg" alt="TikTok"> </a><a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/instagram.svg" alt="Instagram"> </a><a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/mms.png" alt="MyMusicSheet"> </a><a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/kofi.svg" alt="Ko-fi"> </a><a class="social-link" href="mailto:contact@rewodmusic.com"> <img src="/socialbars/mail.png" alt="Email"> </a>
+                </nav>
+                <div class="footer-credit">
+                    Designed &amp; engineered by REWOD,
+                    including frontend, backend &amp;
+                    data architecture
+</div>
+            </div>
+        </footer>
+        <!-- ==================================================
+         ORIGINAL JAVASCRIPT SYSTEMS
+
+         No duplicated JSON logic.
+
+         Each existing system continues to use its
+         original data sources.
+         ================================================== -->
+        <!-- UPCOMING MUSIC + DYNAMIC BACKGROUND -->
+        <script src="/js/upcoming.js"></script>
+        <!-- ORIGINAL NEWSLETTER SUBSCRIPTION -->
+        <script src="/upcoming/newsletter.js"></script>
+        <!-- ORIGINAL BACKSTAGE SCHEDULE SYSTEM -->
+        <script src="/js/backstage.js"></script>
+        <!-- ORIGINAL BACKSTAGE YOUTUBE SYSTEM -->
+        <script src="/js/backstage-youtube.js"></script>
+        <!-- ORIGINAL MOBILE MENU -->
+        <script src="/js/mobileMenu.js"></script>
+    </body>
+</html>
