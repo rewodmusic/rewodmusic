@@ -1,0 +1,349 @@
+{
+  "version": 1,
+
+  "desktop": {
+    "home_section": {
+      "enabled": true,
+      "image_source": "latest_release",
+      "image_url": "",
+
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+
+      "scale": 100,
+
+      "appearance": {
+        "brightness": 100,
+        "contrast": 100,
+        "saturation": 100,
+        "blur": 3,
+        "grayscale": 0,
+        "sepia": 0,
+        "hue_rotate": 0
+      },
+
+      "overlay": {
+        "enabled": true,
+        "color": "#000000",
+        "opacity": 0.65
+      },
+
+      "gradient": {
+        "enabled": true,
+        "direction": 180,
+        "stops": [
+          {
+            "position": 0,
+            "color": "#000000",
+            "opacity": 0.15
+          },
+          {
+            "position": 50,
+            "color": "#000000",
+            "opacity": 0.35
+          },
+          {
+            "position": 100,
+            "color": "#000000",
+            "opacity": 0.85
+          }
+        ]
+      },
+
+      "display": {
+        "fit": "cover",
+        "attachment": "scroll",
+        "repeat": "no-repeat"
+      }
+    },
+
+    "latest_song": {
+      "enabled": true,
+      "image_source": "current_song",
+      "image_url": "",
+
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+
+      "scale": 100,
+
+      "appearance": {
+        "brightness": 100,
+        "contrast": 100,
+        "saturation": 100,
+        "blur": 5,
+        "grayscale": 0,
+        "sepia": 0,
+        "hue_rotate": 0
+      },
+
+      "overlay": {
+        "enabled": true,
+        "color": "#000000",
+        "opacity": 0.80
+      },
+
+      "gradient": {
+        "enabled": true,
+        "direction": 180,
+        "stops": [
+          {
+            "position": 0,
+            "color": "#000000",
+            "opacity": 0.25
+          },
+          {
+            "position": 50,
+            "color": "#000000",
+            "opacity": 0.45
+          },
+          {
+            "position": 100,
+            "color": "#000000",
+            "opacity": 0.9
+          }
+        ]
+      },
+
+      "display": {
+        "fit": "cover",
+        "attachment": "fixed",
+        "repeat": "no-repeat"
+      }
+    },
+
+    "connect": {
+      "enabled": true,
+      "image_source": "upcoming_release",
+      "image_url": "",
+
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+
+      "scale": 100,
+
+      "appearance": {
+        "brightness": 100,
+        "contrast": 100,
+        "saturation": 100,
+        "blur": 7,
+        "grayscale": 0,
+        "sepia": 0,
+        "hue_rotate": 0
+      },
+
+      "overlay": {
+        "enabled": true,
+        "color": "#000000",
+        "opacity": 0.3
+      },
+
+      "gradient": {
+        "enabled": true,
+        "direction": 180,
+        "stops": [
+          {
+            "position": 0,
+            "color": "#000000",
+            "opacity": 0.2
+          },
+          {
+            "position": 50,
+            "color": "#000000",
+            "opacity": 0.45
+          },
+          {
+            "position": 100,
+            "color": "#000000",
+            "opacity": 0.9
+          }
+        ]
+      },
+
+      "display": {
+        "fit": "cover",
+        "attachment": "fixed",
+        "repeat": "no-repeat"
+      }
+    }
+  },
+
+  "mobile": {
+    "home_section": {
+      "enabled": true,
+      "image_source": "latest_release",
+      "image_url": "",
+
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+
+      "scale": 100,
+
+      "appearance": {
+        "brightness": 100,
+        "contrast": 100,
+        "saturation": 100,
+        "blur": 3,
+        "grayscale": 0,
+        "sepia": 0,
+        "hue_rotate": 0
+      },
+
+      "overlay": {
+        "enabled": true,
+        "color": "#000000",
+        "opacity": 0.35
+      },
+
+      "gradient": {
+        "enabled": true,
+        "direction": 180,
+        "stops": [
+          {
+            "position": 0,
+            "color": "#000000",
+            "opacity": 0.3
+          },
+          {
+            "position": 50,
+            "color": "#000000",
+            "opacity": 0.5
+          },
+          {
+            "position": 100,
+            "color": "#000000",
+            "opacity": 0.95
+          }
+        ]
+      },
+
+      "display": {
+        "fit": "cover",
+        "attachment": "scroll",
+        "repeat": "no-repeat"
+      }
+    },
+
+    "latest_song": {
+      "enabled": true,
+      "image_source": "current_song",
+      "image_url": "",
+
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+
+      "scale": 100,
+
+      "appearance": {
+        "brightness": 100,
+        "contrast": 100,
+        "saturation": 100,
+        "blur": 4,
+        "grayscale": 0,
+        "sepia": 0,
+        "hue_rotate": 0
+      },
+
+      "overlay": {
+        "enabled": true,
+        "color": "#000000",
+        "opacity": 0.80
+      },
+
+      "gradient": {
+        "enabled": true,
+        "direction": 180,
+        "stops": [
+          {
+            "position": 0,
+            "color": "#000000",
+            "opacity": 0.3
+          },
+          {
+            "position": 50,
+            "color": "#000000",
+            "opacity": 0.55
+          },
+          {
+            "position": 100,
+            "color": "#000000",
+            "opacity": 0.95
+          }
+        ]
+      },
+
+      "display": {
+        "fit": "cover",
+        "attachment": "fixed",
+        "repeat": "no-repeat"
+      }
+    },
+
+    "connect": {
+      "enabled": true,
+      "image_source": "upcoming_release",
+      "image_url": "",
+
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+
+      "scale": 100,
+
+      "appearance": {
+        "brightness": 100,
+        "contrast": 100,
+        "saturation": 100,
+        "blur": 3,
+        "grayscale": 0,
+        "sepia": 0,
+        "hue_rotate": 0
+      },
+
+      "overlay": {
+        "enabled": true,
+        "color": "#000000",
+        "opacity": 0.3
+      },
+
+      "gradient": {
+        "enabled": true,
+        "direction": 180,
+        "stops": [
+          {
+            "position": 0,
+            "color": "#000000",
+            "opacity": 0.35
+          },
+          {
+            "position": 50,
+            "color": "#000000",
+            "opacity": 0.55
+          },
+          {
+            "position": 100,
+            "color": "#000000",
+            "opacity": 0.95
+          }
+        ]
+      },
+
+      "display": {
+        "fit": "cover",
+        "attachment": "fixed",
+        "repeat": "no-repeat"
+      }
+    }
+  }
+}

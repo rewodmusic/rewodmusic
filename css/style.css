@@ -12565,3 +12565,34 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
     box-sizing: border-box;
     overflow: hidden;
 }
+
+/* ==================================================
+   CONNECT – SUPPORT REWOD DESKTOP SPACING CONTROLS
+   ================================================== */
+@media (min-width: 701px) {
+    body.connect-page {
+        /* 1. SUPPORT REWOD cím → első szöveg */
+        --c-support-title-text-gap: 25px;
+
+        /* 2. Utolsó szöveg → SUPPORT ON KO-FI gomb */
+        --c-support-text-button-gap: 10px;
+
+        /* 3. WATCH & SHARE gomb → FOOTER */
+        --c-support-footer-gap: 130px;
+    }
+
+    /* 1. CÍM ÉS SZÖVEG KÖZÖTT */
+    .connect-page .connect-support .backstage-heading {
+        margin-bottom: var(--c-support-title-text-gap) !important;
+    }
+
+    /* 2. SZÖVEG ÉS GOMBOK KÖZÖTT */
+    .connect-page .connect-support .backstage-support-text {
+        margin-bottom: var(--c-support-text-button-gap) !important;
+    }
+
+    /* 3. UTOLSÓ GOMB ÉS FOOTER KÖZÖTT */
+    .connect-page .connect-content {
+        padding-bottom: var(--c-support-footer-gap) !important;
+    }
+}

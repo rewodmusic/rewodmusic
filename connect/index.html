@@ -41,6 +41,13 @@
 
          Original Upcoming / Backstage styles remain
          responsible for the components themselves.
+
+         Background appearance is now configured by:
+
+         /data/backgrounds.json
+
+         desktop.connect
+         mobile.connect
          ================================================== -->
         <style>
 
@@ -55,13 +62,16 @@
 
 
         /* ================================================
-           DYNAMIC BACKGROUND
+           LEGACY DYNAMIC BACKGROUND
 
-           Image source is controlled by the ORIGINAL
-           upcoming.js through #upcomingPageBg.
+           The original element remains in the HTML
+           for compatibility with upcoming.js.
 
-           The background remains viewport-sized.
-           It does not stretch with page height.
+           The Background Manager hides this element
+           after successful initialization.
+
+           The original viewport-sized behavior is
+           retained as a fallback.
            ================================================ */
 
         body.connect-page .upcoming-page-bg {
@@ -119,8 +129,6 @@
 
         /* ================================================
            SECTIONS
-
-           Preserve Backstage section styles.
            ================================================ */
 
         .connect-content .backstage-section {
@@ -134,9 +142,6 @@
 
         /* ================================================
            REWOD WEEKLY
-
-           Heading uses the existing Backstage heading.
-           Text is deliberately separate from the form.
            ================================================ */
 
         .connect-weekly {
@@ -187,14 +192,7 @@
         /* ================================================
            NEWSLETTER
 
-           IMPORTANT:
-
-           No custom styling for:
-           .newsletter-form
-           .newsletter-input
-           .btn-listen
-
-           They retain the original Upcoming styling.
+           Original Upcoming styling remains active.
            ================================================ */
 
         .connect-weekly .upcoming-newsletter-wrap {
@@ -208,8 +206,6 @@
 
         /* ================================================
            UPCOMING MUSIC
-
-           Original Upcoming component and classes.
            ================================================ */
 
         .connect-upcoming {
@@ -277,9 +273,7 @@
 
 
         /* ================================================
-           BACKSTAGE REVEAL
-
-           The existing backstage.js handles loading.
+           BACKSTAGE
            ================================================ */
 
         .connect-content.backstage-page {
@@ -329,20 +323,19 @@
     </head>
     <body class="upcoming-page page-backstage connect-page">
         <!-- ==================================================
-         DYNAMIC UPCOMING BACKGROUND
+         LEGACY UPCOMING BACKGROUND
 
-         Original upcoming.js controls this element.
+         Preserved for compatibility with upcoming.js.
+
+         Background Manager V1 disables this layer
+         when its configuration loads successfully.
          ================================================== -->
         <div class="upcoming-page-bg" id="upcomingPageBg" aria-hidden="true"></div>
         <!-- ==================================================
          MOBILE HEADER
          ================================================== -->
-        <header class="m-header">
-            <a class="m-logo" href="/" aria-label="Go to Home"> <img src="/img/logo.png" alt="REWOD logo"> </a>
-            <button class="m-burger" id="mBurger" aria-label="Open menu" aria-controls="mMenu" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
+        <header class="m-header"><a class="m-logo" href="/" aria-label="Go to Home"> <img src="/img/logo.png" alt="REWOD logo"> </a>
+            <button class="m-burger" id="mBurger" aria-label="Open menu" aria-controls="mMenu" aria-expanded="false"><span></span><span></span><span></span>
             </button>
         </header>
         <!-- ==================================================
@@ -350,26 +343,11 @@
          ================================================== -->
         <div class="m-menu" id="mMenu" aria-hidden="true">
             <div class="m-menu-inner">
-                <nav class="m-nav" aria-label="Mobile navigation">
-                    <a href="/">HOME</a>
-                    <a href="/latest/">LATEST RELEASE</a>
-                    <a href="/webshop/">WEBSHOP</a>
-                    <a href="/music/">MUSIC</a>
-                    <a href="/media/">MEDIA</a>
-                    <a href="/connect/">CONNECT</a>
-                    <a href="/live/">LIVE</a>
+                <nav class="m-nav" aria-label="Mobile navigation"><a href="/">HOME</a><a href="/latest/">LATEST RELEASE</a><a href="/webshop/">WEBSHOP</a><a href="/music/">MUSIC</a><a href="/media/">MEDIA</a><a href="/connect/">CONNECT</a><a href="/live/">LIVE</a>
                 </nav>
                 <div class="m-flex-spacer"></div>
                 <div class="m-menu-bottom">
-                    <nav class="socialbar" aria-label="REWOD social links">
-                        <a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF" target="_blank" rel="noopener"> <img src="/socialbars/spotify.svg" alt="Spotify"> </a>
-                        <a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431" target="_blank" rel="noopener"> <img src="/socialbars/applemusic.svg" alt="Apple Music"> </a>
-                        <a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/youtube.svg" alt="YouTube"> </a>
-                        <a class="social-link" href="https://www.tiktok.com/@rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/tiktok.svg" alt="TikTok"> </a>
-                        <a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/instagram.svg" alt="Instagram"> </a>
-                        <a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/mms.png" alt="MyMusicSheet"> </a>
-                        <a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/kofi.svg" alt="Ko-fi"> </a>
-                        <a class="social-link" href="mailto:contact@rewodmusic.com"> <img src="/socialbars/mail.png" alt="Email"> </a>
+                    <nav class="socialbar" aria-label="REWOD social links"><a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF" target="_blank" rel="noopener"> <img src="/socialbars/spotify.svg" alt="Spotify"> </a><a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431" target="_blank" rel="noopener"> <img src="/socialbars/applemusic.svg" alt="Apple Music"> </a><a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/youtube.svg" alt="YouTube"> </a><a class="social-link" href="https://www.tiktok.com/@rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/tiktok.svg" alt="TikTok"> </a><a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/instagram.svg" alt="Instagram"> </a><a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/mms.png" alt="MyMusicSheet"> </a><a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/kofi.svg" alt="Ko-fi"> </a><a class="social-link" href="mailto:contact@rewodmusic.com"> <img src="/socialbars/mail.png" alt="Email"> </a>
                     </nav>
                     <div class="m-credit">
                         Designed &amp; engineered by REWOD,
@@ -384,16 +362,8 @@
          ================================================== -->
         <section class="hero hero--plain">
             <div class="hero-inner">
-                <div data-empty-placeholder class="nav-left"></div>
-                <a href="/" class="logo-link" aria-label="REWOD – Home"> <img src="/img/logo.png" class="logo" alt="REWOD logo"> </a>
-                <div class="nav-right">
-                    <a href="/">HOME</a>
-                    <a href="/latest/">LATEST RELEASE</a>
-                    <a href="/webshop/">WEBSHOP</a>
-                    <a href="/music/">MUSIC</a>
-                    <a href="/media/">MEDIA</a>
-                    <a href="/connect/">CONNECT</a>
-                    <a href="/live/">LIVE</a>
+                <div data-empty-placeholder class="nav-left"></div><a href="/" class="logo-link" aria-label="REWOD – Home"> <img src="/img/logo.png" class="logo" alt="REWOD logo"> </a>
+                <div class="nav-right"><a href="/">HOME</a><a href="/latest/">LATEST RELEASE</a><a href="/webshop/">WEBSHOP</a><a href="/music/">MUSIC</a><a href="/media/">MEDIA</a><a href="/connect/">CONNECT</a><a href="/live/">LIVE</a>
                 </div>
             </div>
         </section>
@@ -423,7 +393,7 @@
                     the week, along with a look at
                     what's coming next. </p>
                 </div>
-                <!-- ORIGINAL UPCOMING NEWSLETTER HTML -->
+                <!-- ORIGINAL UPCOMING NEWSLETTER -->
                 <div class="upcoming-newsletter-wrap" aria-label="Newsletter subscription">
                     <div class="upcoming-newsletter">
                         <form class="newsletter-form" id="newsletterForm" autocomplete="on" novalidate>
@@ -438,8 +408,6 @@
             </section>
             <!-- ==============================================
              2. LATEST VLOG
-
-             Original Backstage HTML + YouTube system.
              ============================================== -->
             <section class="backstage-section backstage-vlog-section connect-vlog">
                 <h2 class="backstage-heading">
@@ -447,26 +415,12 @@
                 <div class="backstage-vlog-container">
                     <div class="backstage-vlog-video">
                         <iframe id="backstageLatestVlog" title="REWOD – Latest Vlog" src="about:blank" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    </div>
-                    <a id="backstageVlogPlaylist" class="backstage-action-button backstage-vlog-button" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener noreferrer">
+                    </div><a id="backstageVlogPlaylist" class="backstage-action-button backstage-vlog-button" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener noreferrer">
                     LOAD MORE VLOGS </a>
                 </div>
             </section>
             <!-- ==============================================
              3. UPCOMING MUSIC
-
-             Original Upcoming component.
-
-             Original upcoming.js handles:
-             - schedule.json
-             - releasetime.json
-             - nearest future music release
-             - date
-             - artist
-             - title
-             - featuring
-             - cover
-             - background
              ============================================== -->
             <section class="connect-upcoming">
                 <h2 class="backstage-heading">
@@ -497,19 +451,6 @@
             </section>
             <!-- ==============================================
              4. NEXT 7 DAYS SCHEDULE
-
-             Original Backstage HTML.
-
-             Original backstage.js handles:
-             - schedule.json
-             - live.json
-             - vacation.json
-             - releasetime.json
-             - automatic daily videos
-             - livestreams
-             - local timezone
-             - chronological sorting
-             - automatic refresh
              ============================================== -->
             <section class="backstage-section backstage-schedule-section connect-schedule">
                 <h2 class="backstage-heading">
@@ -532,8 +473,6 @@
             </section>
             <!-- ==============================================
              5. SUPPORT REWOD
-
-             Original Backstage HTML and CSS classes.
              ============================================== -->
             <section class="backstage-section backstage-support-section connect-support">
                 <h2 class="backstage-heading">
@@ -560,12 +499,9 @@
                     even more time and resources to
                     bringing new music to life. </p>
                 </div>
-                <div class="backstage-support-actions">
-                    <a class="backstage-action-button" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener noreferrer">
-                    SUPPORT ON KO-FI </a>
-                    <a class="backstage-action-button" href="/webshop/">
-                    BUY MY SHEET MUSIC </a>
-                    <a class="backstage-action-button" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener noreferrer">
+                <div class="backstage-support-actions"><a class="backstage-action-button" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener noreferrer">
+                    SUPPORT ON KO-FI </a><a class="backstage-action-button" href="/webshop/">
+                    BUY MY SHEET MUSIC </a><a class="backstage-action-button" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener noreferrer">
                     WATCH &amp; SHARE </a>
                 </div>
             </section>
@@ -574,17 +510,8 @@
          FOOTER
          ================================================== -->
         <footer class="site-footer">
-            <div class="footer-inner">
-                <a href="/" class="footer-logo-link" aria-label="REWOD – Home"> <img class="footer-logo" src="/img/logo.png" alt="REWOD logo"> </a>
-                <nav class="socialbar" aria-label="REWOD social links">
-                    <a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF" target="_blank" rel="noopener"> <img src="/socialbars/spotify.svg" alt="Spotify"> </a>
-                    <a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431" target="_blank" rel="noopener"> <img src="/socialbars/applemusic.svg" alt="Apple Music"> </a>
-                    <a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/youtube.svg" alt="YouTube"> </a>
-                    <a class="social-link" href="https://www.tiktok.com/@rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/tiktok.svg" alt="TikTok"> </a>
-                    <a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/instagram.svg" alt="Instagram"> </a>
-                    <a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/mms.png" alt="MyMusicSheet"> </a>
-                    <a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/kofi.svg" alt="Ko-fi"> </a>
-                    <a class="social-link" href="mailto:contact@rewodmusic.com"> <img src="/socialbars/mail.png" alt="Email"> </a>
+            <div class="footer-inner"><a href="/" class="footer-logo-link" aria-label="REWOD – Home"> <img class="footer-logo" src="/img/logo.png" alt="REWOD logo"> </a>
+                <nav class="socialbar" aria-label="REWOD social links"><a class="social-link" href="https://open.spotify.com/artist/5qhs6BYno95krGBZTwZGhF" target="_blank" rel="noopener"> <img src="/socialbars/spotify.svg" alt="Spotify"> </a><a class="social-link" href="https://music.apple.com/hu/artist/rewod/1513605431" target="_blank" rel="noopener"> <img src="/socialbars/applemusic.svg" alt="Apple Music"> </a><a class="social-link" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/youtube.svg" alt="YouTube"> </a><a class="social-link" href="https://www.tiktok.com/@rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/tiktok.svg" alt="TikTok"> </a><a class="social-link" href="https://www.instagram.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/instagram.svg" alt="Instagram"> </a><a class="social-link" href="https://www.mymusicsheet.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/mms.png" alt="MyMusicSheet"> </a><a class="social-link" href="https://ko-fi.com/rewodmusic" target="_blank" rel="noopener"> <img src="/socialbars/kofi.svg" alt="Ko-fi"> </a><a class="social-link" href="mailto:contact@rewodmusic.com"> <img src="/socialbars/mail.png" alt="Email"> </a>
                 </nav>
                 <div class="footer-credit">
                     Designed &amp; engineered by REWOD,
@@ -596,20 +523,33 @@
         <!-- ==================================================
          ORIGINAL JAVASCRIPT SYSTEMS
 
-         No duplicated JSON logic.
-
-         Each existing system continues to use its
-         original data sources.
+         Existing functionality remains unchanged.
          ================================================== -->
-        <!-- UPCOMING MUSIC + DYNAMIC BACKGROUND -->
+        <!-- UPCOMING MUSIC / RELEASE DATA -->
         <script src="/js/upcoming.js"></script>
-        <!-- ORIGINAL NEWSLETTER SUBSCRIPTION -->
+        <!-- NEWSLETTER SUBSCRIPTION -->
         <script src="/upcoming/newsletter.js"></script>
-        <!-- ORIGINAL BACKSTAGE SCHEDULE SYSTEM -->
+        <!-- BACKSTAGE SCHEDULE -->
         <script src="/js/backstage.js"></script>
-        <!-- ORIGINAL BACKSTAGE YOUTUBE SYSTEM -->
+        <!-- BACKSTAGE YOUTUBE -->
         <script src="/js/backstage-youtube.js"></script>
-        <!-- ORIGINAL MOBILE MENU -->
+        <!-- MOBILE MENU -->
         <script src="/js/mobileMenu.js"></script>
+        <!-- ==================================================
+         REWOD BACKGROUND MANAGER V1
+
+         Configuration:
+         /data/backgrounds.json
+
+         Desktop:
+         desktop.connect
+
+         Mobile:
+         mobile.connect
+
+         The manager creates its own background layers
+         and hides #upcomingPageBg after initialization.
+         ================================================== -->
+        <script src="/js/background-manager.js"></script>
     </body>
 </html>
