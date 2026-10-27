@@ -12140,15 +12140,15 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
         /* ----------------------------------------------------
            LATEST VLOG
            ---------------------------------------------------- */
-        --c-vlog-width: 88%;
+        --c-vlog-width: 98%;
         --c-vlog-x: 0px;
-        --c-vlog-button-x: 40px;
+        --c-vlog-button-x: 0px;
 
         /* ----------------------------------------------------
            UPCOMING MUSIC — TEXT
            ---------------------------------------------------- */
         --c-upcoming-text-x: 15px;
-        --c-upcoming-text-y: 335px;
+        --c-upcoming-text-y: 320px;
         --c-upcoming-text-scale: 195%;
 
         /* ----------------------------------------------------
@@ -12189,7 +12189,7 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
            SUPPORT REWOD — DESCRIPTION
            ---------------------------------------------------- */
         --c-support-text-size: 13px;
-        --c-support-text-x: 100px;
+        --c-support-text-x: 95px;
         --c-support-text-width: 90%;
 
         /* ----------------------------------------------------
@@ -12518,5 +12518,16 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
        ======================================================== */
     body.connect-page {
         overflow-x: clip;
+    }
+}
+
+/* CONNECT MOBILE — VLOG HORIZONTAL POSITION FIX */
+@media (max-width: 700px) {
+    body.connect-page
+    .connect-vlog
+    .backstage-vlog-container {
+        position: relative !important;
+        left: auto !important;
+        transform: translateX(var(--c-vlog-x)) !important;
     }
 }
