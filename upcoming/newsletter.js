@@ -61,7 +61,7 @@
       }
 
       if (data?.status === "subscribed") {
-        setStatus("Subscribed. You’ll get an email on the next original release.");
+        setStatus("Subscribed. You'll receive a personal email from REWOD every Sunday.");
         input.value = "";
       } else if (data?.status === "already_subscribed" || data?.status === "exists") {
         setStatus("You're already subscribed.");

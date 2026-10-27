@@ -12108,3 +12108,415 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
+
+/* ============================================================
+   REWOD CONNECT — MOBILE CONTROL PANEL V1
+   ============================================================
+
+   MOBILE ONLY — MAX WIDTH: 700px
+
+   DESKTOP IS NOT AFFECTED.
+
+   All adjustments are controlled from the variables below.
+
+   ============================================================ */
+@media (max-width: 700px) {
+    /* ========================================================
+       00 — MASTER CONTROL PANEL
+       ======================================================== */
+    body.connect-page {
+        /* ----------------------------------------------------
+           BACKGROUND
+           ---------------------------------------------------- */
+        --c-bg-darkness: 0.82;
+        --c-bg-blur: 12px;
+
+        /* ----------------------------------------------------
+           NEWSLETTER
+           ---------------------------------------------------- */
+        --c-email-width: 70%;
+        --c-email-x: 0px;
+
+        /* ----------------------------------------------------
+           LATEST VLOG
+           ---------------------------------------------------- */
+        --c-vlog-width: 88%;
+        --c-vlog-x: 0px;
+        --c-vlog-button-x: 40px;
+
+        /* ----------------------------------------------------
+           UPCOMING MUSIC — TEXT
+           ---------------------------------------------------- */
+        --c-upcoming-text-x: 15px;
+        --c-upcoming-text-y: 335px;
+        --c-upcoming-text-scale: 145%;
+
+        /* ----------------------------------------------------
+           UPCOMING MUSIC — COVER
+           ---------------------------------------------------- */
+        --c-upcoming-cover-size: 110%;
+        --c-upcoming-cover-x: 5px;
+        --c-upcoming-cover-y: -150px;
+
+        /* ----------------------------------------------------
+           UPCOMING → SCHEDULE GAP
+           ---------------------------------------------------- */
+        --c-upcoming-schedule-gap: -205px;
+
+        /* ----------------------------------------------------
+           NEXT 7 DAYS SCHEDULE — TITLE
+           ---------------------------------------------------- */
+        --c-schedule-title-x: 20px;
+
+        /* ----------------------------------------------------
+           NEXT 7 DAYS SCHEDULE — TABLE
+           ---------------------------------------------------- */
+        --c-schedule-table-width: 80%;
+        --c-schedule-table-x: 0px;
+
+        /* ----------------------------------------------------
+           SCHEDULE → SUPPORT GAP
+           ---------------------------------------------------- */
+        --c-schedule-support-gap: 85px;
+
+        /* ----------------------------------------------------
+           SUPPORT REWOD — TITLE
+           ---------------------------------------------------- */
+        --c-support-title-size: 38px;
+        --c-support-title-x: 0px;
+
+        /* ----------------------------------------------------
+           SUPPORT REWOD — DESCRIPTION
+           ---------------------------------------------------- */
+        --c-support-text-size: 12px;
+        --c-support-text-x: 50px;
+        --c-support-text-width: 80%;
+
+        /* ----------------------------------------------------
+           SUPPORT BUTTONS → FOOTER GAP
+           ---------------------------------------------------- */
+        --c-support-footer-gap: 80px;
+    }
+
+    /* ========================================================
+       01 — FIX DYNAMIC BACKGROUND
+       ========================================================
+
+       The original Upcoming image remains the source.
+
+       No repeated image.
+       No stretching across the entire page.
+       Fixed to the viewport.
+
+       ======================================================== */
+    body.connect-page .upcoming-page-bg {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        background-repeat: no-repeat !important;
+        background-position: center center !important;
+        background-size: cover !important;
+        pointer-events: none !important;
+        z-index: 0 !important;
+        filter: none !important;
+        transform: none !important;
+    }
+
+    /* Dark overlay — consistent across entire viewport */
+    body.connect-page .upcoming-page-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(
+            0,
+            0,
+            0,
+            var(--c-bg-darkness)
+        );
+        pointer-events: none;
+    }
+
+    /* Keep content above the background */
+    body.connect-page .connect-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ========================================================
+       02 — NEWSLETTER EMAIL INPUT
+       ======================================================== */
+    body.connect-page
+    .connect-weekly
+    .newsletter-form {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+
+    body.connect-page
+    .connect-weekly
+    .newsletter-input {
+        width: var(--c-email-width) !important;
+        max-width: none !important;
+        position: relative !important;
+        left: auto !important;
+        transform: translateX(var(--c-email-x)) !important;
+    }
+
+    /* ========================================================
+       03 — LATEST VLOG VIDEO
+       ======================================================== */
+    body.connect-page
+    .connect-vlog
+    .backstage-vlog-container {
+        width: var(--c-vlog-width) !important;
+        max-width: none !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        position: relative;
+        left: var(--c-vlog-x);
+    }
+
+    body.connect-page
+    .connect-vlog
+    .backstage-vlog-video {
+        width: 100% !important;
+        max-width: 100% !important;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+    }
+
+    body.connect-page
+    .connect-vlog
+    .backstage-vlog-video iframe {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* LOAD MORE VLOGS — horizontal adjustment */
+    body.connect-page
+    .connect-vlog
+    .backstage-vlog-button {
+        position: relative;
+        left: var(--c-vlog-button-x);
+    }
+
+    /* ========================================================
+       04 — UPCOMING MUSIC TWO-COLUMN MOBILE LAYOUT
+       ========================================================
+
+       LEFT:  Album cover
+       RIGHT: Date / Artist / Title
+
+       Never stack vertically on mobile.
+
+       ======================================================== */
+    body.connect-page
+    .connect-upcoming
+    .upcoming-grid {
+        display: grid !important;
+        grid-template-columns: 44% 56% !important;
+        align-items: center !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 0 !important;
+        margin: 0 auto !important;
+    }
+
+    /* ========================================================
+       05 — UPCOMING MUSIC COVER
+       ======================================================== */
+    body.connect-page
+    .connect-upcoming
+    .upcoming-cover {
+        width: var(--c-upcoming-cover-size) !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        position: relative !important;
+        left: var(--c-upcoming-cover-x) !important;
+        top: var(--c-upcoming-cover-y) !important;
+        margin: 0 !important;
+    }
+
+    body.connect-page
+    .connect-upcoming
+    .upcoming-cover img {
+        display: block;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        object-fit: cover;
+    }
+
+    /* ========================================================
+       06 — UPCOMING MUSIC TEXT
+       ======================================================== */
+    body.connect-page
+    .connect-upcoming
+    .upcoming-textbox {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        position: relative !important;
+        left: var(--c-upcoming-text-x) !important;
+        top: var(--c-upcoming-text-y) !important;
+        margin: 0 !important;
+        padding: 0 0 0 12px !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        font-size: var(--c-upcoming-text-scale) !important;
+    }
+
+    /* Individual text sizing relative to the control variable */
+    body.connect-page
+    .connect-upcoming
+    .upcoming-date {
+        font-size: calc(
+            44px * var(--c-upcoming-text-scale) / 100%
+        ) !important;
+        line-height: 1.15 !important;
+        white-space: nowrap;
+    }
+
+    body.connect-page
+    .connect-upcoming
+    .upcoming-artist {
+        font-size: calc(
+            22px * var(--c-upcoming-text-scale) / 100%
+        ) !important;
+        line-height: 1.3 !important;
+    }
+
+    body.connect-page
+    .connect-upcoming
+    .upcoming-title {
+        font-size: calc(
+            28px * var(--c-upcoming-text-scale) / 100%
+        ) !important;
+        line-height: 1.2 !important;
+    }
+
+    body.connect-page
+    .connect-upcoming
+    .upcoming-feat {
+        font-size: calc(
+            18px * var(--c-upcoming-text-scale) / 100%
+        ) !important;
+        line-height: 1.3 !important;
+    }
+
+    /* ========================================================
+       07 — UPCOMING → SCHEDULE GAP
+       ======================================================== */
+    body.connect-page
+    .connect-schedule {
+        margin-top: var(
+            --c-upcoming-schedule-gap
+        ) !important;
+    }
+
+    /* ========================================================
+       08 — SCHEDULE TITLE
+       ======================================================== */
+    body.connect-page
+    .connect-schedule
+    .backstage-heading {
+        position: relative;
+        left: var(--c-schedule-title-x);
+    }
+
+    /* ========================================================
+       09 — SCHEDULE TABLE
+       ======================================================== */
+    body.connect-page
+    .connect-schedule
+    #backstageSchedule {
+        width: var(
+            --c-schedule-table-width
+        ) !important;
+        max-width: none !important;
+        position: relative !important;
+        left: var(
+            --c-schedule-table-x
+        ) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        box-sizing: border-box !important;
+    }
+
+    /* ========================================================
+       10 — SCHEDULE → SUPPORT GAP
+       ======================================================== */
+    body.connect-page
+    .connect-support {
+        margin-top: var(
+            --c-schedule-support-gap
+        ) !important;
+    }
+
+    /* ========================================================
+       11 — SUPPORT REWOD TITLE
+       ======================================================== */
+    body.connect-page
+    .connect-support
+    .backstage-heading {
+        font-size: var(
+            --c-support-title-size
+        ) !important;
+        position: relative !important;
+        left: var(
+            --c-support-title-x
+        ) !important;
+    }
+
+    /* ========================================================
+       12 — SUPPORT REWOD DESCRIPTION
+       ======================================================== */
+    body.connect-page
+    .connect-support
+    .backstage-support-text {
+        width: var(
+            --c-support-text-width
+        ) !important;
+        max-width: none !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        position: relative !important;
+        left: var(
+            --c-support-text-x
+        ) !important;
+        box-sizing: border-box !important;
+    }
+
+    body.connect-page
+    .connect-support
+    .backstage-support-text p {
+        font-size: var(
+            --c-support-text-size
+        ) !important;
+        line-height: 1.7 !important;
+        overflow-wrap: break-word;
+    }
+
+    /* ========================================================
+       13 — SUPPORT BUTTONS → FOOTER GAP
+       ======================================================== */
+    body.connect-page
+    .connect-support {
+        padding-bottom: var(
+            --c-support-footer-gap
+        ) !important;
+    }
+
+    /* ========================================================
+       14 — PREVENT HORIZONTAL PAGE OVERFLOW
+       ======================================================== */
+    body.connect-page {
+        overflow-x: clip;
+    }
+}
