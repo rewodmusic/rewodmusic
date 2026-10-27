@@ -12147,9 +12147,9 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
         /* ----------------------------------------------------
            UPCOMING MUSIC — TEXT
            ---------------------------------------------------- */
-        --c-upcoming-text-x: -15px;
+        --c-upcoming-text-x: 15px;
         --c-upcoming-text-y: 335px;
-        --c-upcoming-text-scale: 245%;
+        --c-upcoming-text-scale: 195%;
 
         /* ----------------------------------------------------
            UPCOMING MUSIC — COVER
@@ -12161,7 +12161,7 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
         /* ----------------------------------------------------
            UPCOMING → SCHEDULE GAP
            ---------------------------------------------------- */
-        --c-upcoming-schedule-gap: -155px;
+        --c-upcoming-schedule-gap: -175px;
 
         /* ----------------------------------------------------
            NEXT 7 DAYS SCHEDULE — TITLE
@@ -12189,7 +12189,7 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
            SUPPORT REWOD — DESCRIPTION
            ---------------------------------------------------- */
         --c-support-text-size: 13px;
-        --c-support-text-x: 105px;
+        --c-support-text-x: 100px;
         --c-support-text-width: 90%;
 
         /* ----------------------------------------------------
