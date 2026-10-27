@@ -12147,21 +12147,21 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
         /* ----------------------------------------------------
            UPCOMING MUSIC — TEXT
            ---------------------------------------------------- */
-        --c-upcoming-text-x: 15px;
+        --c-upcoming-text-x: -15px;
         --c-upcoming-text-y: 335px;
-        --c-upcoming-text-scale: 145%;
+        --c-upcoming-text-scale: 245%;
 
         /* ----------------------------------------------------
            UPCOMING MUSIC — COVER
            ---------------------------------------------------- */
         --c-upcoming-cover-size: 110%;
         --c-upcoming-cover-x: 5px;
-        --c-upcoming-cover-y: -150px;
+        --c-upcoming-cover-y: -170px;
 
         /* ----------------------------------------------------
            UPCOMING → SCHEDULE GAP
            ---------------------------------------------------- */
-        --c-upcoming-schedule-gap: -205px;
+        --c-upcoming-schedule-gap: -155px;
 
         /* ----------------------------------------------------
            NEXT 7 DAYS SCHEDULE — TITLE
@@ -12182,20 +12182,20 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
         /* ----------------------------------------------------
            SUPPORT REWOD — TITLE
            ---------------------------------------------------- */
-        --c-support-title-size: 38px;
-        --c-support-title-x: 0px;
+        --c-support-title-size: 28px;
+        --c-support-title-x: -5px;
 
         /* ----------------------------------------------------
            SUPPORT REWOD — DESCRIPTION
            ---------------------------------------------------- */
-        --c-support-text-size: 12px;
-        --c-support-text-x: 50px;
-        --c-support-text-width: 80%;
+        --c-support-text-size: 13px;
+        --c-support-text-x: 105px;
+        --c-support-text-width: 90%;
 
         /* ----------------------------------------------------
            SUPPORT BUTTONS → FOOTER GAP
            ---------------------------------------------------- */
-        --c-support-footer-gap: 80px;
+        --c-support-footer-gap: 90px;
     }
 
     /* ========================================================
