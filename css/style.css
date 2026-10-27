@@ -12531,3 +12531,37 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
         transform: translateX(var(--c-vlog-x)) !important;
     }
 }
+
+/* ==================================================
+   CONNECT — iOS SAFARI AUTO-ZOOM FIX
+   ================================================== */
+@media (max-width: 700px) {
+    body.connect-page
+    .connect-weekly
+    .newsletter-input {
+        font-size: 16px !important;
+    }
+}
+
+/* ==================================================
+   REWOD — UNIVERSAL ALBUM ART BORDER
+   ================================================== */
+.rewod-album-art {
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: inherit;
+    box-sizing: border-box;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.025);
+    transition: border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+/* ==================================================
+   REWOD – LATEST VLOG GLASS EDGE
+   Same subtle border as album artworks
+   ================================================== */
+.connect-page .backstage-vlog-video {
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.025);
+    box-sizing: border-box;
+    overflow: hidden;
+}
