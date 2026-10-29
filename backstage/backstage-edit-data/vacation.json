@@ -1,11 +1,374 @@
 [
   {
+    "vacationdate": "2026_10_28"
+  },
+  {
+    "vacationdate": "2026_10_29"
+  },
+  {
+    "vacationdate": "2026_10_30"
+  },
+  {
+    "vacationdate": "2026_10_31"
+  },
+  {
+    "vacationdate": "2026_11_01"
+  },
+  {
+    "vacationdate": "2026_11_02"
+  },
+  {
+    "vacationdate": "2026_11_03"
+  },
+  {
+    "vacationdate": "2026_11_04"
+  },
+  {
+    "vacationdate": "2026_11_05"
+  },
+  {
+    "vacationdate": "2026_11_06"
+  },
+  {
+    "vacationdate": "2026_11_07"
+  },
+  {
+    "vacationdate": "2026_11_08"
+  },
+  {
+    "vacationdate": "2026_11_09"
+  },
+  {
+    "vacationdate": "2026_11_10"
+  },
+  {
+    "vacationdate": "2026_11_11"
+  },
+  {
+    "vacationdate": "2026_11_12"
+  },
+  {
+    "vacationdate": "2026_11_13"
+  },
+  {
+    "vacationdate": "2026_11_14"
+  },
+  {
+    "vacationdate": "2026_11_15"
+  },
+  {
+    "vacationdate": "2026_11_16"
+  },
+  {
+    "vacationdate": "2026_11_17"
+  },
+  {
+    "vacationdate": "2026_11_18"
+  },
+  {
+    "vacationdate": "2026_11_19"
+  },
+  {
+    "vacationdate": "2026_11_20"
+  },
+  {
+    "vacationdate": "2026_11_21"
+  },
+  {
+    "vacationdate": "2026_11_22"
+  },
+  {
+    "vacationdate": "2026_11_23"
+  },
+  {
+    "vacationdate": "2026_11_24"
+  },
+  {
+    "vacationdate": "2026_11_25"
+  },
+  {
+    "vacationdate": "2026_11_26"
+  },
+  {
+    "vacationdate": "2026_11_27"
+  },
+  {
+    "vacationdate": "2026_11_28"
+  },
+  {
+    "vacationdate": "2026_11_29"
+  },
+  {
+    "vacationdate": "2026_11_30"
+  },
+  {
+    "vacationdate": "2026_12_01"
+  },
+  {
+    "vacationdate": "2026_12_02"
+  },
+  {
+    "vacationdate": "2026_12_03"
+  },
+  {
+    "vacationdate": "2026_12_04"
+  },
+  {
+    "vacationdate": "2026_12_05"
+  },
+  {
+    "vacationdate": "2026_12_06"
+  },
+  {
+    "vacationdate": "2026_12_07"
+  },
+  {
+    "vacationdate": "2026_12_08"
+  },
+  {
+    "vacationdate": "2026_12_09"
+  },
+  {
+    "vacationdate": "2026_12_10"
+  },
+  {
+    "vacationdate": "2026_12_11"
+  },
+  {
+    "vacationdate": "2026_12_12"
+  },
+  {
+    "vacationdate": "2026_12_13"
+  },
+  {
+    "vacationdate": "2026_12_14"
+  },
+  {
+    "vacationdate": "2026_12_15"
+  },
+  {
+    "vacationdate": "2026_12_16"
+  },
+  {
+    "vacationdate": "2026_12_17"
+  },
+  {
+    "vacationdate": "2026_12_18"
+  },
+  {
+    "vacationdate": "2026_12_19"
+  },
+  {
     "vacationdate": "2026_12_20"
+  },
+  {
+    "vacationdate": "2026_12_21"
   },
   {
     "vacationdate": "2026_12_22"
   },
   {
+    "vacationdate": "2026_12_23"
+  },
+  {
     "vacationdate": "2026_12_24"
+  },
+  {
+    "vacationdate": "2026_12_25"
+  },
+  {
+    "vacationdate": "2026_12_26"
+  },
+  {
+    "vacationdate": "2026_12_27"
+  },
+  {
+    "vacationdate": "2026_12_28"
+  },
+  {
+    "vacationdate": "2026_12_29"
+  },
+  {
+    "vacationdate": "2026_12_30"
+  },
+  {
+    "vacationdate": "2026_12_31"
+  },
+  {
+    "vacationdate": "2027_01_01"
+  },
+  {
+    "vacationdate": "2027_01_02"
+  },
+  {
+    "vacationdate": "2027_01_03"
+  },
+  {
+    "vacationdate": "2027_01_04"
+  },
+  {
+    "vacationdate": "2027_01_05"
+  },
+  {
+    "vacationdate": "2027_01_06"
+  },
+  {
+    "vacationdate": "2027_01_07"
+  },
+  {
+    "vacationdate": "2027_01_08"
+  },
+  {
+    "vacationdate": "2027_01_09"
+  },
+  {
+    "vacationdate": "2027_01_10"
+  },
+  {
+    "vacationdate": "2027_01_11"
+  },
+  {
+    "vacationdate": "2027_01_12"
+  },
+  {
+    "vacationdate": "2027_01_13"
+  },
+  {
+    "vacationdate": "2027_01_14"
+  },
+  {
+    "vacationdate": "2027_01_15"
+  },
+  {
+    "vacationdate": "2027_01_16"
+  },
+  {
+    "vacationdate": "2027_01_17"
+  },
+  {
+    "vacationdate": "2027_01_18"
+  },
+  {
+    "vacationdate": "2027_01_19"
+  },
+  {
+    "vacationdate": "2027_01_20"
+  },
+  {
+    "vacationdate": "2027_01_21"
+  },
+  {
+    "vacationdate": "2027_01_22"
+  },
+  {
+    "vacationdate": "2027_01_23"
+  },
+  {
+    "vacationdate": "2027_01_24"
+  },
+  {
+    "vacationdate": "2027_01_25"
+  },
+  {
+    "vacationdate": "2027_01_26"
+  },
+  {
+    "vacationdate": "2027_01_27"
+  },
+  {
+    "vacationdate": "2027_01_28"
+  },
+  {
+    "vacationdate": "2027_01_29"
+  },
+  {
+    "vacationdate": "2027_01_30"
+  },
+  {
+    "vacationdate": "2027_01_31"
+  },
+  {
+    "vacationdate": "2027_02_01"
+  },
+  {
+    "vacationdate": "2027_02_02"
+  },
+  {
+    "vacationdate": "2027_02_03"
+  },
+  {
+    "vacationdate": "2027_02_04"
+  },
+  {
+    "vacationdate": "2027_02_05"
+  },
+  {
+    "vacationdate": "2027_02_06"
+  },
+  {
+    "vacationdate": "2027_02_07"
+  },
+  {
+    "vacationdate": "2027_02_08"
+  },
+  {
+    "vacationdate": "2027_02_09"
+  },
+  {
+    "vacationdate": "2027_02_10"
+  },
+  {
+    "vacationdate": "2027_02_11"
+  },
+  {
+    "vacationdate": "2027_02_12"
+  },
+  {
+    "vacationdate": "2027_02_13"
+  },
+  {
+    "vacationdate": "2027_02_14"
+  },
+  {
+    "vacationdate": "2027_02_15"
+  },
+  {
+    "vacationdate": "2027_02_16"
+  },
+  {
+    "vacationdate": "2027_02_17"
+  },
+  {
+    "vacationdate": "2027_02_18"
+  },
+  {
+    "vacationdate": "2027_02_19"
+  },
+  {
+    "vacationdate": "2027_02_20"
+  },
+  {
+    "vacationdate": "2027_02_21"
+  },
+  {
+    "vacationdate": "2027_02_22"
+  },
+  {
+    "vacationdate": "2027_02_23"
+  },
+  {
+    "vacationdate": "2027_02_24"
+  },
+  {
+    "vacationdate": "2027_02_25"
+  },
+  {
+    "vacationdate": "2027_02_26"
+  },
+  {
+    "vacationdate": "2027_02_27"
+  },
+  {
+    "vacationdate": "2027_02_28"
   }
- ]
+]

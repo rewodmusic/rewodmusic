@@ -7,11 +7,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>CONNECT – REWOD</title>
-        <meta name="description" content="Connect with REWOD. Subscribe to REWOD WEEKLY, watch the latest vlog, discover upcoming music, explore the next seven days and support the project.">
+        <meta name="description" content="Connect with REWOD. Subscribe to REWOD WEEKLY, learn about the upcoming vlog series, discover upcoming music, explore the next seven days and support the project.">
         <meta property="og:type" content="website">
         <meta property="og:url" content="https://rewodmusic.com/connect/">
         <meta property="og:title" content="REWOD – Connect">
-        <meta property="og:description" content="REWOD WEEKLY, latest vlogs, upcoming music, schedule and more.">
+        <meta property="og:description" content="REWOD WEEKLY, upcoming vlog series, music, schedule and more.">
         <meta property="og:image" content="https://rewodmusic.com/og-image.jpg">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="REWOD – Connect">
@@ -284,6 +284,74 @@
 
 
         /* ================================================
+           VLOG SERIES — COMING EARLY 2027
+           Same 16:9 video area, elegant gray placeholder.
+           ================================================ */
+
+        .connect-vlog .backstage-vlog-video {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            height: auto;
+            overflow: hidden;
+            background: #252525;
+        }
+
+        .connect-vlog-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            box-sizing: border-box;
+            padding: 30px 24px;
+            text-align: center;
+            color: #f1f1f1;
+            background: linear-gradient(145deg, #333333 0%, #242424 58%, #1b1b1b 100%);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .connect-vlog-placeholder::before {
+            content: "";
+            position: absolute;
+            inset: 14px;
+            border: 1px solid rgba(255,255,255,0.07);
+            pointer-events: none;
+        }
+
+        .connect-vlog-placeholder-kicker {
+            font-family: "Inter Tight", sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #a9a9a9;
+        }
+
+        .connect-vlog-placeholder-title {
+            font-family: "Inter Tight", sans-serif;
+            font-size: clamp(24px, 4.5vw, 43px);
+            line-height: 1.08;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .connect-vlog-placeholder-line {
+            width: 46px;
+            height: 1px;
+            background: rgba(255,255,255,0.4);
+        }
+
+        .connect-vlog-placeholder-description {
+            max-width: 390px;
+            font-family: "Fraunces", serif;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #c9c9c9;
+        }
+
+        /* ================================================
            MOBILE
            ================================================ */
 
@@ -414,9 +482,13 @@
                 LATEST VLOG </h2>
                 <div class="backstage-vlog-container">
                     <div class="backstage-vlog-video">
-                        <iframe id="backstageLatestVlog" title="REWOD – Latest Vlog" src="about:blank" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    </div><a id="backstageVlogPlaylist" class="backstage-action-button backstage-vlog-button" href="https://www.youtube.com/rewodmusic" target="_blank" rel="noopener noreferrer">
-                    LOAD MORE VLOGS </a>
+                        <div class="connect-vlog-placeholder" role="status" aria-label="Vlog series coming in early 2027">
+                            <span class="connect-vlog-placeholder-kicker">A NEW REWOD PROJECT</span>
+                            <span class="connect-vlog-placeholder-title">COMING SOON</span>
+                            <span class="connect-vlog-placeholder-line" aria-hidden="true"></span>
+                            <span class="connect-vlog-placeholder-description">The vlog series is a future project, currently expected to launch in early 2027.</span>
+                        </div>
+                    </div>
                 </div>
             </section>
             <!-- ==============================================
@@ -531,8 +603,6 @@
         <script src="/upcoming/newsletter.js"></script>
         <!-- BACKSTAGE SCHEDULE -->
         <script src="/js/backstage.js"></script>
-        <!-- BACKSTAGE YOUTUBE -->
-        <script src="/js/backstage-youtube.js"></script>
         <!-- MOBILE MENU -->
         <script src="/js/mobileMenu.js"></script>
         <!-- ==================================================
