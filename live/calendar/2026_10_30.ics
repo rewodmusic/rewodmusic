@@ -8,8 +8,8 @@ BEGIN:VEVENT
 UID:rewod-livestream@rewodmusic.com
 DTSTAMP:20261220T120000Z
 
-DTSTART;TZID=Europe/Budapest:20261005T130000
-DTEND;TZID=Europe/Budapest:20261005T140000
+DTSTART;TZID=Europe/Budapest:20261030T130000
+DTEND;TZID=Europe/Budapest:20261030T190000
 
 SUMMARY:REWOD Livestream
 DESCRIPTION:REWOD music release livestream event.\n\nJoin live for conversation, and Q&A.

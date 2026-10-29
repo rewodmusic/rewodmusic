@@ -1,13 +1,49 @@
-/* REWOD HOMEPAGE – EXACT BACKSTAGE SCHEDULE RENDERING (isolated) */
-(()=>{
-"use strict";
-const PATHS = {live:"/data/live.json",schedule:"/data/schedule.json",vacation:"/backstage/backstage-edit-data/vacation.json",releaseTime:"/backstage/backstage-edit-data/releasetime.json"};
-const SOURCE_TIMEZONE="Europe/Budapest";
-const SCHEDULE_DAYS=7;
-const SCHEDULE_REFRESH_INTERVAL=60000;
-const CONTENT_EVENT_TYPES=[{field:"photo",label:"photo release"},{field:"video promo",label:"video promo"},{field:"review",label:"new music review"},{field:"vlog",label:"new vlog video"}];
-const budapestFormatter=new Intl.DateTimeFormat("en-US",{timeZone:SOURCE_TIMEZONE,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"});
-let scheduleRefreshTimer=null;
+/* =========================================================
+   REWOD HOMEPAGE – EXACT BACKSTAGE SCHEDULE RENDERING
+   HOME + SONG
+   ========================================================= */
+
+(() => {
+    "use strict";
+
+    const PATHS = {
+        live: "/data/live.json",
+        schedule: "/data/schedule.json",
+        vacation: "/backstage/backstage-edit-data/vacation.json",
+        releaseTime: "/backstage/backstage-edit-data/releasetime.json"
+    };
+
+    const SOURCE_TIMEZONE = "Europe/Budapest";
+    const SCHEDULE_DAYS = 7;
+    const SCHEDULE_REFRESH_INTERVAL = 60000;
+
+    const CONTENT_EVENT_TYPES = [
+        { field: "photo", label: "photo release" },
+        { field: "video promo", label: "video promo" },
+        { field: "review", label: "new music review" },
+        { field: "vlog", label: "new vlog video" }
+    ];
+
+    const budapestFormatter = new Intl.DateTimeFormat(
+        "en-US",
+        {
+            timeZone: SOURCE_TIMEZONE,
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hourCycle: "h23"
+        }
+    );
+
+    let scheduleRefreshTimer = null;
+
+
+    /* =========================================================
+       FETCH JSON
+       ========================================================= */
 
     async function fetchJSON(url) {
         const response = await fetch(url, {
@@ -24,24 +60,26 @@ let scheduleRefreshTimer=null;
     }
 
 
+    /* =========================================================
+       BASIC HELPERS
+       ========================================================= */
 
     function safeText(value) {
         return String(value ?? "").trim();
     }
 
-
-
     function isMarked(value) {
         return safeText(value).toLowerCase() === "x";
     }
-
-
 
     function pad2(number) {
         return String(number).padStart(2, "0");
     }
 
 
+    /* =========================================================
+       DATE PARSING
+       ========================================================= */
 
     function parseDateString(dateString) {
         const value = safeText(dateString);
@@ -75,21 +113,23 @@ let scheduleRefreshTimer=null;
         };
     }
 
-
-
     function formatDateKey(year, month, day) {
-        return (
-            `${year}_${pad2(month)}_${pad2(day)}`
-        );
+        return `${year}_${pad2(month)}_${pad2(day)}`;
     }
 
 
+    /* =========================================================
+       LIVESTREAM DETECTION
+       ========================================================= */
 
     function isLivestream(item) {
         return isMarked(item?.livestream);
     }
 
 
+    /* =========================================================
+       TIME PARSING
+       ========================================================= */
 
     function extractTimeFromText(text) {
         if (!text) return null;
@@ -102,12 +142,8 @@ let scheduleRefreshTimer=null;
 
         if (twelveHour) {
             let hour = Number(twelveHour[1]);
-
-            const minute =
-                Number(twelveHour[2] || 0);
-
-            const meridiem =
-                twelveHour[3].toLowerCase();
+            const minute = Number(twelveHour[2] || 0);
+            const meridiem = twelveHour[3].toLowerCase();
 
             if (
                 hour < 1 ||
@@ -118,8 +154,7 @@ let scheduleRefreshTimer=null;
             }
 
             if (hour === 12) {
-                hour =
-                    meridiem === "am" ? 0 : 12;
+                hour = meridiem === "am" ? 0 : 12;
             } else if (meridiem === "pm") {
                 hour += 12;
             }
@@ -144,8 +179,6 @@ let scheduleRefreshTimer=null;
         return null;
     }
 
-
-
     function parseReleaseTime(value) {
         const text = safeText(value);
 
@@ -153,9 +186,7 @@ let scheduleRefreshTimer=null;
             /^([01]\d|2[0-3]):([0-5]\d)$/
         );
 
-        if (!match) {
-            return null;
-        }
+        if (!match) return null;
 
         return {
             hour: Number(match[1]),
@@ -164,6 +195,9 @@ let scheduleRefreshTimer=null;
     }
 
 
+    /* =========================================================
+       LOAD RELEASE TIME
+       ========================================================= */
 
     async function loadReleaseTime() {
         const data = await fetchJSON(
@@ -179,10 +213,9 @@ let scheduleRefreshTimer=null;
             );
         }
 
-        const releaseTime =
-            parseReleaseTime(
-                data[0]?.releasetime
-            );
+        const releaseTime = parseReleaseTime(
+            data[0]?.releasetime
+        );
 
         if (!releaseTime) {
             throw new Error(
@@ -194,43 +227,49 @@ let scheduleRefreshTimer=null;
     }
 
 
+    /* =========================================================
+       LOCAL SCHEDULE DATE
+       ========================================================= */
 
-function formatScheduleDate(date) {
-    const now = new Date();
+    function formatScheduleDate(date) {
+        const now = new Date();
 
-    const eventDay = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-    );
+        const eventDay = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+        );
 
-    const today = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate()
-    );
+        const today = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
 
-    const difference = Math.round(
-        (eventDay - today) / 86400000
-    );
+        const difference = Math.round(
+            (eventDay - today) / 86400000
+        );
 
-    if (difference === 0) {
-        return "TODAY";
-    }
-
-    if (difference === 1) {
-        return "TOMORROW";
-    }
-
-    return date.toLocaleDateString(
-        "en-US",
-        {
-            weekday: "long"
+        if (difference === 0) {
+            return "TODAY";
         }
-    ).toUpperCase();
-}
+
+        if (difference === 1) {
+            return "TOMORROW";
+        }
+
+        return date.toLocaleDateString(
+            "en-US",
+            {
+                weekday: "long"
+            }
+        ).toUpperCase();
+    }
 
 
+    /* =========================================================
+       LOCAL SCHEDULE TIME
+       ========================================================= */
 
     function formatScheduleTime(date) {
         return date.toLocaleTimeString(
@@ -247,6 +286,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       FULL LOCAL DATE / TOOLTIP
+       ========================================================= */
 
     function formatFullLocalDateTime(date) {
         return date.toLocaleString(
@@ -265,6 +307,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       VISITOR TIMEZONE
+       ========================================================= */
 
     function getVisitorTimezone() {
         try {
@@ -275,8 +320,6 @@ function formatScheduleDate(date) {
             return "Local time";
         }
     }
-
-
 
     function getVisitorTimezoneCity() {
         const timezone = getVisitorTimezone();
@@ -295,17 +338,13 @@ function formatScheduleDate(date) {
             .toUpperCase();
     }
 
-
-
     function initTimezoneLabels() {
         const timezone = getVisitorTimezone();
-
         const city = getVisitorTimezoneCity();
 
-        const labels =
-            document.querySelectorAll(
-                ".backstage-timezone-note"
-            );
+        const labels = document.querySelectorAll(
+            ".backstage-timezone-note"
+        );
 
         labels.forEach(label => {
             label.textContent =
@@ -317,17 +356,17 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       BUDAPEST TIMEZONE OFFSET
+       ========================================================= */
 
     function getTimezoneOffsetMs(date) {
-        const parts =
-            budapestFormatter.formatToParts(date);
-
+        const parts = budapestFormatter.formatToParts(date);
         const values = {};
 
         parts.forEach(part => {
             if (part.type !== "literal") {
-                values[part.type] =
-                    Number(part.value);
+                values[part.type] = Number(part.value);
             }
         });
 
@@ -340,26 +379,25 @@ function formatScheduleDate(date) {
             values.second
         );
 
-        const timestampWithoutMs =
-            Math.floor(
-                date.getTime() / 1000
-            ) * 1000;
+        const timestampWithoutMs = Math.floor(
+            date.getTime() / 1000
+        ) * 1000;
 
         return asUTC - timestampWithoutMs;
     }
 
 
+    /* =========================================================
+       BUDAPEST DATE PARTS
+       ========================================================= */
 
     function getBudapestParts(date) {
-        const parts =
-            budapestFormatter.formatToParts(date);
-
+        const parts = budapestFormatter.formatToParts(date);
         const values = {};
 
         parts.forEach(part => {
             if (part.type !== "literal") {
-                values[part.type] =
-                    Number(part.value);
+                values[part.type] = Number(part.value);
             }
         });
 
@@ -367,6 +405,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       BUDAPEST TIME VALIDATION
+       ========================================================= */
 
     function matchesBudapestTime(
         date,
@@ -386,14 +427,17 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       BUILD BUDAPEST DATE/TIME
+       CET / CEST / DST SUPPORT
+       ========================================================= */
 
     function buildBudapestDateTime(
         dateString,
         hour,
         minute
     ) {
-        const date =
-            parseDateString(dateString);
+        const date = parseDateString(dateString);
 
         if (!date) return null;
 
@@ -418,26 +462,19 @@ function formatScheduleDate(date) {
             0
         );
 
-        const firstOffset =
-            getTimezoneOffsetMs(
-                new Date(utcGuess)
-            );
+        const firstOffset = getTimezoneOffsetMs(
+            new Date(utcGuess)
+        );
 
-        const firstTimestamp =
-            utcGuess - firstOffset;
+        const firstTimestamp = utcGuess - firstOffset;
 
-        const secondOffset =
-            getTimezoneOffsetMs(
-                new Date(firstTimestamp)
-            );
+        const secondOffset = getTimezoneOffsetMs(
+            new Date(firstTimestamp)
+        );
 
         const candidates = [
-            new Date(
-                utcGuess - firstOffset
-            ),
-            new Date(
-                utcGuess - secondOffset
-            )
+            new Date(utcGuess - firstOffset),
+            new Date(utcGuess - secondOffset)
         ];
 
         const nearbyOffsets = [
@@ -474,13 +511,15 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       BUILD DATE/TIME FROM TEXT
+       ========================================================= */
 
     function buildDateTime(
         dateString,
         timeText
     ) {
-        const time =
-            extractTimeFromText(timeText);
+        const time = extractTimeFromText(timeText);
 
         if (!time) return null;
 
@@ -492,6 +531,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       NORMALISE LIVESTREAMS
+       ========================================================= */
 
     function normaliseLivestreams(liveData) {
         if (!Array.isArray(liveData)) {
@@ -501,11 +543,10 @@ function formatScheduleDate(date) {
         return liveData
             .filter(isLivestream)
             .map(item => {
-                const dateTime =
-                    buildDateTime(
-                        item.date,
-                        item.subtitle
-                    );
+                const dateTime = buildDateTime(
+                    item.date,
+                    item.subtitle
+                );
 
                 return {
                     raw: item,
@@ -520,13 +561,15 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       SCHEDULE EVENT TIME
+       ========================================================= */
 
     function getScheduledEventTime(
         item,
         releaseTime
     ) {
-        const customHour =
-            safeText(item?.hour);
+        const customHour = safeText(item?.hour);
 
         if (customHour) {
             return (
@@ -539,6 +582,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       MUSIC RELEASE DETECTION
+       ========================================================= */
 
     function isMusicRelease(item) {
         return Boolean(
@@ -548,6 +594,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       EVENT PRIORITY
+       ========================================================= */
 
     function getEventPriority(type) {
         if (
@@ -561,6 +610,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       NORMALISE CENTRAL SCHEDULE
+       ========================================================= */
 
     function normaliseCentralSchedule(
         scheduleData,
@@ -575,37 +627,32 @@ function formatScheduleDate(date) {
         scheduleData.forEach(item => {
             if (!item) return;
 
-            const date =
-                safeText(item.date);
+            const date = safeText(item.date);
 
             if (!parseDateString(date)) {
                 return;
             }
 
-            const time =
-                getScheduledEventTime(
-                    item,
-                    releaseTime
-                );
+            const time = getScheduledEventTime(
+                item,
+                releaseTime
+            );
 
             if (!time) {
                 return;
             }
 
-            const dateTime =
-                buildBudapestDateTime(
-                    date,
-                    time.hour,
-                    time.minute
-                );
+            const dateTime = buildBudapestDateTime(
+                date,
+                time.hour,
+                time.minute
+            );
 
             if (!dateTime) {
                 return;
             }
 
-            /*
-                MUSIC RELEASE
-            */
+            /* MUSIC RELEASE */
 
             if (isMusicRelease(item)) {
                 events.push({
@@ -615,9 +662,7 @@ function formatScheduleDate(date) {
                 });
             }
 
-            /*
-                PHOTO / PROMO / REVIEW / VLOG
-            */
+            /* PHOTO / PROMO / REVIEW / VLOG */
 
             CONTENT_EVENT_TYPES.forEach(
                 definition => {
@@ -640,6 +685,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       VACATION DAYS
+       ========================================================= */
 
     function normaliseVacationDays(
         vacationData
@@ -651,8 +699,9 @@ function formatScheduleDate(date) {
         }
 
         vacationData.forEach(item => {
-            const date =
-                safeText(item?.vacationdate);
+            const date = safeText(
+                item?.vacationdate
+            );
 
             if (parseDateString(date)) {
                 dates.add(date);
@@ -663,6 +712,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       AUTOMATIC DAILY VIDEOS
+       ========================================================= */
 
     function generateDailyVideos(
         scheduleData,
@@ -691,21 +743,19 @@ function formatScheduleDate(date) {
             });
         }
 
-        const vacationDates =
-            normaliseVacationDays(
-                vacationData
-            );
+        const vacationDates = normaliseVacationDays(
+            vacationData
+        );
 
         const events = [];
 
         /*
-            Start from today's calendar date
-            in Budapest, not the visitor's
-            local calendar date.
+           Start from today's calendar date
+           in Budapest, not the visitor's
+           local calendar date.
         */
 
-        const today =
-            getBudapestParts(now);
+        const today = getBudapestParts(now);
 
         const calendarCursor = new Date(
             Date.UTC(
@@ -716,9 +766,9 @@ function formatScheduleDate(date) {
         );
 
         /*
-            Include enough calendar dates
-            to cover the full 168-hour window,
-            even across DST transitions.
+           Include enough calendar dates
+           to cover the full 168-hour window,
+           even across DST transitions.
         */
 
         for (
@@ -731,12 +781,11 @@ function formatScheduleDate(date) {
                 offset * 86400000
             );
 
-            const dateKey =
-                formatDateKey(
-                    currentDate.getUTCFullYear(),
-                    currentDate.getUTCMonth() + 1,
-                    currentDate.getUTCDate()
-                );
+            const dateKey = formatDateKey(
+                currentDate.getUTCFullYear(),
+                currentDate.getUTCMonth() + 1,
+                currentDate.getUTCDate()
+            );
 
             if (
                 musicDates.has(dateKey) ||
@@ -745,12 +794,11 @@ function formatScheduleDate(date) {
                 continue;
             }
 
-            const dateTime =
-                buildBudapestDateTime(
-                    dateKey,
-                    releaseTime.hour,
-                    releaseTime.minute
-                );
+            const dateTime = buildBudapestDateTime(
+                dateKey,
+                releaseTime.hour,
+                releaseTime.minute
+            );
 
             if (!dateTime) {
                 continue;
@@ -774,6 +822,43 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       LIVESTREAM SCHEDULE TITLE FORMATTING
+
+       Example:
+
+       type:
+       Q&A
+
+       title:
+       rewod music release livestream
+
+       result:
+       Q&A - MUSIC RELEASE LIVESTREAM
+       ========================================================= */
+
+    function formatLivestreamScheduleTitle(item) {
+        const type = safeText(item?.type);
+
+        const title = safeText(item?.title)
+            .replace(/^REWOD(?:\s+|$)/i, "")
+            .trim();
+
+        const formattedTitle = [
+            type,
+            title
+        ]
+        .filter(Boolean)
+        .join(" - ")
+        .toUpperCase();
+
+        return formattedTitle || "LIVESTREAM";
+    }
+
+
+    /* =========================================================
+       LIVESTREAMS FOR SCHEDULE
+       ========================================================= */
 
     function livestreamsForSchedule(
         livestreams
@@ -784,9 +869,9 @@ function formatScheduleDate(date) {
                     stream.dateTime,
 
                 type:
-                    stream.raw.type ||
-                    stream.raw.title ||
-                    "livestream",
+                    formatLivestreamScheduleTitle(
+                        stream.raw
+                    ),
 
                 priority: 1
             })
@@ -794,6 +879,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       RENDER SCHEDULE
+       ========================================================= */
 
     function renderSchedule(
         scheduleData,
@@ -801,15 +889,13 @@ function formatScheduleDate(date) {
         vacationData,
         releaseTime
     ) {
-        const container =
-            document.getElementById(
-                "backstageSchedule"
-            );
+        const container = document.getElementById(
+            "backstageSchedule"
+        );
 
-        const empty =
-            document.getElementById(
-                "backstageScheduleEmpty"
-            );
+        const empty = document.getElementById(
+            "backstageScheduleEmpty"
+        );
 
         if (
             !container ||
@@ -830,44 +916,33 @@ function formatScheduleDate(date) {
         );
 
 
-        /* =============================================
-           CENTRAL SCHEDULE EVENTS
-           ============================================= */
+        /* CENTRAL SCHEDULE EVENTS */
 
-        const scheduledEvents =
-            normaliseCentralSchedule(
-                scheduleData,
-                releaseTime
-            );
+        const scheduledEvents = normaliseCentralSchedule(
+            scheduleData,
+            releaseTime
+        );
 
 
-        /* =============================================
-           AUTOMATIC DAILY VIDEOS
-           ============================================= */
+        /* AUTOMATIC DAILY VIDEOS */
 
-        const dailyVideos =
-            generateDailyVideos(
-                scheduleData,
-                vacationData,
-                releaseTime,
-                now,
-                end
-            );
+        const dailyVideos = generateDailyVideos(
+            scheduleData,
+            vacationData,
+            releaseTime,
+            now,
+            end
+        );
 
 
-        /* =============================================
-           LIVESTREAM EVENTS
-           ============================================= */
+        /* LIVESTREAM EVENTS */
 
-        const liveEvents =
-            livestreamsForSchedule(
-                livestreams
-            );
+        const liveEvents = livestreamsForSchedule(
+            livestreams
+        );
 
 
-        /* =============================================
-           COMBINE ALL EVENTS
-           ============================================= */
+        /* COMBINE ALL EVENTS */
 
         const combined = [
             ...scheduledEvents,
@@ -876,9 +951,7 @@ function formatScheduleDate(date) {
         ];
 
 
-        /* =============================================
-           FILTER AND SORT
-           ============================================= */
+        /* FILTER AND SORT */
 
         const upcoming = combined
             .filter(item => (
@@ -904,12 +977,12 @@ function formatScheduleDate(date) {
             });
 
 
-        /* =============================================
-           CLEAR PREVIOUS CONTENT
-           ============================================= */
+        /* CLEAR PREVIOUS CONTENT */
 
         container.innerHTML = "";
 
+
+        /* EMPTY STATE */
 
         if (!upcoming.length) {
             container.hidden = true;
@@ -921,15 +994,12 @@ function formatScheduleDate(date) {
         empty.hidden = true;
 
 
-        /* =============================================
-           RENDER EVENTS
-           ============================================= */
+        /* RENDER EVENTS */
 
         upcoming.forEach(item => {
-            const row =
-                document.createElement(
-                    "div"
-                );
+            const row = document.createElement(
+                "div"
+            );
 
             row.className =
                 "backstage-schedule-row";
@@ -937,56 +1007,49 @@ function formatScheduleDate(date) {
 
             /* DATE */
 
-            const date =
-                document.createElement(
-                    "div"
-                );
+            const date = document.createElement(
+                "div"
+            );
 
             date.className =
                 "backstage-schedule-date";
 
-            date.textContent =
-                formatScheduleDate(
-                    item.dateTime
-                );
+            date.textContent = formatScheduleDate(
+                item.dateTime
+            );
 
 
             /* TIME */
 
-            const time =
-                document.createElement(
-                    "div"
-                );
+            const time = document.createElement(
+                "div"
+            );
 
             time.className =
                 "backstage-schedule-time";
 
-            time.textContent =
-                formatScheduleTime(
-                    item.dateTime
-                );
+            time.textContent = formatScheduleTime(
+                item.dateTime
+            );
 
 
             /* EVENT TYPE */
 
-            const type =
-                document.createElement(
-                    "div"
-                );
+            const type = document.createElement(
+                "div"
+            );
 
             type.className =
                 "backstage-schedule-type";
 
-            type.textContent =
-                item.type;
+            type.textContent = item.type;
 
 
             /* TOOLTIP */
 
-            row.title =
-                formatFullLocalDateTime(
-                    item.dateTime
-                );
+            row.title = formatFullLocalDateTime(
+                item.dateTime
+            );
 
 
             /* APPEND */
@@ -1002,6 +1065,9 @@ function formatScheduleDate(date) {
     }
 
 
+    /* =========================================================
+       AUTOMATIC SCHEDULE REFRESH
+       ========================================================= */
 
     function initScheduleRefresh(
         scheduleData,
@@ -1026,25 +1092,93 @@ function formatScheduleDate(date) {
 
         render();
 
-        scheduleRefreshTimer =
-            setInterval(
-                render,
-                SCHEDULE_REFRESH_INTERVAL
-            );
+        scheduleRefreshTimer = setInterval(
+            render,
+            SCHEDULE_REFRESH_INTERVAL
+        );
     }
 
 
-async function initHomeSchedule(){
- initTimezoneLabels();
- const [schedule,live,vacation,release]=await Promise.allSettled([
-  fetchJSON(PATHS.schedule),fetchJSON(PATHS.live),fetchJSON(PATHS.vacation),loadReleaseTime()
- ]);
- const value=(r,label,fallback)=>{if(r.status==="fulfilled")return r.value;console.error("Homepage schedule: "+label,r.reason);return fallback;};
- const scheduleData=value(schedule,"schedule.json",[]);
- const liveData=value(live,"live.json",[]);
- const vacationData=value(vacation,"vacation.json",[]);
- const releaseTime=value(release,"releasetime.json",null);
- initScheduleRefresh(Array.isArray(scheduleData)?scheduleData:[],normaliseLivestreams(liveData),Array.isArray(vacationData)?vacationData:[],releaseTime);
-}
-initHomeSchedule().catch(console.error);
+    /* =========================================================
+       INITIALIZATION
+       ========================================================= */
+
+    async function initHomeSchedule() {
+        initTimezoneLabels();
+
+        const [
+            schedule,
+            live,
+            vacation,
+            release
+        ] = await Promise.allSettled([
+            fetchJSON(PATHS.schedule),
+            fetchJSON(PATHS.live),
+            fetchJSON(PATHS.vacation),
+            loadReleaseTime()
+        ]);
+
+        const value = (
+            result,
+            label,
+            fallback
+        ) => {
+            if (result.status === "fulfilled") {
+                return result.value;
+            }
+
+            console.error(
+                "Homepage schedule: " + label,
+                result.reason
+            );
+
+            return fallback;
+        };
+
+        const scheduleData = value(
+            schedule,
+            "schedule.json",
+            []
+        );
+
+        const liveData = value(
+            live,
+            "live.json",
+            []
+        );
+
+        const vacationData = value(
+            vacation,
+            "vacation.json",
+            []
+        );
+
+        const releaseTime = value(
+            release,
+            "releasetime.json",
+            null
+        );
+
+        initScheduleRefresh(
+            Array.isArray(scheduleData)
+                ? scheduleData
+                : [],
+
+            normaliseLivestreams(liveData),
+
+            Array.isArray(vacationData)
+                ? vacationData
+                : [],
+
+            releaseTime
+        );
+    }
+
+
+    /* =========================================================
+       START
+       ========================================================= */
+
+    initHomeSchedule().catch(console.error);
+
 })();

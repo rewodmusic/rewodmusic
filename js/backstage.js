@@ -1683,23 +1683,55 @@ function formatScheduleDate(date) {
        LIVESTREAMS FOR SCHEDULE
        ========================================================= */
 
-    function livestreamsForSchedule(
-        livestreams
-    ) {
-        return livestreams.map(
-            stream => ({
-                dateTime:
-                    stream.dateTime,
+/* =========================================================
+   LIVESTREAM SCHEDULE TITLE FORMATTING
+   ========================================================= */
 
-                type:
-                    stream.raw.type ||
-                    stream.raw.title ||
-                    "livestream",
+function formatLivestreamScheduleTitle(item) {
 
-                priority: 1
-            })
-        );
-    }
+    const type = safeText(item?.type);
+
+    const title = safeText(item?.title)
+        .replace(/^REWOD(?:\s+|$)/i, "")
+        .trim();
+
+    const formattedTitle = [
+        type,
+        title
+    ]
+        .filter(Boolean)
+        .join(" - ")
+        .toUpperCase();
+
+    return formattedTitle || "LIVESTREAM";
+}
+
+
+/* =========================================================
+   LIVESTREAMS FOR SCHEDULE
+   ========================================================= */
+
+function livestreamsForSchedule(
+    livestreams
+) {
+
+    return livestreams.map(
+        stream => ({
+
+            dateTime:
+                stream.dateTime,
+
+            type:
+                formatLivestreamScheduleTitle(
+                    stream.raw
+                ),
+
+            priority: 1
+
+        })
+    );
+
+}
 
 
     /* =========================================================
