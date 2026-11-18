@@ -12721,3 +12721,13 @@ body.connect-page .connect-weekly #newsletterForm .weekly-consent {
     transform: translateX(calc(var(--c-email-x, 0px) + var(--checkbox-x)));
   }
 }
+
+/* A style.css végére. Az üres checkbox az e-mail-mező színeit kapja. */
+body.connect-page .connect-weekly #newsletterForm .weekly-consent input:not(:checked) {
+  background-color: rgba(35, 35, 35, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+body.connect-page .connect-weekly #newsletterForm .weekly-consent span {
+  color: rgba(255, 255, 255, 0.65); /* Kisebb érték = halványabb felirat. */
+}
