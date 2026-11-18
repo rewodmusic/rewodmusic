@@ -464,12 +464,20 @@
                 <!-- ORIGINAL UPCOMING NEWSLETTER -->
                 <div class="upcoming-newsletter-wrap" aria-label="Newsletter subscription">
                     <div class="upcoming-newsletter">
-                        <form class="newsletter-form" id="newsletterForm" autocomplete="on" novalidate>
-                            <input class="newsletter-input" id="newsletterEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="Email" required>
-                            <button class="btn-listen" id="newsletterBtn" type="submit">
-                                SUBSCRIBE
-</button>
-                        </form>
+                       <form class="newsletter-form" id="newsletterForm" autocomplete="on">
+    <input class="newsletter-input" id="newsletterEmail" name="email"
+           type="email" inputmode="email" autocomplete="email"
+           placeholder="Email" required>
+
+    <label class="weekly-consent">
+        <input type="checkbox" name="weekly_email_consent" value="yes" required>
+        <span>Yes, I’d like a weekly email from REWOD.</span>
+    </label>
+
+    <button class="btn-listen" id="newsletterBtn" type="submit">
+        SUBSCRIBE
+    </button>
+</form>
                     </div>
                     <div class="newsletter-status" id="newsletterStatus" aria-live="polite"></div>
                 </div>

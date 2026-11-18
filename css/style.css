@@ -12596,3 +12596,128 @@ body.connect-page .connect-weekly .newsletter-form .btn-listen {
         padding-bottom: var(--c-support-footer-gap) !important;
     }
 }
+
+@media (max-width: 640px) {
+  .live-expand .live-two-col .live-col:first-child .live-value {
+    display: block;
+    width: 145px;
+    height: 1lh; /* A sortörés után is egy magasságban marad a két oszlop címe. */
+    white-space: normal;
+  }
+}
+
+
+/* style.css végére */
+body.connect-page .connect-weekly .weekly-consent {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  width: 40%; /* Az e-mail-mező szélességéhez igazodik. */
+  box-sizing: border-box;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+}
+
+body.connect-page .connect-weekly .weekly-consent input {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 5px;
+  background: rgba(35, 35, 35, 0.75);
+  cursor: pointer;
+}
+
+body.connect-page .connect-weekly .weekly-consent input:checked {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+body.connect-page .connect-weekly .weekly-consent input:checked::after {
+  content: "";
+  width: 4px;
+  height: 8px;
+  margin-top: -2px;
+  border: solid #222;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+body.connect-page .connect-weekly .weekly-consent input:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  body.connect-page .connect-weekly .weekly-consent {
+    width: min(100%, 320px);
+  }
+}
+
+
+
+/* A style.css végére */
+body.connect-page .connect-weekly .weekly-consent span {
+  font-size: 11px;
+  line-height: 1.4;
+  align-self: center;
+}
+
+
+/* A style.css végére */
+body.connect-page .connect-weekly #newsletterForm {
+  --email-checkbox-gap: 12px;  /* E-mail-mező és checkbox közötti távolság */
+  --checkbox-button-gap: 18px; /* Checkbox és SUBSCRIBE gomb közötti távolság */
+  --checkbox-text-y: 1px;      /* Nagyobb érték = lejjebb kerül a szöveg */
+  row-gap: 0;
+}
+
+body.connect-page .connect-weekly #newsletterForm .weekly-consent {
+  width: 40%; /* Ugyanaz a szélesség, mint az e-mail-mezőé */
+  box-sizing: border-box;
+  margin: var(--email-checkbox-gap) 0 var(--checkbox-button-gap);
+  padding: 0;
+  align-items: center;
+}
+
+body.connect-page .connect-weekly #newsletterForm .weekly-consent input {
+  margin: 0;
+}
+
+body.connect-page .connect-weekly #newsletterForm .weekly-consent span {
+  font-size: 11px;
+  line-height: 1.4;
+  transform: translateY(var(--checkbox-text-y));
+}
+
+/* Mobilon a checkbox bal széle követi az e-mail-mező beállításait. */
+@media (max-width: 700px) {
+  body.connect-page .connect-weekly #newsletterForm .weekly-consent {
+    width: var(--c-email-width);
+    transform: translateX(var(--c-email-x));
+  }
+}
+
+
+
+/* A style.css végére. A 0px az e-mail-mező bal széléhez igazítja
+   a checkboxot. Pozitív értékkel jobbra, negatívval balra tolhatod. */
+body.connect-page .connect-weekly #newsletterForm .weekly-consent {
+  --checkbox-x: 2px;
+  transform: translateX(var(--checkbox-x));
+}
+
+@media (max-width: 700px) {
+  body.connect-page .connect-weekly #newsletterForm .weekly-consent {
+    transform: translateX(calc(var(--c-email-x, 0px) + var(--checkbox-x)));
+  }
+}
